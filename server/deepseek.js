@@ -1,6 +1,6 @@
 /**
  * DeepSeek API 集成（OpenAI 兼容接口）
- * 功能：英→中实时翻译 + 结构化双语大纲生成
+ * 功能：英→中实时翻译 + 结构化双语大纲 + 练习题生成
  */
 
 const BASE_URL = 'https://api.deepseek.com/v1';
@@ -52,10 +52,16 @@ export async function translate(text) {
 
 /**
  * 从累积转录文本生成结构化大纲
+ * @param transcripts - [{ text, timestamp }]
+ * @param pptContext - 可选，PPT 提取的文字内容
  * @returns {{ title, titleEn, sections: [{ heading, headingEn, items: [{ text, textEn }] }] }}
  */
-export async function generateOutline(transcripts) {
+export async function generateOutline(transcripts, pptContext = '') {
   const fullText = transcripts.map((t) => t.text).join('\n');
+
+  const pptHint = pptContext
+    ? `\n\n参考 PPT 内容（用于了解课程主题和结构）：\n${pptContext.slice(0, 3000)}`
+    : '';
 
   const result = await chat(
     [
@@ -68,7 +74,7 @@ export async function generateOutline(transcripts) {
 2. 提取关键知识点作为列表项
 3. heading 是中文章节名，headingEn 是英文
 4. 每个知识点 text（中文）和 textEn（英文）
-5. 如果内容不足以形成完整章节，返回已有部分即可
+5. 如果内容不足以形成完整章节，返回已有部分即可${pptHint}
 
 严格输出 JSON（不要 markdown 代码块）：
 {
@@ -90,7 +96,6 @@ export async function generateOutline(transcripts) {
     { temperature: 0.3, maxTokens: 2048 }
   );
 
-  // 解析 JSON（兼容可能的 markdown 包裹）
   let json = result.trim();
   if (json.startsWith('```json')) json = json.slice(7);
   if (json.startsWith('```')) json = json.slice(3);
@@ -109,6 +114,72 @@ export async function generateOutline(transcripts) {
           heading: '自动生成',
           headingEn: 'Auto Generated',
           items: [{ text: result.trim(), textEn: transcripts.slice(-3).map((t) => t.text).join(' ') }],
+        },
+      ],
+    };
+  }
+}
+
+/**
+ * 课后生成练习题
+ * @returns {{ questions: [{ type: string, question: string, questionEn: string, answer: string }] }}
+ */
+export async function generateQuestions(transcripts, outline) {
+  const fullText = transcripts.map((t) => t.text).join('\n');
+  const outlineText = outline?.title
+    ? `课程主题：${outline.titleEn || outline.title}\n${(outline.sections || []).map((s) => `- ${s.headingEn || s.heading}`).join('\n')}`
+    : '';
+
+  const result = await chat(
+    [
+      {
+        role: 'system',
+        content: `你是大学课程助教。根据课堂内容生成 3-5 道练习题，帮助复习巩固。
+
+规则：
+1. 题型多样：选择题、简答题、判断题混合
+2. 每道题包含中文题目(question)、英文题目(questionEn)、中文答案(answer)
+3. 难度适中，覆盖课程要点
+4. 选择题选项用 A/B/C/D 标记
+
+严格输出 JSON（不要 markdown 代码块）：
+{
+  "questions": [
+    {
+      "type": "选择题",
+      "question": "中文题目…",
+      "questionEn": "English question...",
+      "options": ["A. 选项一", "B. 选项二", "C. 选项三", "D. 选项四"],
+      "answer": "正确答案"
+    }
+  ]
+}`,
+      },
+      {
+        role: 'user',
+        content: `课堂内容：\n\n${fullText.slice(0, 5000)}\n\n${outlineText}`,
+      },
+    ],
+    { temperature: 0.5, maxTokens: 2048 }
+  );
+
+  let json = result.trim();
+  if (json.startsWith('```json')) json = json.slice(7);
+  if (json.startsWith('```')) json = json.slice(3);
+  if (json.endsWith('```')) json = json.slice(0, -3);
+  json = json.trim();
+
+  try {
+    return JSON.parse(json);
+  } catch {
+    console.error('练习题 JSON 解析失败:\n', result);
+    return {
+      questions: [
+        {
+          type: '简答题',
+          question: '请总结本节课的主要内容',
+          questionEn: 'Please summarize the main content of this lecture',
+          answer: result.trim(),
         },
       ],
     };

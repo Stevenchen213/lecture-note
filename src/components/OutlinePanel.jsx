@@ -17,7 +17,7 @@ function SourceTag({ source }) {
   );
 }
 
-export default function OutlinePanel({ outline, setOutline, subtitles = [], isStopped = false }) {
+export default function OutlinePanel({ outline, setOutline, subtitles = [], isStopped = false, questions = null }) {
   const hasContent = outline && (outline.title || (outline.sections && outline.sections.length > 0));
 
   const updateTitle = useCallback(
@@ -210,6 +210,48 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], isSt
             </button>
           </div>
         )}
+
+        {/* 练习题 */}
+        {questions && questions.length > 0 && (
+          <div className="px-5 py-4 border-t border-slate-100 animate-fade-up">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center">
+                <span className="text-sm">✏️</span>
+              </div>
+              <h3 className="text-sm font-semibold text-slate-700">课后练习题</h3>
+              <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">AI 生成</span>
+            </div>
+            <div className="space-y-3">
+              {questions.map((q, i) => (
+                <div key={i} className="px-4 py-3 bg-amber-50/30 border border-amber-100/50 rounded-xl">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-bold text-amber-500 bg-amber-100 px-1.5 py-0.5 rounded">
+                      {q.type}
+                    </span>
+                    <span className="text-[10px] text-slate-400">第 {i + 1} 题</span>
+                  </div>
+                  <p className="text-sm font-semibold text-slate-800 mb-1">{q.question}</p>
+                  {q.questionEn && (
+                    <p className="text-xs text-slate-400 mb-2">{q.questionEn}</p>
+                  )}
+                  {q.options && q.options.length > 0 && (
+                    <div className="space-y-0.5 mb-2 ml-1">
+                      {q.options.map((opt, j) => (
+                        <p key={j} className="text-sm text-slate-600">{opt}</p>
+                      ))}
+                    </div>
+                  )}
+                  <details className="mt-2">
+                    <summary className="text-xs text-amber-600 cursor-pointer hover:text-amber-700 font-medium">查看答案</summary>
+                    <p className="text-sm text-slate-700 mt-1.5 pl-2.5 py-1.5 border-l-2 border-amber-300 bg-white/50 rounded-r">
+                      {q.answer}
+                    </p>
+                  </details>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 导出栏 */}
@@ -218,14 +260,14 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], isSt
           <p className="text-xs font-semibold text-slate-500 mb-3 uppercase tracking-wider">📥 导出笔记</p>
           <div className="flex gap-2.5">
             <button
-              onClick={() => downloadWord(outline, subtitles)}
+              onClick={() => downloadWord(outline, subtitles, questions)}
               className="flex-1 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white text-sm font-medium rounded-xl
                          hover:from-indigo-600 hover:to-indigo-700 active:scale-[0.98] transition-all duration-200 shadow-md shadow-indigo-200"
             >
               📄 Word 文档
             </button>
             <button
-              onClick={() => downloadPDF(outline, subtitles)}
+              onClick={() => downloadPDF(outline, subtitles, questions)}
               className="flex-1 px-5 py-2.5 bg-white text-slate-700 text-sm font-medium rounded-xl border border-slate-200
                          hover:bg-slate-50 hover:border-slate-300 active:scale-[0.98] transition-all duration-200"
             >

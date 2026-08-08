@@ -7,7 +7,7 @@
  * 将富文本 HTML 转为 Word 兼容的 HTML
  * 保留高亮（backColor）、加粗、斜体、下划线、标题层级
  */
-function wrapHtml({ outline, subtitles }) {
+function wrapHtml({ outline, subtitles, questions }) {
   const now = new Date().toLocaleString('zh-CN');
 
   // 构建字幕部分
@@ -55,6 +55,19 @@ function wrapHtml({ outline, subtitles }) {
   <h2>📝 课程大纲</h2>
   ${sectionsHtml || '<p style="color:#94a3b8;">（无大纲数据）</p>'}
 
+  ${questions && questions.length > 0 ? `
+  <h2>✏️ 课后练习题</h2>
+  ${questions.map((q, i) => `
+    <div style="margin-bottom:16px;padding:12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;">
+      <p style="margin:0 0 4px;font-size:13px;font-weight:bold;color:#d97706;">${q.type} · 第${i + 1}题</p>
+      <p style="margin:0 0 8px;font-size:15px;color:#1e293b;font-weight:600;">${q.question}</p>
+      ${q.questionEn ? `<p style="margin:0 0 8px;font-size:12px;color:#94a3b8;">${q.questionEn}</p>` : ''}
+      ${q.options ? q.options.map(o => `<p style="margin:0 0 2px;font-size:14px;color:#475569;">${o}</p>`).join('') : ''}
+      <details><summary style="font-size:12px;color:#d97706;cursor:pointer;">查看答案</summary><p style="margin-top:4px;padding:8px;background:#fff;border-left:3px solid #fbbf24;font-size:14px;color:#334155;">${q.answer}</p></details>
+    </div>
+  `).join('')}
+  ` : ''}
+
   <h2>🎙️ 课堂字幕记录</h2>
   ${subtitleRows
     ? `<table>${subtitleRows}</table>`
@@ -69,8 +82,8 @@ function wrapHtml({ outline, subtitles }) {
  * 导出 Word 文档（.doc）
  * Word 可以直接打开 HTML 文件并保留所有格式
  */
-export function downloadWord(outline, subtitles) {
-  const html = wrapHtml({ outline, subtitles });
+export function downloadWord(outline, subtitles, questions) {
+  const html = wrapHtml({ outline, subtitles, questions });
   const blob = new Blob([html], { type: 'application/msword' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -85,8 +98,8 @@ export function downloadWord(outline, subtitles) {
 /**
  * 导出 PDF（通过浏览器打印）
  */
-export function downloadPDF(outline, subtitles) {
-  const html = wrapHtml({ outline, subtitles });
+export function downloadPDF(outline, subtitles, questions) {
+  const html = wrapHtml({ outline, subtitles, questions });
   const w = window.open('', '_blank', 'width=800,height=600');
   if (!w) {
     alert('弹窗被拦截，请允许本站弹窗后重试');

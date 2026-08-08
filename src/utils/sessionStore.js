@@ -3,7 +3,7 @@ const STORAGE_KEY = 'lecturenote_sessions';
 /**
  * 保存一场听课记录到 localStorage
  */
-export function saveSession({ subtitles, outline }) {
+export function saveSession({ subtitles, outline, questions }) {
   const sessions = loadSessions();
 
   const session = {
@@ -15,6 +15,7 @@ export function saveSession({ subtitles, outline }) {
       .filter((s) => !s.isPartial && s.id !== '__partial__')
       .map((s) => ({ original: s.original, translated: s.translated || '' })),
     outline: outline ? JSON.parse(JSON.stringify(outline)) : null,
+    questions: questions ? JSON.parse(JSON.stringify(questions)) : null,
   };
 
   sessions.unshift(session);

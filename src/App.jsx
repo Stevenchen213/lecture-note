@@ -19,6 +19,7 @@ export default function App() {
   const [replayId, setReplayId] = useState(null);
   const [subtitles, setSubtitles] = useState([]);
   const [outline, setOutline] = useState(null);
+  const [questions, setQuestions] = useState(null);
   const [startError, setStartError] = useState(null);
   const [serverError, setServerError] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
@@ -27,17 +28,16 @@ export default function App() {
   const { isRecording, error: micError, start: startMic, stop: stopMic } = useAudioRecorder();
   const { isConnected, error: wsError, connect: wsConnect, disconnect: wsDisconnect, send, sendAudio, on } = useWebSocket();
 
-  // 页面加载时自动唤醒后端（Render 免费版会休眠）
   useEffect(() => {
     fetch(`${HTTP_URL}/health`).catch(() => {});
   }, []);
 
-  const handleStart = useCallback(async () => {
+  const handleStart = useCallback(async (pptContext) => {
     try {
       setStartError(null);
       setWakingUp(true);
+      setQuestions(null);
 
-      // 连接 WebSocket（如果后端在休眠，多试几次）
       let retries = 0;
       const maxRetries = 12;
       while (retries < maxRetries) {
@@ -54,7 +54,7 @@ export default function App() {
       }
 
       setWakingUp(false);
-      send({ type: 'start_session' });
+      send({ type: 'start_session', pptContext: pptContext || '' });
       await startMic((pcmBuffer) => {
         sendAudio(pcmBuffer);
       });
@@ -86,16 +86,23 @@ export default function App() {
 
       setSubtitles((currentSubtitles) => {
         setOutline((currentOutline) => {
-          if (currentSubtitles.length > 0) {
-            saveSession({ subtitles: currentSubtitles, outline: currentOutline });
-          }
+          setQuestions((currentQuestions) => {
+            if (currentSubtitles.length > 0) {
+              saveSession({
+                subtitles: currentSubtitles,
+                outline: currentOutline,
+                questions: currentQuestions,
+              });
+            }
+            return currentQuestions;
+          });
           return currentOutline;
         });
         return currentSubtitles;
       });
 
       setScreen('home');
-    }, 1500);
+    }, 2000);
   }, [stopMic, send, wsDisconnect]);
 
   const handleViewHistory = useCallback(() => {
@@ -146,6 +153,12 @@ export default function App() {
 
     on('outline_update', (msg) => {
       setOutline((prev) => mergeOutline(prev, msg.outline));
+    });
+
+    on('practice_questions', (msg) => {
+      if (msg.questions && msg.questions.length > 0) {
+        setQuestions(msg.questions);
+      }
     });
 
     on('error', (msg) => {
@@ -215,6 +228,7 @@ export default function App() {
             setOutline={setOutline}
             subtitles={subtitles}
             isStopped={false}
+            questions={questions}
           />
         </div>
       </div>

@@ -51,13 +51,13 @@ export default function ReplayView({ sessionId, onBack }) {
 
         <div className="flex items-center gap-1.5">
           <button
-            onClick={() => downloadWord(session.outline, session.subtitles)}
+            onClick={() => downloadWord(session.outline, session.subtitles, session.questions)}
             className="px-3 py-1.5 text-[11px] font-medium text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-colors"
           >
             📄 Word
           </button>
           <button
-            onClick={() => downloadPDF(session.outline, session.subtitles)}
+            onClick={() => downloadPDF(session.outline, session.subtitles, session.questions)}
             className="px-3 py-1.5 text-[11px] font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors"
           >
             🖨️ PDF
@@ -70,6 +70,7 @@ export default function ReplayView({ sessionId, onBack }) {
         {[
           { key: 'outline', label: '📝 课程大纲' },
           { key: 'subtitles', label: '💬 双语字幕' },
+          { key: 'questions', label: '✏️ 练习题' },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -87,10 +88,14 @@ export default function ReplayView({ sessionId, onBack }) {
 
       {/* 内容区域 */}
       <div className="flex-1 overflow-y-auto">
-        {activeTab === 'outline' ? (
+        {activeTab === 'outline' && (
           <OutlineContent outline={session.outline} subtitles={session.subtitles} />
-        ) : (
+        )}
+        {activeTab === 'subtitles' && (
           <SubtitlesContent subtitles={session.subtitles} />
+        )}
+        {activeTab === 'questions' && (
+          <QuestionsContent questions={session.questions} />
         )}
       </div>
     </div>
@@ -167,6 +172,47 @@ function SubtitlesContent({ subtitles }) {
           <p className="text-sm text-slate-800 leading-relaxed font-medium">
             {sub.translated || '（未翻译）'}
           </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function QuestionsContent({ questions }) {
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full text-slate-400">
+        <div className="text-center">
+          <span className="text-3xl block mb-2">✏️</span>
+          <p className="text-sm">暂无练习题</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-4 space-y-3">
+      {questions.map((q, i) => (
+        <div key={i} className="px-4 py-3 bg-white rounded-xl border border-slate-100 shadow-sm animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="text-xs font-bold text-amber-500 bg-amber-100 px-1.5 py-0.5 rounded">{q.type}</span>
+            <span className="text-[10px] text-slate-400">第 {i + 1} 题</span>
+          </div>
+          <p className="text-sm font-semibold text-slate-800 mb-1">{q.question}</p>
+          {q.questionEn && <p className="text-xs text-slate-400 mb-2">{q.questionEn}</p>}
+          {q.options && q.options.length > 0 && (
+            <div className="space-y-0.5 mb-2">
+              {q.options.map((opt, j) => (
+                <p key={j} className="text-sm text-slate-600">{opt}</p>
+              ))}
+            </div>
+          )}
+          <details className="mt-2">
+            <summary className="text-xs text-amber-600 cursor-pointer hover:text-amber-700 font-medium">查看答案</summary>
+            <p className="text-sm text-slate-700 mt-1.5 pl-2.5 py-1.5 border-l-2 border-amber-300 bg-amber-50/50 rounded-r">
+              {q.answer}
+            </p>
+          </details>
         </div>
       ))}
     </div>
