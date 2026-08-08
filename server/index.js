@@ -12,27 +12,36 @@ config();
 
 const PORT = process.env.PORT || 8080;
 
+// 常见英文功能词——如果一句话里一个都没有，大概率不是英语
+const ENGLISH_WORDS = /\b(the|is|are|was|were|a|an|of|in|to|and|that|it|we|you|this|will|can|for|on|with|be|have|do|not|but|or|all|if|so|at|by|from|about|which|when|who|what|how|has|been|they|them|their|our|also|very|some|more|than)\b/i;
+
 /**
- * 检测文本是否主要为中文（用于过滤中文语音识别结果）
- * 如果中文字符占比 > 40%，视为中文内容，返回 true
+ * 检测文本是否为非英语语音（中文汉字 / 拼音 / 其他语言）
+ * 返回 true 表示应该跳过
  */
-function isMainlyChinese(text) {
-  if (!text || text.length === 0) return false;
+function isNotEnglish(text) {
+  if (!text || text.length < 2) return false;
+
+  // 1) 中文字符占比 > 30%
   let cjkCount = 0;
   for (const ch of text) {
     const code = ch.codePointAt(0);
-    // CJK 统一表意文字范围 + 中文标点
     if (
-      (code >= 0x4E00 && code <= 0x9FFF) || // 基本汉字
-      (code >= 0x3400 && code <= 0x4DBF) || // 扩展A
-      (code >= 0x20000 && code <= 0x2A6DF) || // 扩展B
-      (code >= 0xFF01 && code <= 0xFF5E) || // 全角标点
-      (code >= 0x3000 && code <= 0x303F) // CJK 标点
+      (code >= 0x4E00 && code <= 0x9FFF) ||
+      (code >= 0x3400 && code <= 0x4DBF) ||
+      (code >= 0x20000 && code <= 0x2A6DF) ||
+      (code >= 0xFF01 && code <= 0xFF5E) ||
+      (code >= 0x3000 && code <= 0x303F)
     ) {
       cjkCount++;
     }
   }
-  return cjkCount / text.length > 0.4;
+  if (cjkCount / text.length > 0.3) return true;
+
+  // 2) 如果完全没有常见英文功能词（如 the/is/and），大概率是拼音或其他语言
+  if (!ENGLISH_WORDS.test(text)) return true;
+
+  return false;
 }
 
 /**
@@ -206,9 +215,9 @@ wss.on('connection', (ws) => {
 
         try {
           await startRecognition(ws, async (text, timestamp) => {
-            // 过滤中文语音
-            if (isMainlyChinese(text)) {
-              console.log(`过滤中文: ${text.slice(0, 50)}...`);
+            // 过滤非英语语音（中文汉字 / 拼音 / 其他语言）
+            if (isNotEnglish(text)) {
+              console.log(`过滤非英语: ${text.slice(0, 50)}...`);
               return;
             }
 
