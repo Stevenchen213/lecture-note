@@ -2,7 +2,6 @@ import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { config } from 'dotenv';
 import AdmZip from 'adm-zip';
-import zlib from 'zlib';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
@@ -34,84 +33,6 @@ function isMainlyChinese(text) {
     }
   }
   return cjkCount / text.length > 0.4;
-}
-
-/**
- * 提取 PDF 中的文本（内置解析，无需外部依赖）
- * 处理未压缩和 FlateDecode 压缩的文本流
- */
-function extractPdfText(fileBuffer) {
-  try {
-    const text = fileBuffer.toString('latin1');
-    const texts = [];
-
-    // 尝试解压 FlateDecode 流中的所有文字
-    const streamRegex = /\/Filter\s*\/FlateDecode[\s\S]*?stream\s*\r?\n?([\s\S]*?)\r?\n?endstream/g;
-    let streamMatch;
-    while ((streamMatch = streamRegex.exec(text)) !== null) {
-      try {
-        const compressed = Buffer.from(streamMatch[1], 'latin1');
-        const decompressed = zlib.inflateSync(compressed).toString('utf8');
-        texts.push(decompressed);
-      } catch { /* skip unparseable stream */ }
-    }
-
-    // 也处理未压缩的流
-    const rawStreamRegex = /stream\s*\r?\n?([\s\S]*?)\r?\n?endstream/g;
-    let rawMatch;
-    while ((rawMatch = rawStreamRegex.exec(text)) !== null) {
-      const content = rawMatch[1];
-      if (!texts.some(t => content.includes(t.slice(0, 100)))) {
-        texts.push(content);
-      }
-    }
-
-    // 从文本块中提取括号内的文字（Tj/TJ 操作符）
-    const result = [];
-    for (const block of texts) {
-      // Tj: (text) Tj
-      for (const m of block.matchAll(/\(([^)]*)\)\s*Tj/g)) {
-        if (m[1]) result.push(m[1]);
-      }
-      // TJ: [(text) ...] TJ
-      for (const m of block.matchAll(/\[([\s\S]*?)\]\s*TJ/g)) {
-        for (const inner of m[1].matchAll(/\(([^)]*)\)/g)) {
-          if (inner[1]) result.push(inner[1]);
-        }
-      }
-      // 也匹配 ' 和 " 操作符
-      for (const m of block.matchAll(/\(([^)]*)\)\s*'/g)) {
-        if (m[1]) result.push(m[1]);
-      }
-    }
-
-    // 如果解压流没找到文字，直接在原始文本中找 BT/ET 块
-    if (result.length === 0) {
-      const btRegex = /BT\s*([\s\S]*?)\s*ET/g;
-      let btMatch;
-      while ((btMatch = btRegex.exec(text)) !== null) {
-        const block = btMatch[1];
-        for (const m of block.matchAll(/\(([^)]*)\)\s*Tj/g)) {
-          if (m[1]) result.push(m[1]);
-        }
-      }
-    }
-
-    // 解码 PDF 转义字符
-    const decoded = result
-      .map(s => s
-        .replace(/\\([()\\])/g, '$1')
-        .replace(/\\n/g, '\n')
-        .replace(/\\r/g, '\r')
-        .replace(/\\(\d{3})/g, (_, n) => String.fromCharCode(parseInt(n, 8)))
-      )
-      .join(' ');
-
-    return decoded || '（无法提取 PDF 文字，请确认文件包含可选择文本）';
-  } catch (err) {
-    console.error('PDF 解析失败:', err.message);
-    return '';
-  }
 }
 
 /**
@@ -198,29 +119,23 @@ const httpServer = createServer((req, res) => {
 
           const fileBuffer = Buffer.from(body, 'binary');
 
-          const ext = filename.toLowerCase().split('.').pop();
-          if (!['pptx', 'pdf'].includes(ext)) {
+          if (!filename.toLowerCase().endsWith('.pptx')) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '只支持 .pptx 和 .pdf 文件' }));
+            res.end(JSON.stringify({ error: '只支持 .pptx 文件' }));
             return;
           }
 
           // 写入临时文件
-          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.${ext}`);
+          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pptx`);
           fs.writeFileSync(tmpPath, fileBuffer);
 
           // 提取文字
-          let text = '';
-          if (ext === 'pptx') {
-            text = extractPptxText(tmpPath);
-          } else if (ext === 'pdf') {
-            text = extractPdfText(fileBuffer);
-          }
+          const text = extractPptxText(tmpPath);
 
           // 清理临时文件
           try { fs.unlinkSync(tmpPath); } catch {}
 
-          console.log(`文件上传成功: ${filename} (.${ext}), 提取 ${text.length} 字符`);
+          console.log(`PPT 上传成功: ${filename}, 提取 ${text.length} 字符`);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, filename, text }));
           return;
