@@ -9,92 +9,138 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
     }
   }, [subtitles]);
 
-  const statusColor = isPaused ? 'bg-yellow-500' : isRecording ? 'bg-red-500' : 'bg-gray-300';
-  const statusPing = isRecording && !isPaused ? 'bg-red-400' : isPaused ? 'bg-yellow-400' : '';
+  const statusColor = isPaused ? 'bg-amber-400' : isRecording ? 'bg-emerald-400' : 'bg-slate-300';
+  const statusBg = isPaused
+    ? 'bg-amber-50 border-amber-200'
+    : isRecording
+    ? 'bg-emerald-50 border-emerald-200'
+    : 'bg-slate-50 border-slate-200';
 
   return (
-    <div className="flex flex-col h-full bg-white">
+    <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-white">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <span className="relative flex h-3 w-3">
-            {isRecording && (
-              <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${statusPing} opacity-75`}></span>
-            )}
-            <span className={`relative inline-flex rounded-full h-3 w-3 ${statusColor}`}></span>
-          </span>
-          <span className="text-sm font-medium text-gray-700">
-            {isPaused ? '⏸️ 已暂停' : '实时字幕'}
-          </span>
+      <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100/80">
+        <div className="flex items-center gap-3">
+          {/* 状态指示器 */}
+          <div className="relative">
+            <div className={`w-10 h-10 rounded-xl ${statusBg} border flex items-center justify-center`}>
+              <span className={`w-2.5 h-2.5 rounded-full ${statusColor} ${isRecording && !isPaused ? 'animate-pulse-ring' : isPaused ? 'animate-pulse-ring-yellow' : ''}`} />
+            </div>
+          </div>
+
+          <div>
+            <h2 className="text-sm font-semibold text-slate-700">
+              {isPaused ? '⏸️ 已暂停' : isRecording ? '实时字幕' : '已结束'}
+            </h2>
+            <p className="text-[11px] text-slate-400">
+              {isPaused ? '点击继续恢复识别' : isRecording ? 'AI 同传翻译中' : '听课已结束'}
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {/* 暂停 / 继续按钮 */}
           {isRecording && !isPaused && (
             <button
               onClick={onPause}
-              className="px-3 py-1.5 bg-yellow-50 text-yellow-700 text-sm rounded-lg hover:bg-yellow-100 transition-colors"
+              className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-xl
+                         hover:bg-amber-100 border border-amber-200/50 transition-all duration-200"
             >
-              暂停
+              ⏸️ 暂停
             </button>
           )}
           {isPaused && (
             <button
               onClick={onResume}
-              className="px-3 py-1.5 bg-green-50 text-green-700 text-sm rounded-lg hover:bg-green-100 transition-colors"
+              className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-xl
+                         hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200"
             >
-              继续
+              ▶️ 继续
             </button>
           )}
 
-          {/* 结束按钮 */}
           <button
             onClick={onStop}
-            className="px-3 py-1.5 bg-red-50 text-red-600 text-sm rounded-lg hover:bg-red-100 transition-colors"
+            className="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-medium rounded-xl
+                       hover:bg-rose-100 border border-rose-200/50 transition-all duration-200"
           >
             结束
           </button>
         </div>
       </div>
 
-      {/* 暂停提示 */}
+      {/* 暂停横幅 */}
       {isPaused && (
-        <div className="mx-4 mt-2 px-3 py-2 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-700 text-sm">
-          ⏸️ 已暂停 — 点击「继续」接着听
+        <div className="mx-4 mt-3 px-4 py-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-amber-700 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
+          <span className="text-base">⏸️</span>
+          <span>录音已暂停 — 点击「继续」恢复识别</span>
         </div>
       )}
 
-      {/* 服务器错误 */}
+      {/* 错误横幅 */}
       {serverError && (
-        <div className="mx-4 mt-2 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-          ⚠️ {serverError}
+        <div className="mx-4 mt-3 px-4 py-3 bg-rose-50/80 border border-rose-200/80 rounded-xl text-rose-600 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
+          <span className="text-base">⚠️</span>
+          <span>{serverError}</span>
         </div>
       )}
 
-      {/* 字幕列表 */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-4">
+      {/* 字幕区域 */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {subtitles.length === 0 && (
-          <div className="flex items-center justify-center h-full text-gray-400">
+          <div className="flex items-center justify-center h-full">
             <div className="text-center">
-              <div className="text-3xl mb-2">{isPaused ? '⏸️' : '🎤'}</div>
-              <p className="text-sm">{isPaused ? '已暂停' : '正在收听...'}</p>
+              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">
+                <span className="text-3xl">{isPaused ? '⏸️' : '🎤'}</span>
+              </div>
+              <p className="text-sm font-medium text-slate-400">
+                {isPaused ? '录音已暂停' : '正在收听中...'}
+              </p>
+              <p className="text-xs text-slate-300 mt-1">
+                {isPaused ? '' : '开始讲话即可看到实时字幕'}
+              </p>
             </div>
           </div>
         )}
 
         {subtitles.map((sub, i) => (
-          <div key={i} className={`space-y-1 ${sub.isNew ? 'opacity-100' : 'opacity-60'}`}>
-            <p className="text-sm text-gray-500 leading-relaxed">{sub.original}</p>
-            <p className={`text-sm leading-relaxed ${sub.translated === '...' ? 'text-gray-300 italic text-xs' : 'text-gray-900'}`}>
-              {sub.translated === '...' ? '⟳ 翻译中...' : sub.translated}
+          <div
+            key={i}
+            className={`group px-4 py-3 rounded-xl transition-all duration-300 border ${
+              sub.isNew
+                ? 'bg-white border-slate-200/80 shadow-sm animate-fade-up'
+                : 'bg-transparent border-transparent opacity-50 hover:opacity-70'
+            }`}
+          >
+            <p className="text-sm text-slate-500 leading-relaxed mb-1.5">
+              {sub.original}
+            </p>
+            <p
+              className={`text-sm leading-relaxed ${
+                sub.translated === '...'
+                  ? 'text-slate-300 italic text-xs'
+                  : 'text-slate-800 font-medium'
+              }`}
+            >
+              {sub.translated === '...' ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-3.5 h-3.5 border-2 border-slate-300 border-t-indigo-400 rounded-full animate-spin" />
+                  翻译中…
+                </span>
+              ) : (
+                sub.translated
+              )}
             </p>
           </div>
         ))}
 
+        {/* 录制中指示 */}
         {isRecording && !isPaused && subtitles.length > 0 && (
-          <div className="flex items-center gap-1 text-indigo-500 text-sm">
-            <span className="animate-pulse">●</span>
-            <span>识别中...</span>
+          <div className="flex items-center gap-2 px-4 py-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
+            </span>
+            <span className="text-xs text-indigo-400 font-medium">识别中…</span>
           </div>
         )}
       </div>

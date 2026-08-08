@@ -9,7 +9,7 @@ import { mergeOutline } from './utils/outlineMerge';
 let subtitleId = 0;
 
 export default function App() {
-  const [sessionState, setSessionState] = useState('idle'); // idle | recording | stopped
+  const [sessionState, setSessionState] = useState('idle');
   const [subtitles, setSubtitles] = useState([]);
   const [outline, setOutline] = useState(null);
   const [startError, setStartError] = useState(null);
@@ -19,7 +19,6 @@ export default function App() {
   const { isRecording, error: micError, start: startMic, stop: stopMic } = useAudioRecorder();
   const { isConnected, error: wsError, connect: wsConnect, disconnect: wsDisconnect, send, sendAudio, on } = useWebSocket();
 
-  // 开始听课
   const handleStart = useCallback(async () => {
     try {
       setStartError(null);
@@ -35,19 +34,16 @@ export default function App() {
     }
   }, [wsConnect, send, startMic, sendAudio]);
 
-  // 暂停
   const handlePause = useCallback(() => {
     setIsPaused(true);
     send({ type: 'pause' });
   }, [send]);
 
-  // 继续
   const handleResume = useCallback(() => {
     setIsPaused(false);
     send({ type: 'resume' });
   }, [send]);
 
-  // 结束听课
   const handleStop = useCallback(() => {
     stopMic();
     setIsPaused(false);
@@ -56,7 +52,6 @@ export default function App() {
     setSessionState('stopped');
   }, [stopMic, send, wsDisconnect]);
 
-  // 注册 WebSocket 消息处理
   const handlersRef = useRef(false);
   if (!handlersRef.current) {
     handlersRef.current = true;
@@ -68,7 +63,6 @@ export default function App() {
       });
     });
 
-    // 最终结果（英文即刻显示，中文稍后更新）
     on('final_transcript', (msg) => {
       setSubtitles((prev) => {
         const filtered = prev.filter((s) => s.id !== '__partial__');
@@ -83,7 +77,6 @@ export default function App() {
       });
     });
 
-    // 兼容旧版：单独的翻译消息仍可更新已显示的字幕
     on('translation', (msg) => {
       setSubtitles((prev) =>
         prev.map((s) => (s.original === msg.original ? { ...s, translated: msg.text } : s))
@@ -99,7 +92,6 @@ export default function App() {
       setServerError(msg.message);
     });
 
-    // 暂停/恢复确认
     on('paused', () => setIsPaused(true));
     on('resumed', () => setIsPaused(false));
   }
@@ -111,20 +103,46 @@ export default function App() {
   }
 
   return (
-    <div className="flex h-screen">
-      <div className="w-2/5 border-r border-gray-200 overflow-hidden">
-        <SubtitlePanel
-          subtitles={subtitles}
-          isRecording={sessionState === 'recording'}
-          isPaused={isPaused}
-          onPause={handlePause}
-          onResume={handleResume}
-          onStop={handleStop}
-          serverError={serverError}
-        />
-      </div>
-      <div className="w-3/5 overflow-hidden">
-        <OutlinePanel outline={outline} setOutline={setOutline} subtitles={subtitles} isStopped={sessionState === 'stopped'} />
+    <div className="flex flex-col h-screen bg-slate-50">
+      {/* 顶部品牌栏 */}
+      <header className="flex items-center justify-between px-5 py-2.5 bg-white border-b border-slate-100/80 flex-shrink-0 z-10">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm shadow-indigo-200">
+            <span className="text-xs">🎓</span>
+          </div>
+          <span className="text-sm font-bold text-slate-700 tracking-tight">
+            Lecture<span className="text-indigo-500">Note</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-3 text-[11px] text-slate-400">
+          <span className={`flex items-center gap-1.5 ${isPaused ? 'text-amber-500' : isRecording ? 'text-emerald-500' : 'text-slate-300'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-amber-400' : isRecording ? 'bg-emerald-400' : 'bg-slate-300'}`} />
+            {isPaused ? '已暂停' : isRecording ? '录制中' : '已结束'}
+          </span>
+        </div>
+      </header>
+
+      {/* 主面板 */}
+      <div className="flex flex-1 overflow-hidden">
+        <div className="w-2/5 border-r border-slate-100 overflow-hidden">
+          <SubtitlePanel
+            subtitles={subtitles}
+            isRecording={sessionState === 'recording'}
+            isPaused={isPaused}
+            onPause={handlePause}
+            onResume={handleResume}
+            onStop={handleStop}
+            serverError={serverError}
+          />
+        </div>
+        <div className="w-3/5 overflow-hidden">
+          <OutlinePanel
+            outline={outline}
+            setOutline={setOutline}
+            subtitles={subtitles}
+            isStopped={sessionState === 'stopped'}
+          />
+        </div>
       </div>
     </div>
   );
