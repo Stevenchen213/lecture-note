@@ -11,6 +11,7 @@
     "ws": "^8.17.0",
     "dotenv": "^16.4.5",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
-    "adm-zip": "^0.5.14"
+    "adm-zip": "^0.5.14",
+    "pdf-parse": "^1.1.1"
   }
 }

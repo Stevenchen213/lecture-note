@@ -14,8 +14,9 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.toLowerCase().endsWith('.pptx')) {
-      setPptError('只支持 .pptx 格式');
+    const ext = file.name.toLowerCase().split('.').pop();
+    if (!['pptx', 'pdf'].includes(ext)) {
+      setPptError('只支持 .pptx 和 .pdf 格式');
       return;
     }
 
@@ -85,13 +86,13 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               ) : (
                 <>
                   <span className="text-lg">📎</span>
-                  <span className="text-sm text-slate-400">上传 PPT 辅助生成大纲（可选）</span>
+                  <span className="text-sm text-slate-400">上传 PPT/PDF 辅助生成大纲（可选）</span>
                 </>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pptx"
+                accept=".pptx,.pdf"
                 onChange={handlePptUpload}
                 className="hidden"
               />

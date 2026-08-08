@@ -2,8 +2,12 @@ import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import { config } from 'dotenv';
 import AdmZip from 'adm-zip';
+import { createRequire } from 'module';
 import { startRecognition, pushAudioData, stopRecognition } from './azure-speech.js';
 import { translate, generateOutline, generateQuestions } from './deepseek.js';
+
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 
 config();
 
@@ -30,6 +34,19 @@ function isMainlyChinese(text) {
     }
   }
   return cjkCount / text.length > 0.4;
+}
+
+/**
+ * 提取 PDF 中的文本
+ */
+async function extractPdfText(fileBuffer) {
+  try {
+    const data = await pdfParse(fileBuffer);
+    return data.text || '';
+  } catch (err) {
+    console.error('PDF 解析失败:', err.message);
+    return '';
+  }
 }
 
 /**
@@ -116,9 +133,10 @@ const httpServer = createServer((req, res) => {
 
           const fileBuffer = Buffer.from(body, 'binary');
 
-          if (!filename.toLowerCase().endsWith('.pptx')) {
+          const ext = filename.toLowerCase().split('.').pop();
+          if (!['pptx', 'pdf'].includes(ext)) {
             res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '只支持 .pptx 文件' }));
+            res.end(JSON.stringify({ error: '只支持 .pptx 和 .pdf 文件' }));
             return;
           }
 
@@ -126,16 +144,21 @@ const httpServer = createServer((req, res) => {
           const os = require('os');
           const path = require('path');
           const fs = require('fs');
-          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pptx`);
+          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.${ext}`);
           fs.writeFileSync(tmpPath, fileBuffer);
 
           // 提取文字
-          const text = extractPptxText(tmpPath);
+          let text = '';
+          if (ext === 'pptx') {
+            text = extractPptxText(tmpPath);
+          } else if (ext === 'pdf') {
+            text = await extractPdfText(fileBuffer);
+          }
 
           // 清理临时文件
           try { fs.unlinkSync(tmpPath); } catch {}
 
-          console.log(`PPT 上传成功: ${filename}, 提取 ${text.length} 字符`);
+          console.log(`文件上传成功: ${filename} (.${ext}), 提取 ${text.length} 字符`);
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, filename, text }));
           return;
