@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 
-const WS_URL = 'ws://localhost:8080';
+// 开发环境用 localhost，生产环境用 VITE_WS_URL 环境变量
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
 
 /**
  * WebSocket Hook
