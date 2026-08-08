@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import StartScreen from './components/StartScreen';
 import SubtitlePanel from './components/SubtitlePanel';
 import OutlinePanel from './components/OutlinePanel';
@@ -11,28 +11,56 @@ import { saveSession } from './utils/sessionStore';
 
 let subtitleId = 0;
 
+const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
+const HTTP_URL = WS_URL.replace(/^wss?:\/\//, 'https://').replace(/^ws:\/\//, 'http://');
+
 export default function App() {
-  const [screen, setScreen] = useState('home'); // home | recording | history | replay
+  const [screen, setScreen] = useState('home');
   const [replayId, setReplayId] = useState(null);
   const [subtitles, setSubtitles] = useState([]);
   const [outline, setOutline] = useState(null);
   const [startError, setStartError] = useState(null);
   const [serverError, setServerError] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [wakingUp, setWakingUp] = useState(false);
 
   const { isRecording, error: micError, start: startMic, stop: stopMic } = useAudioRecorder();
   const { isConnected, error: wsError, connect: wsConnect, disconnect: wsDisconnect, send, sendAudio, on } = useWebSocket();
 
+  // 页面加载时自动唤醒后端（Render 免费版会休眠）
+  useEffect(() => {
+    fetch(`${HTTP_URL}/health`).catch(() => {});
+  }, []);
+
   const handleStart = useCallback(async () => {
     try {
       setStartError(null);
-      await wsConnect();
+      setWakingUp(true);
+
+      // 连接 WebSocket（如果后端在休眠，多试几次）
+      let retries = 0;
+      const maxRetries = 12;
+      while (retries < maxRetries) {
+        try {
+          await wsConnect();
+          break;
+        } catch {
+          retries++;
+          if (retries >= maxRetries) {
+            throw new Error('服务器唤醒超时，请刷新页面重试');
+          }
+          await new Promise((r) => setTimeout(r, 5000));
+        }
+      }
+
+      setWakingUp(false);
       send({ type: 'start_session' });
       await startMic((pcmBuffer) => {
         sendAudio(pcmBuffer);
       });
       setScreen('recording');
     } catch (err) {
+      setWakingUp(false);
       console.error('启动失败:', err.message);
       setStartError(err.message);
     }
@@ -53,7 +81,6 @@ export default function App() {
     setIsPaused(false);
     send({ type: 'stop_session' });
 
-    // 延迟保存，等最后的 outline_update 到达
     setTimeout(() => {
       wsDisconnect();
 
@@ -132,8 +159,6 @@ export default function App() {
 
   const displayError = startError || micError || wsError;
 
-  // === 视图路由 ===
-
   if (screen === 'history') {
     return <HistoryPanel onViewSession={handleViewSession} onBack={handleBackToHome} />;
   }
@@ -148,14 +173,13 @@ export default function App() {
         onStart={handleStart}
         onViewHistory={handleViewHistory}
         error={displayError}
+        wakingUp={wakingUp}
       />
     );
   }
 
-  // screen === 'recording'
   return (
     <div className="flex flex-col h-screen bg-slate-50">
-      {/* 顶部品牌栏 */}
       <header className="flex items-center justify-between px-5 py-2.5 bg-white border-b border-slate-100/80 flex-shrink-0 z-10">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-sm shadow-indigo-200">
@@ -173,7 +197,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* 主面板 */}
       <div className="flex flex-1 overflow-hidden">
         <div className="w-2/5 border-r border-slate-100 overflow-hidden">
           <SubtitlePanel

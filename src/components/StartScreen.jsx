@@ -1,4 +1,4 @@
-export default function StartScreen({ onStart, onViewHistory, error }) {
+export default function StartScreen({ onStart, onViewHistory, error, wakingUp }) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
       {/* 背景装饰 */}
@@ -45,16 +45,35 @@ export default function StartScreen({ onStart, onViewHistory, error }) {
           ))}
         </div>
 
+        {/* 唤醒提示 */}
+        {wakingUp && (
+          <div className="mb-4 px-4 py-3 bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm rounded-xl animate-fade-in flex items-center justify-center gap-2">
+            <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+            服务器休眠中，正在唤醒… 约需 30 秒
+          </div>
+        )}
+
         {/* 开始按钮 */}
         <button
           onClick={onStart}
+          disabled={wakingUp}
           className="group relative px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-2xl
                      hover:from-indigo-400 hover:to-purple-500 active:scale-[0.97] transition-all duration-200
-                     shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 animate-fade-up w-full"
+                     shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 animate-fade-up w-full
+                     disabled:opacity-60 disabled:cursor-wait"
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
-            <span className="group-hover:animate-bounce">🎙️</span>
-            开始听课
+            {wakingUp ? (
+              <>
+                <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                正在唤醒服务器…
+              </>
+            ) : (
+              <>
+                <span className="group-hover:animate-bounce">🎙️</span>
+                开始听课
+              </>
+            )}
           </span>
         </button>
 

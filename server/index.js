@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+import { createServer } from 'http';
 import { config } from 'dotenv';
 import { startRecognition, pushAudioData, stopRecognition } from './azure-speech.js';
 import { translate, generateOutline } from './deepseek.js';
@@ -6,9 +7,20 @@ import { translate, generateOutline } from './deepseek.js';
 config();
 
 const PORT = process.env.PORT || 8080;
-const wss = new WebSocketServer({ port: PORT });
 
-console.log(`WebSocket 服务器运行在端口 ${PORT} (Azure Speech: ${process.env.AZURE_SPEECH_REGION})`);
+// HTTP 健康检查 + 唤醒端点
+const httpServer = createServer((req, res) => {
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/health')) {
+    res.writeHead(200, { 'Content-Type': 'text/plain', 'Access-Control-Allow-Origin': '*' });
+    res.end('ok');
+  }
+});
+
+const wss = new WebSocketServer({ server: httpServer });
+
+httpServer.listen(PORT, () => {
+  console.log(`服务器运行在端口 ${PORT} (Azure: ${process.env.AZURE_SPEECH_REGION})`);
+});
 
 wss.on('connection', (ws) => {
   console.log('客户端已连接');
