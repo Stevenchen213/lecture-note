@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPause, onResume, onStop, serverError }) {
+export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPause, onResume, onStop, serverError }) {
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -9,37 +9,61 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
     }
   }, [subtitles]);
 
-  const statusColor = isPaused ? 'bg-amber-400' : isRecording ? 'bg-emerald-400' : 'bg-slate-300';
-  const statusBg = isPaused
+  const isIdle = recordingPhase === 'idle';
+  const isActive = recordingPhase === 'active';
+  const isPaused = recordingPhase === 'paused';
+
+  const statusColor = isIdle ? 'bg-slate-300' : isPaused ? 'bg-amber-400' : 'bg-emerald-400';
+  const statusBg = isIdle
+    ? 'bg-slate-50 border-slate-200'
+    : isPaused
     ? 'bg-amber-50 border-amber-200'
-    : isRecording
-    ? 'bg-emerald-50 border-emerald-200'
-    : 'bg-slate-50 border-slate-200';
+    : 'bg-emerald-50 border-emerald-200';
 
   return (
     <div className="flex flex-col h-full bg-gradient-to-b from-slate-50 to-white">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100/80">
         <div className="flex items-center gap-3">
-          {/* 状态指示器 */}
           <div className="relative">
             <div className={`w-10 h-10 rounded-xl ${statusBg} border flex items-center justify-center`}>
-              <span className={`w-2.5 h-2.5 rounded-full ${statusColor} ${isRecording && !isPaused ? 'animate-pulse-ring' : isPaused ? 'animate-pulse-ring-yellow' : ''}`} />
+              <span className={`w-2.5 h-2.5 rounded-full ${statusColor} ${isActive ? 'animate-pulse-ring' : isPaused ? 'animate-pulse-ring-yellow' : ''}`} />
             </div>
           </div>
 
           <div>
             <h2 className="text-sm font-semibold text-slate-700">
-              {isPaused ? '⏸️ 已暂停' : isRecording ? '实时字幕' : '已结束'}
+              {isIdle ? '准备就绪' : isPaused ? '⏸️ 已暂停' : '实时字幕'}
             </h2>
             <p className="text-[11px] text-slate-400">
-              {isPaused ? '点击继续恢复识别' : isRecording ? 'AI 同传翻译中' : '听课已结束'}
+              {isIdle ? '点击开始启动识别' : isPaused ? '点击继续恢复识别' : 'AI 同传翻译中'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          {isRecording && !isPaused && (
+          {/* 空闲态：返回 + 开始按钮 */}
+          {isIdle && (
+            <>
+              <button
+                onClick={onStop}
+                className="px-3 py-2 text-slate-400 text-sm rounded-xl hover:bg-slate-100 transition-all duration-200"
+              >
+                ← 返回
+              </button>
+              <button
+                onClick={onStart}
+                className="px-5 py-2 bg-emerald-50 text-emerald-700 text-sm font-semibold rounded-xl
+                           hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200
+                           shadow-sm shadow-emerald-100"
+              >
+                ▶️ 开始
+              </button>
+            </>
+          )}
+
+          {/* 活跃态：暂停按钮 */}
+          {isActive && (
             <button
               onClick={onPause}
               className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-xl
@@ -48,6 +72,8 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
               ⏸️ 暂停
             </button>
           )}
+
+          {/* 暂停态：继续按钮 */}
           {isPaused && (
             <button
               onClick={onResume}
@@ -58,13 +84,16 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
             </button>
           )}
 
-          <button
-            onClick={onStop}
-            className="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-medium rounded-xl
-                       hover:bg-rose-100 border border-rose-200/50 transition-all duration-200"
-          >
-            结束
-          </button>
+          {/* 结束按钮（任何非空闲态都显示） */}
+          {!isIdle && (
+            <button
+              onClick={onStop}
+              className="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-medium rounded-xl
+                         hover:bg-rose-100 border border-rose-200/50 transition-all duration-200"
+            >
+              结束
+            </button>
+          )}
         </div>
       </div>
 
@@ -90,13 +119,13 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-slate-100 flex items-center justify-center">
-                <span className="text-3xl">{isPaused ? '⏸️' : '🎤'}</span>
+                <span className="text-3xl">{isIdle ? '🎤' : isPaused ? '⏸️' : '🎤'}</span>
               </div>
               <p className="text-sm font-medium text-slate-400">
-                {isPaused ? '录音已暂停' : '正在收听中...'}
+                {isIdle ? '点击「开始」启动识别' : isPaused ? '录音已暂停' : '正在收听中...'}
               </p>
               <p className="text-xs text-slate-300 mt-1">
-                {isPaused ? '' : '开始讲话即可看到实时字幕'}
+                {isIdle ? '' : isPaused ? '' : '开始讲话即可看到实时字幕'}
               </p>
             </div>
           </div>
@@ -134,7 +163,7 @@ export default function SubtitlePanel({ subtitles, isRecording, isPaused, onPaus
         ))}
 
         {/* 录制中指示 */}
-        {isRecording && !isPaused && subtitles.length > 0 && (
+        {isActive && subtitles.length > 0 && (
           <div className="flex items-center gap-2 px-4 py-2">
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />

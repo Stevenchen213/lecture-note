@@ -22,21 +22,28 @@ export default function App() {
   const [questions, setQuestions] = useState(null);
   const [startError, setStartError] = useState(null);
   const [serverError, setServerError] = useState(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [wakingUp, setWakingUp] = useState(false);
 
-  const { isRecording, error: micError, start: startMic, stop: stopMic } = useAudioRecorder();
-  const { isConnected, error: wsError, connect: wsConnect, disconnect: wsDisconnect, send, sendAudio, on } = useWebSocket();
+  // recordingPhase: 'idle' (进入页面但未开始) | 'active' | 'paused'
+  const [recordingPhase, setRecordingPhase] = useState('idle');
+  const [wakingUp, setWakingUp] = useState(false);
+  const [pptContext, setPptContext] = useState('');
+
+  const { error: micError, start: startMic, stop: stopMic } = useAudioRecorder();
+  const { error: wsError, connect: wsConnect, disconnect: wsDisconnect, send, sendAudio, on } = useWebSocket();
 
   useEffect(() => {
     fetch(`${HTTP_URL}/health`).catch(() => {});
   }, []);
 
-  const handleStart = useCallback(async (pptContext) => {
+  // 从首页进入课堂——仅连接WS，不开始录音
+  const handleEnterRoom = useCallback(async (pptText) => {
     try {
       setStartError(null);
       setWakingUp(true);
+      setPptContext(pptText);
       setQuestions(null);
+      setSubtitles([]);
+      setOutline(null);
 
       let retries = 0;
       const maxRetries = 12;
@@ -46,64 +53,80 @@ export default function App() {
           break;
         } catch {
           retries++;
-          if (retries >= maxRetries) {
-            throw new Error('服务器唤醒超时，请刷新页面重试');
-          }
+          if (retries >= maxRetries) throw new Error('服务器唤醒超时，请刷新页面重试');
           await new Promise((r) => setTimeout(r, 5000));
         }
       }
 
       setWakingUp(false);
+      setRecordingPhase('idle');
+      setScreen('recording');
+    } catch (err) {
+      setWakingUp(false);
+      console.error('进入课堂失败:', err.message);
+      setStartError(err.message);
+    }
+  }, [wsConnect]);
+
+  // 开始录音
+  const handleStartRecording = useCallback(async () => {
+    try {
+      setServerError(null);
       send({ type: 'start_session', pptContext: pptContext || '' });
       await startMic((pcmBuffer) => {
         sendAudio(pcmBuffer);
       });
-      setScreen('recording');
+      setRecordingPhase('active');
     } catch (err) {
-      setWakingUp(false);
-      console.error('启动失败:', err.message);
-      setStartError(err.message);
+      console.error('启动录音失败:', err.message);
+      setServerError(err.message);
     }
-  }, [wsConnect, send, startMic, sendAudio]);
+  }, [send, startMic, sendAudio, pptContext]);
 
+  // 暂停
   const handlePause = useCallback(() => {
-    setIsPaused(true);
+    setRecordingPhase('paused');
     send({ type: 'pause' });
   }, [send]);
 
+  // 继续
   const handleResume = useCallback(() => {
-    setIsPaused(false);
+    setRecordingPhase('active');
     send({ type: 'resume' });
   }, [send]);
 
+  // 结束
   const handleStop = useCallback(() => {
-    stopMic();
-    setIsPaused(false);
-    send({ type: 'stop_session' });
+    if (recordingPhase !== 'idle') {
+      stopMic();
+      send({ type: 'stop_session' });
+    }
 
     setTimeout(() => {
       wsDisconnect();
 
-      setSubtitles((currentSubtitles) => {
-        setOutline((currentOutline) => {
-          setQuestions((currentQuestions) => {
-            if (currentSubtitles.length > 0) {
-              saveSession({
-                subtitles: currentSubtitles,
-                outline: currentOutline,
-                questions: currentQuestions,
-              });
-            }
-            return currentQuestions;
+      if (recordingPhase !== 'idle') {
+        setSubtitles((currentSubtitles) => {
+          setOutline((currentOutline) => {
+            setQuestions((currentQuestions) => {
+              if (currentSubtitles.length > 0) {
+                saveSession({
+                  subtitles: currentSubtitles,
+                  outline: currentOutline,
+                  questions: currentQuestions,
+                });
+              }
+              return currentQuestions;
+            });
+            return currentOutline;
           });
-          return currentOutline;
+          return currentSubtitles;
         });
-        return currentSubtitles;
-      });
+      }
 
       setScreen('home');
     }, 2000);
-  }, [stopMic, send, wsDisconnect]);
+  }, [recordingPhase, stopMic, send, wsDisconnect]);
 
   const handleViewHistory = useCallback(() => {
     setScreen('history');
@@ -166,8 +189,8 @@ export default function App() {
       setServerError(msg.message);
     });
 
-    on('paused', () => setIsPaused(true));
-    on('resumed', () => setIsPaused(false));
+    on('paused', () => setRecordingPhase('paused'));
+    on('resumed', () => setRecordingPhase('active'));
   }
 
   const displayError = startError || micError || wsError;
@@ -183,13 +206,18 @@ export default function App() {
   if (screen === 'home') {
     return (
       <StartScreen
-        onStart={handleStart}
+        onStart={handleEnterRoom}
         onViewHistory={handleViewHistory}
         error={displayError}
         wakingUp={wakingUp}
       />
     );
   }
+
+  // screen === 'recording'
+  const isActive = recordingPhase === 'active';
+  const isPaused = recordingPhase === 'paused';
+  const isIdle = recordingPhase === 'idle';
 
   return (
     <div className="flex flex-col h-screen bg-slate-50">
@@ -203,9 +231,9 @@ export default function App() {
           </span>
         </div>
         <div className="flex items-center gap-3 text-[11px] text-slate-400">
-          <span className={`flex items-center gap-1.5 ${isPaused ? 'text-amber-500' : isRecording ? 'text-emerald-500' : 'text-slate-300'}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-amber-400' : isRecording ? 'bg-emerald-400' : 'bg-slate-300'}`} />
-            {isPaused ? '已暂停' : isRecording ? '录制中' : '已结束'}
+          <span className={`flex items-center gap-1.5 ${isPaused ? 'text-amber-500' : isActive ? 'text-emerald-500' : 'text-slate-300'}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-amber-400' : isActive ? 'bg-emerald-400' : 'bg-slate-300'}`} />
+            {isPaused ? '已暂停' : isActive ? '录制中' : '待开始'}
           </span>
         </div>
       </header>
@@ -214,8 +242,8 @@ export default function App() {
         <div className="w-2/5 border-r border-slate-100 overflow-hidden">
           <SubtitlePanel
             subtitles={subtitles}
-            isRecording={true}
-            isPaused={isPaused}
+            recordingPhase={recordingPhase}
+            onStart={handleStartRecording}
             onPause={handlePause}
             onResume={handleResume}
             onStop={handleStop}
