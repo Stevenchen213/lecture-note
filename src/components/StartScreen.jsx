@@ -1,4 +1,4 @@
-export default function StartScreen({ onStart }) {
+export default function StartScreen({ onStart, error }) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       <div className="text-center px-6">
@@ -13,6 +13,11 @@ export default function StartScreen({ onStart }) {
         >
           🎙️ 开始听课
         </button>
+        {error && (
+          <div className="mt-4 px-4 py-2 bg-red-50 text-red-600 text-sm rounded-lg">
+            {error}
+          </div>
+        )}
         <p className="text-xs text-gray-400 mt-4">需要麦克风权限</p>
       </div>
     </div>

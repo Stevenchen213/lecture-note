@@ -60,7 +60,7 @@ export async function startRecognition(ws, onTranscript) {
   };
 
   recognizer.recognized = (s, e) => {
-    // 最终识别结果
+    // 最终识别结果 → 立即推送英文，翻译异步处理
     if (e.result.text && e.result.text.trim()) {
       const text = e.result.text.trim();
       ws.send(JSON.stringify({
@@ -68,7 +68,6 @@ export async function startRecognition(ws, onTranscript) {
         text,
         timestamp: Date.now(),
       }));
-      // 通知回调，让 outline manager 处理翻译
       if (onTranscript) {
         onTranscript(text, Date.now());
       }

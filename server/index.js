@@ -1,68 +1,113 @@
 import { WebSocketServer } from 'ws';
 import { config } from 'dotenv';
 import { startRecognition, pushAudioData, stopRecognition } from './azure-speech.js';
+import { translate, generateOutline } from './deepseek.js';
 
 config();
 
 const PORT = process.env.PORT || 8080;
 const wss = new WebSocketServer({ port: PORT });
 
-console.log(`WebSocket 服务器运行在端口 ${PORT}`);
+console.log(`WebSocket 服务器运行在端口 ${PORT} (Azure Speech: ${process.env.AZURE_SPEECH_REGION})`);
 
 wss.on('connection', (ws) => {
   console.log('客户端已连接');
 
-  ws.on('message', async (data) => {
-    // 二进制数据 = 音频流
-    if (Buffer.isBuffer(data)) {
-      pushAudioData(data);
-      return;
-    }
+  let transcriptBuffer = [];
+  let outlineInterval = null;
+  let isPaused = false;
 
-    // 文本消息 = JSON 控制指令
+  function startOutline() {
+    outlineInterval = setInterval(async () => {
+      if (transcriptBuffer.length === 0) return;
+      try {
+        console.log(`大纲批处理: ${transcriptBuffer.length} 条`);
+        const outline = await generateOutline(transcriptBuffer);
+        ws.send(JSON.stringify({ type: 'outline_update', outline }));
+      } catch (err) {
+        console.error('大纲失败:', err.message);
+      }
+    }, 30000);
+  }
+
+  ws.on('message', async (data) => {
+    // 先尝试 JSON
+    const text = data.toString();
     let message;
     try {
-      message = JSON.parse(data);
+      message = JSON.parse(text);
     } catch {
+      // 二进制音频 → 推送 Azure（暂停时跳过）
+      if (Buffer.isBuffer(data)) {
+        if (!isPaused) pushAudioData(data);
+      }
       return;
     }
 
     switch (message.type) {
       case 'start_session':
-        console.log('会话开始，启动语音识别...');
+        console.log('会话开始，启动 Azure ASR...');
+        transcriptBuffer = [];
+
         try {
-          await startRecognition(ws);
+          await startRecognition(ws, async (text, timestamp) => {
+            transcriptBuffer.push({ text, timestamp });
+
+            // 异步翻译（不阻塞英文显示）
+            try {
+              const zh = await translate(text);
+              ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp }));
+            } catch (e) {
+              console.error('翻译失败:', e.message);
+            }
+          });
+
+          startOutline();
           ws.send(JSON.stringify({ type: 'session_started' }));
         } catch (err) {
-          console.error('启动识别失败:', err);
-          ws.send(JSON.stringify({
-            type: 'error',
-            message: `语音识别启动失败: ${err.message}`,
-          }));
+          console.error('启动 ASR 失败:', err);
+          ws.send(JSON.stringify({ type: 'error', message: `ASR 启动失败: ${err.message}` }));
         }
         break;
 
       case 'stop_session':
         console.log('会话结束');
         await stopRecognition();
+        if (outlineInterval) { clearInterval(outlineInterval); outlineInterval = null; }
+
+        if (transcriptBuffer.length > 0) {
+          try {
+            const outline = await generateOutline(transcriptBuffer);
+            ws.send(JSON.stringify({ type: 'outline_update', outline }));
+          } catch (e) { /* ignore */ }
+        }
+
         ws.send(JSON.stringify({ type: 'session_stopped' }));
+        break;
+
+      case 'pause':
+        isPaused = true;
+        console.log('会话暂停');
+        ws.send(JSON.stringify({ type: 'paused' }));
+        break;
+
+      case 'resume':
+        isPaused = false;
+        console.log('会话恢复');
+        ws.send(JSON.stringify({ type: 'resumed' }));
         break;
 
       case 'ping':
         ws.send(JSON.stringify({ type: 'pong' }));
         break;
-
-      default:
-        console.log('未知消息类型:', message.type);
     }
   });
 
   ws.on('close', async () => {
-    console.log('客户端断开连接');
+    console.log('客户端断开');
+    if (outlineInterval) clearInterval(outlineInterval);
     await stopRecognition();
   });
 
-  ws.on('error', (err) => {
-    console.error('WebSocket 错误:', err);
-  });
+  ws.on('error', (err) => console.error('WS 错误:', err));
 });
