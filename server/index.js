@@ -3,6 +3,9 @@ import { createServer } from 'http';
 import { config } from 'dotenv';
 import AdmZip from 'adm-zip';
 import zlib from 'zlib';
+import os from 'os';
+import path from 'path';
+import fs from 'fs';
 import { startRecognition, pushAudioData, stopRecognition } from './azure-speech.js';
 import { translate, generateOutline, generateQuestions } from './deepseek.js';
 
@@ -203,9 +206,6 @@ const httpServer = createServer((req, res) => {
           }
 
           // 写入临时文件
-          const os = require('os');
-          const path = require('path');
-          const fs = require('fs');
           const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.${ext}`);
           fs.writeFileSync(tmpPath, fileBuffer);
 
