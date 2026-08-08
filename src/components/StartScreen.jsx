@@ -1,4 +1,4 @@
-export default function StartScreen({ onStart, error }) {
+export default function StartScreen({ onStart, onViewHistory, error }) {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 relative overflow-hidden">
       {/* 背景装饰 */}
@@ -50,12 +50,21 @@ export default function StartScreen({ onStart, error }) {
           onClick={onStart}
           className="group relative px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-2xl
                      hover:from-indigo-400 hover:to-purple-500 active:scale-[0.97] transition-all duration-200
-                     shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 animate-fade-up"
+                     shadow-2xl shadow-indigo-500/40 hover:shadow-indigo-500/60 animate-fade-up w-full"
         >
           <span className="relative z-10 flex items-center justify-center gap-2">
             <span className="group-hover:animate-bounce">🎙️</span>
             开始听课
           </span>
+        </button>
+
+        {/* 历史记录 */}
+        <button
+          onClick={onViewHistory}
+          className="mt-4 px-8 py-3 glass-dark text-slate-300 text-sm font-medium rounded-xl
+                     hover:text-white hover:bg-white/10 transition-all duration-200 animate-fade-up"
+        >
+          📚 历史课程
         </button>
 
         {/* 错误提示 */}

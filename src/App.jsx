@@ -2,14 +2,18 @@ import { useState, useCallback, useRef } from 'react';
 import StartScreen from './components/StartScreen';
 import SubtitlePanel from './components/SubtitlePanel';
 import OutlinePanel from './components/OutlinePanel';
+import HistoryPanel from './components/HistoryPanel';
+import ReplayView from './components/ReplayView';
 import { useAudioRecorder } from './hooks/useAudioRecorder';
 import { useWebSocket } from './hooks/useWebSocket';
 import { mergeOutline } from './utils/outlineMerge';
+import { saveSession } from './utils/sessionStore';
 
 let subtitleId = 0;
 
 export default function App() {
-  const [sessionState, setSessionState] = useState('idle');
+  const [screen, setScreen] = useState('home'); // home | recording | history | replay
+  const [replayId, setReplayId] = useState(null);
   const [subtitles, setSubtitles] = useState([]);
   const [outline, setOutline] = useState(null);
   const [startError, setStartError] = useState(null);
@@ -27,7 +31,7 @@ export default function App() {
       await startMic((pcmBuffer) => {
         sendAudio(pcmBuffer);
       });
-      setSessionState('recording');
+      setScreen('recording');
     } catch (err) {
       console.error('启动失败:', err.message);
       setStartError(err.message);
@@ -48,9 +52,39 @@ export default function App() {
     stopMic();
     setIsPaused(false);
     send({ type: 'stop_session' });
-    setTimeout(() => wsDisconnect(), 200);
-    setSessionState('stopped');
+
+    // 延迟保存，等最后的 outline_update 到达
+    setTimeout(() => {
+      wsDisconnect();
+
+      setSubtitles((currentSubtitles) => {
+        setOutline((currentOutline) => {
+          if (currentSubtitles.length > 0) {
+            saveSession({ subtitles: currentSubtitles, outline: currentOutline });
+          }
+          return currentOutline;
+        });
+        return currentSubtitles;
+      });
+
+      setScreen('home');
+    }, 1500);
   }, [stopMic, send, wsDisconnect]);
+
+  const handleViewHistory = useCallback(() => {
+    setScreen('history');
+    setStartError(null);
+  }, []);
+
+  const handleViewSession = useCallback((id) => {
+    setReplayId(id);
+    setScreen('replay');
+  }, []);
+
+  const handleBackToHome = useCallback(() => {
+    setScreen('home');
+    setReplayId(null);
+  }, []);
 
   const handlersRef = useRef(false);
   if (!handlersRef.current) {
@@ -98,10 +132,27 @@ export default function App() {
 
   const displayError = startError || micError || wsError;
 
-  if (sessionState === 'idle') {
-    return <StartScreen onStart={handleStart} error={displayError} />;
+  // === 视图路由 ===
+
+  if (screen === 'history') {
+    return <HistoryPanel onViewSession={handleViewSession} onBack={handleBackToHome} />;
   }
 
+  if (screen === 'replay' && replayId) {
+    return <ReplayView sessionId={replayId} onBack={handleBackToHome} />;
+  }
+
+  if (screen === 'home') {
+    return (
+      <StartScreen
+        onStart={handleStart}
+        onViewHistory={handleViewHistory}
+        error={displayError}
+      />
+    );
+  }
+
+  // screen === 'recording'
   return (
     <div className="flex flex-col h-screen bg-slate-50">
       {/* 顶部品牌栏 */}
@@ -127,7 +178,7 @@ export default function App() {
         <div className="w-2/5 border-r border-slate-100 overflow-hidden">
           <SubtitlePanel
             subtitles={subtitles}
-            isRecording={sessionState === 'recording'}
+            isRecording={true}
             isPaused={isPaused}
             onPause={handlePause}
             onResume={handleResume}
@@ -140,7 +191,7 @@ export default function App() {
             outline={outline}
             setOutline={setOutline}
             subtitles={subtitles}
-            isStopped={sessionState === 'stopped'}
+            isStopped={false}
           />
         </div>
       </div>
