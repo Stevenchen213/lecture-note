@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
+    "build": "echo Build skipped - no compilation needed for Node.js server",
     "dev": "node --watch index.js"
   },
   "dependencies": {
