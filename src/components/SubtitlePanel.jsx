@@ -1,10 +1,19 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPause, onResume, onStop, serverError }) {
   const scrollRef = useRef(null);
+  const userScrolledUp = useRef(false);
+
+  // 用户手动滚动时检测是否在底部附近（50px 以内算底部）
+  const handleScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+    userScrolledUp.current = distFromBottom > 50;
+  }, []);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (scrollRef.current && !userScrolledUp.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [subtitles]);
@@ -119,7 +128,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
       )}
 
       {/* 字幕区域 */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+      <div ref={scrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
         {subtitles.length === 0 && (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
