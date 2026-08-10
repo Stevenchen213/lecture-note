@@ -117,11 +117,11 @@ export default function App() {
       // fallback：如果 15 秒内没收到 session_stopped，强制断开
       stopTimeoutRef.current = setTimeout(() => {
         console.warn('未收到 session_stopped，强制断开');
-        const s = subtitlesRef.current;
-        const o = outlineRef.current;
-        const q = questionsRef.current;
-        if (s.length > 0) {
-          saveSession({ subtitles: s, outline: o, questions: q });
+        if (!questionsRef.current) {
+          const s = subtitlesRef.current;
+          if (s.length > 0) {
+            saveSession({ subtitles: s, outline: outlineRef.current, questions: null });
+          }
         }
         wsDisconnect();
         setScreen('home');
@@ -208,31 +208,37 @@ export default function App() {
     });
 
     on('practice_questions', (msg) => {
-      console.log('[前端] 收到练习题:', msg.questions?.length || 0, '道, 原始消息keys:', Object.keys(msg));
+      console.log('[前端] 收到练习题:', msg.questions?.length || 0, '道');
       if (msg.questions && msg.questions.length > 0) {
-        questionsRef.current = msg.questions;  // 先同步 ref，不等 React 渲染
+        questionsRef.current = msg.questions;
         setQuestions(msg.questions);
-        console.log('[前端] 练习题已设置到 state 和 ref');
+
+        // 收到练习题就立刻保存，不等到 session_stopped
+        const s = subtitlesRef.current;
+        const o = outlineRef.current;
+        console.log('[前端] 练习题到位，立即保存: 字幕', s.length, '条, 大纲', !!o, ', 练习题', msg.questions.length, '道');
+        if (s.length > 0) {
+          saveSession({ subtitles: s, outline: o, questions: msg.questions });
+        }
       } else {
-        console.warn('[前端] 练习题为空，未设置');
+        console.warn('[前端] 练习题为空');
       }
     });
 
     on('session_stopped', () => {
-      // 清除 fallback 超时
       if (stopTimeoutRef.current) {
         clearTimeout(stopTimeoutRef.current);
         stopTimeoutRef.current = null;
       }
 
-      // 用 ref 直接读取最新值保存，避免在 setState 更新器里做副作用
-      const s = subtitlesRef.current;
-      const o = outlineRef.current;
-      const q = questionsRef.current;
-      console.log('[前端] session_stopped 保存: 字幕', s.length, '条, 大纲', !!o, ', 练习题', q?.length || 0, '道');
-
-      if (s.length > 0) {
-        saveSession({ subtitles: s, outline: o, questions: q });
+      // 兜底：如果练习题没到（服务端跳过了），无练习题保存
+      if (!questionsRef.current) {
+        const s = subtitlesRef.current;
+        const o = outlineRef.current;
+        console.log('[前端] session_stopped 兜底保存 (无练习题): 字幕', s.length, '条');
+        if (s.length > 0) {
+          saveSession({ subtitles: s, outline: o, questions: null });
+        }
       }
 
       wsDisconnect();
