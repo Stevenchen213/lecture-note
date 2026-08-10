@@ -2,10 +2,18 @@
  * PDF 文字提取 — 文字型 PDF 直接提取，图片型 PDF 转 OCR
  */
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { createCanvas } from 'canvas';
 import { createRequire } from 'module';
+
 const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+const _pdfParse = require('pdf-parse');
+// pdf-parse 可能导出 { default: fn } 或直接导出 fn
+const pdfParse = typeof _pdfParse === 'function' ? _pdfParse : _pdfParse?.default;
+if (typeof pdfParse !== 'function') {
+  console.error('pdf-parse 导入异常:', typeof pdfParse, Object.keys(_pdfParse || {}));
+}
 
 let pdfjsLib = null;
 let tesseractWorker = null;
@@ -105,11 +113,15 @@ async function ocrPdf(filePath) {
 
       await page.render({ canvasContext: ctx, viewport }).promise;
 
-      const imageBuffer = canvas.toBuffer('image/png');
+      // 先写临时 PNG 文件，tesseract.js 在 Node 下需要文件路径
+      const tmpImg = path.join(os.tmpdir(), `ocr_p${i}_${Date.now()}.png`);
+      fs.writeFileSync(tmpImg, canvas.toBuffer('image/png'));
 
       const {
         data: { text: pageText },
-      } = await worker.recognize(imageBuffer);
+      } = await worker.recognize(tmpImg);
+
+      try { fs.unlinkSync(tmpImg); } catch {}
       const cleanText = pageText.trim();
 
       if (cleanText) {
