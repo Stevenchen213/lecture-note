@@ -3,7 +3,8 @@
 > 课堂实时同声传译 + 中英双语结构化大纲笔记 — Eazo Global Youth AI Agent Hackathon (Singapore)
 
 **Frontend**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)  
-**Backend**: `wss://lecture-note-2we1.onrender.com`
+**Backend**: `wss://lecture-note-2we1.onrender.com`  
+**MCP Server**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
 
 ---
 
@@ -42,6 +43,7 @@ Tabbed view: outline, subtitles, practice questions — with Word/PDF export.
 | 📚 **Session History** | Auto-save lectures to localStorage (max 20), browse and replay past sessions |
 | 🇬🇧 **English-Only Filter** | Automatically skips Chinese speech / pinyin to avoid noise |
 | 🛡️ **Auto Wake-Up** | Pings Render backend on page load to wake from free-tier sleep |
+| 🔌 **MCP Server** | Self-hosted Model Context Protocol server with Streamable HTTP — 4 AI tools (translate, outline, questions, health) |
 
 ---
 
@@ -51,6 +53,7 @@ Tabbed view: outline, subtitles, practice questions — with Word/PDF export.
 Browser (React + Vite + TailwindCSS)
     │  WebSocket (audio binary + JSON messages)
     │  HTTP POST (courseware upload)
+    │  MCP Streamable HTTP (AI tools)
     ▼
 Node.js Backend (Render)
     ├── Azure Speech Services (ASR, en-IN, 16kHz PCM)
@@ -58,8 +61,14 @@ Node.js Backend (Render)
     ├── adm-zip (PPTX text extraction)
     └── pdfjs-dist + Tesseract.js (PDF text + OCR)
 
+MCP Server (Render, standalone)
+    ├── @modelcontextprotocol/server v2
+    ├── DeepSeek API (translate + outline + questions)
+    └── Streamable HTTP transport
+
 Frontend Deployed on: Vercel
 Backend Deployed on:  Render
+MCP Server Deployed on: Render
 ```
 
 ---
@@ -120,6 +129,7 @@ VITE_WS_URL=wss://your-render-backend.onrender.com
 | OCR | `tesseract.js` (image-based PDF fallback) |
 | Frontend Hosting | Vercel (free) |
 | Backend Hosting | Render (free) |
+| MCP Server | `@modelcontextprotocol/server` v2, `@modelcontextprotocol/express`, Zod v4, Streamable HTTP |
 
 ---
 
@@ -150,11 +160,15 @@ lecture-note/
 │       ├── export.js             # Word / PDF / clipboard export
 │       └── sessionStore.js       # localStorage session persistence
 ├── server/
-│   ├── index.js                  # WebSocket + HTTP server
+│   ├── index.js                  # WebSocket + HTTP + MCP server
 │   ├── azure-speech.js           # Azure ASR integration
 │   ├── deepseek.js               # DeepSeek API (translate + outline + questions)
 │   ├── pdf-utils.js               # PDF text extraction + OCR fallback
 │   └── package.json              # Server dependencies
+├── mcp-server/
+│   ├── index.js                  # Standalone MCP server (Streamable HTTP)
+│   ├── package.json              # MCP server dependencies
+│   └── .gitignore                # Node modules + .env
 └── .env.example                  # Environment variables template
 ```
 

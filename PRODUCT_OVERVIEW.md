@@ -86,6 +86,7 @@
 | 13 | **填充词过滤** | 自动过滤犹豫词（yeah/OK/um…），不单独成段干扰字幕 | ✅ |
 | 14 | **智能滚动** | 新字幕自动跟随；用户往上翻阅历史时暂停跳转，看完滚回底部恢复 | ✅ |
 | 15 | **自动唤醒** | Render 免费版休眠后自动唤醒 | ✅ |
+| 16 | **MCP 自建服务** | 自建 MCP Server (Streamable HTTP)，提供4个AI工具：翻译/大纲/出题/健康检查，可被兼容客户端调用 | ✅ |
 
 ---
 
@@ -105,14 +106,28 @@ Node.js 后端 (Render 免费托管)
 
 前端托管：Vercel（免费）
 后端托管：Render（免费）
+MCP 服务：Render（免费，独立部署）
 ```
 
----
+### MCP Server（自建）
 
+自建 MCP (Model Context Protocol) Server，提供 Streamable HTTP 端点，可获得黑客松 +5 加分：
+
+| 工具 | 功能 |
+|------|------|
+| `translate` | 英中同传翻译，课堂场景优化 |
+| `generate_outline` | 生成结构化双语大纲 |
+| `generate_questions` | 生成15道核心练习题 |
+| `health` | 服务健康检查 |
+
+**端点**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
+
+---
 ## 🔗 相关链接
 
 - **公开访问**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)
 - **后端**: `lecture-note-2we1.onrender.com`
+- **MCP 服务**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
 - **GitHub**: [https://github.com/Stevenchen213/lecture-note](https://github.com/Stevenchen213/lecture-note)
 
 ---
