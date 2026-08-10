@@ -146,13 +146,15 @@ export async function generateQuestions(transcripts, outline) {
     [
       {
         role: 'system',
-        content: `你是大学课程助教。根据课堂内容生成 3-5 道练习题，帮助复习巩固。
+        content: `你是大学课程助教。根据课堂内容（约3小时课程）生成 15 道核心练习题，帮助期末复习巩固。
 
 规则：
-1. 题型多样：选择题、简答题、判断题混合
-2. 每道题包含中文题目(question)、英文题目(questionEn)、中文答案(answer)
-3. 难度适中，覆盖课程要点
+1. 从整个课程中挑选最核心的 15 个知识点出题，覆盖不同章节
+2. 题型多样：选择题、简答题、判断题混合
+3. 每道题包含中文题目(question)、英文题目(questionEn)、中文答案(answer)
 4. 选择题选项用 A/B/C/D 标记
+5. 老师暗示会考的内容（如"this will be on the exam""重点""必考""记住"等）必须优先生成，排在最前面
+6. 按知识点重要性排序，考点暗示 > 核心概念 > 一般知识点
 
 严格输出 JSON（不要 markdown 代码块）：
 {
@@ -169,10 +171,10 @@ export async function generateQuestions(transcripts, outline) {
       },
       {
         role: 'user',
-        content: `课堂内容：\n\n${fullText.slice(0, 5000)}\n\n${outlineText}`,
+        content: `课堂内容：\n\n${fullText.slice(0, 15000)}\n\n${outlineText}`,
       },
     ],
-    { temperature: 0.5, maxTokens: 2048 }
+    { temperature: 0.5, maxTokens: 4096 }
   );
 
   let json = result.trim();
