@@ -297,7 +297,6 @@ wss.on('connection', (ws) => {
               processTranslateQueue();
             }
           );
-          });
 
           startOutline();
           ws.send(JSON.stringify({ type: 'session_started' }));
