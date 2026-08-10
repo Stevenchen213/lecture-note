@@ -71,23 +71,23 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
         <p className="text-lg text-indigo-200/80 mb-1 font-medium animate-fade-up">
           课堂实时同传 · 双语笔记助手
         </p>
-        <p className="text-sm text-slate-400 mb-6 animate-fade-up">
+        <p className="text-sm text-slate-300 mb-6 animate-fade-up">
           支持印度英语 · AI 实时翻译 · 自动生成结构化大纲
         </p>
 
         {/* PPT 上传 */}
         <div className="mb-6 animate-fade-up">
           {!pptText ? (
-            <label className={`flex items-center justify-center gap-2 px-4 py-3 glass-dark rounded-xl cursor-pointer transition-all duration-200 ${pptUploading ? 'opacity-60 pointer-events-none' : 'hover:bg-white/15'}`}>
+            <label className={`flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl cursor-pointer transition-all duration-200 bg-white/5 ${pptUploading ? 'opacity-60 pointer-events-none' : 'hover:bg-white/10 hover:border-white/20'}`}>
               {pptUploading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-slate-400">正在解析 PPT…</span>
+                  <span className="text-sm text-slate-300">正在解析 PPT…</span>
                 </>
               ) : (
                 <>
                   <span className="text-lg">📎</span>
-                  <span className="text-sm text-slate-400">上传 PPT 辅助生成大纲（可选）</span>
+                  <span className="text-sm text-slate-300">上传 PPT 辅助生成大纲（可选）</span>
                 </>
               )}
               <input
@@ -133,8 +133,8 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               className="glass-dark rounded-xl px-3 py-4 text-center backdrop-blur-sm"
             >
               <div className="text-2xl mb-1">{f.icon}</div>
-              <div className="text-xs font-semibold text-white/90 mb-0.5">{f.label}</div>
-              <div className="text-[10px] text-slate-400">{f.desc}</div>
+              <div className="text-xs font-semibold text-white mb-0.5">{f.label}</div>
+              <div className="text-[10px] text-slate-300">{f.desc}</div>
             </div>
           ))}
         </div>
@@ -174,8 +174,10 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
         {/* 历史记录 */}
         <button
           onClick={onViewHistory}
-          className="mt-4 px-8 py-3 glass-dark text-slate-300 text-sm font-medium rounded-xl
-                     hover:text-white hover:bg-white/10 transition-all duration-200 animate-fade-up"
+          className="mt-4 px-8 py-3 rounded-xl text-sm font-medium
+                     bg-white/5 border border-white/10 text-slate-300
+                     hover:text-white hover:bg-white/10 hover:border-white/20
+                     transition-all duration-200 animate-fade-up"
         >
           📚 历史课程
         </button>
@@ -186,7 +188,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
           </div>
         )}
 
-        <p className="text-xs text-slate-600 mt-6">需要麦克风权限 · 数据安全加密</p>
+        <p className="text-xs text-slate-500 mt-6">需要麦克风权限 · 数据安全加密</p>
       </div>
     </div>
   );
