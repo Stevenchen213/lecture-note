@@ -238,11 +238,18 @@ wss.on('connection', (ws) => {
           await startRecognition(
             ws,
             // onTranscript (final) — 完整句子
-            async (text, timestamp) => {
+            async (text, timestamp, isTooShort) => {
               totalRecognized++;
               if (isNotEnglish(text)) {
                 totalFiltered++;
                 console.log(`[识别 #${totalRecognized}] 过滤: "${text.slice(0, 60)}"`);
+                return;
+              }
+
+              // 太短的填充词只存缓冲给大纲用，不翻译不展示
+              if (isTooShort) {
+                console.log(`[识别 #${totalRecognized}] 跳过: "${text}" (填充词)`);
+                transcriptBuffer.push({ text, timestamp });
                 return;
               }
 

@@ -64,16 +64,21 @@ export async function startRecognition(ws, onTranscript, onPartial) {
   };
 
   recognizer.recognized = (s, e) => {
-    // 最终识别结果 → 立即推送英文，翻译异步处理
+    // 最终识别结果 → 推送英文 + 触发翻译
     if (e.result.text && e.result.text.trim()) {
       const text = e.result.text.trim();
-      ws.send(JSON.stringify({
-        type: 'final_transcript',
-        text,
-        timestamp: Date.now(),
-      }));
+      const timestamp = Date.now();
+
+      // 跳过太短的填充词（yeah, OK, um…），不展示也不翻译
+      const wordCount = text.split(/\s+/).length;
+      const isTooShort = wordCount < 3 && text.length < 20;
+
+      if (!isTooShort) {
+        ws.send(JSON.stringify({ type: 'final_transcript', text, timestamp }));
+      }
+
       if (onTranscript) {
-        onTranscript(text, Date.now());
+        onTranscript(text, timestamp, isTooShort);
       }
     }
   };
