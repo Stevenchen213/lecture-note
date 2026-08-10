@@ -208,20 +208,16 @@ export default function App() {
     });
 
     on('practice_questions', (msg) => {
-      console.log('[前端] 收到练习题:', msg.questions?.length || 0, '道');
       if (msg.questions && msg.questions.length > 0) {
         questionsRef.current = msg.questions;
         setQuestions(msg.questions);
 
-        // 收到练习题就立刻保存，不等到 session_stopped
+        // 练习题到位立即保存，不等到 session_stopped
         const s = subtitlesRef.current;
         const o = outlineRef.current;
-        console.log('[前端] 练习题到位，立即保存: 字幕', s.length, '条, 大纲', !!o, ', 练习题', msg.questions.length, '道');
         if (s.length > 0) {
           saveSession({ subtitles: s, outline: o, questions: msg.questions });
         }
-      } else {
-        console.warn('[前端] 练习题为空');
       }
     });
 
@@ -231,13 +227,11 @@ export default function App() {
         stopTimeoutRef.current = null;
       }
 
-      // 兜底：如果练习题没到（服务端跳过了），无练习题保存
+      // 兜底：练习题没到，保存无练习题版本
       if (!questionsRef.current) {
         const s = subtitlesRef.current;
-        const o = outlineRef.current;
-        console.log('[前端] session_stopped 兜底保存 (无练习题): 字幕', s.length, '条');
         if (s.length > 0) {
-          saveSession({ subtitles: s, outline: o, questions: null });
+          saveSession({ subtitles: s, outline: outlineRef.current, questions: null });
         }
       }
 
