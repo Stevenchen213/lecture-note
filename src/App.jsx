@@ -197,14 +197,19 @@ export default function App() {
     });
 
     on('outline_update', (msg) => {
-      setOutline((prev) => mergeOutline(prev, msg.outline));
+      setOutline((prev) => {
+        const merged = mergeOutline(prev, msg.outline);
+        outlineRef.current = merged;  // 同步 ref
+        return merged;
+      });
     });
 
     on('practice_questions', (msg) => {
       console.log('[前端] 收到练习题:', msg.questions?.length || 0, '道, 原始消息keys:', Object.keys(msg));
       if (msg.questions && msg.questions.length > 0) {
+        questionsRef.current = msg.questions;  // 先同步 ref，不等 React 渲染
         setQuestions(msg.questions);
-        console.log('[前端] 练习题已设置到 state');
+        console.log('[前端] 练习题已设置到 state 和 ref');
       } else {
         console.warn('[前端] 练习题为空，未设置');
       }
