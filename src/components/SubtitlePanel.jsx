@@ -48,6 +48,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
               <button
                 onClick={onStop}
                 className="px-3 py-2 text-slate-400 text-sm rounded-xl hover:bg-slate-100 transition-all duration-200"
+                aria-label="返回首页"
               >
                 ← 返回
               </button>
@@ -56,6 +57,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
                 className="px-5 py-2 bg-emerald-50 text-emerald-700 text-sm font-semibold rounded-xl
                            hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200
                            shadow-sm shadow-emerald-100"
+                aria-label="开始录音"
               >
                 ▶️ 开始
               </button>
@@ -66,6 +68,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {isActive && (
             <button
               onClick={onPause}
+              aria-label="暂停录音"
               className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-xl
                          hover:bg-amber-100 border border-amber-200/50 transition-all duration-200"
             >
@@ -77,6 +80,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {isPaused && (
             <button
               onClick={onResume}
+              aria-label="继续录音"
               className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-xl
                          hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200"
             >
@@ -88,6 +92,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {!isIdle && (
             <button
               onClick={onStop}
+              aria-label="结束课程"
               className="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-medium rounded-xl
                          hover:bg-rose-100 border border-rose-200/50 transition-all duration-200"
             >

@@ -28,6 +28,7 @@ function FloatingToolbar({ x, y, visible, onHighlight, onBold, onItalic, onUnder
           onMouseDown={(e) => { e.preventDefault(); onHeading(h.level); }}
           className="px-2 py-1.5 text-[11px] font-mono text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
           title={h.desc}
+          aria-label={h.desc}
         >
           {h.label}
         </button>
@@ -43,6 +44,7 @@ function FloatingToolbar({ x, y, visible, onHighlight, onBold, onItalic, onUnder
           className={`w-5 h-5 rounded-full border-2 border-white hover:scale-110 hover:ring-2 ${h.ring} transition-all duration-150 shadow-sm`}
           style={{ backgroundColor: h.color }}
           title={h.label}
+          aria-label={`${h.label}高亮`}
         />
       ))}
 
@@ -53,6 +55,7 @@ function FloatingToolbar({ x, y, visible, onHighlight, onBold, onItalic, onUnder
         onMouseDown={(e) => { e.preventDefault(); onBold(); }}
         className="w-7 h-7 flex items-center justify-center text-sm font-bold text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
         title="加粗"
+        aria-label="加粗"
       >
         <strong>B</strong>
       </button>
@@ -60,6 +63,7 @@ function FloatingToolbar({ x, y, visible, onHighlight, onBold, onItalic, onUnder
         onMouseDown={(e) => { e.preventDefault(); onItalic(); }}
         className="w-7 h-7 flex items-center justify-center text-sm italic text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
         title="斜体"
+        aria-label="斜体"
       >
         <em>I</em>
       </button>
@@ -67,6 +71,7 @@ function FloatingToolbar({ x, y, visible, onHighlight, onBold, onItalic, onUnder
         onMouseDown={(e) => { e.preventDefault(); onUnderline(); }}
         className="w-7 h-7 flex items-center justify-center text-sm underline text-slate-500 hover:bg-slate-100 hover:text-slate-700 rounded-lg transition-colors"
         title="下划线"
+        aria-label="下划线"
       >
         <span className="underline">U</span>
       </button>

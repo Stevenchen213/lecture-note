@@ -238,8 +238,8 @@ export default function App() {
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="w-2/5 border-r border-slate-100 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden max-md:flex-col">
+        <div className="w-2/5 max-md:w-full max-md:h-[45vh] border-r border-slate-100 max-md:border-r-0 max-md:border-b overflow-hidden">
           <SubtitlePanel
             subtitles={subtitles}
             recordingPhase={recordingPhase}
@@ -250,7 +250,7 @@ export default function App() {
             serverError={serverError}
           />
         </div>
-        <div className="w-3/5 overflow-hidden">
+        <div className="w-3/5 max-md:w-full max-md:h-[55vh] overflow-hidden">
           <OutlinePanel
             outline={outline}
             setOutline={setOutline}

@@ -242,8 +242,8 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], isSt
                     </div>
                   )}
                   <details className="mt-2">
-                    <summary className="text-xs text-amber-600 cursor-pointer hover:text-amber-700 font-medium">查看答案</summary>
-                    <p className="text-sm text-slate-700 mt-1.5 pl-2.5 py-1.5 border-l-2 border-amber-300 bg-white/50 rounded-r">
+                    <summary className="text-xs text-amber-700 cursor-pointer hover:text-amber-800 font-medium">查看答案</summary>
+                    <p className="text-sm text-amber-900 mt-1.5 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100">
                       {q.answer}
                     </p>
                   </details>

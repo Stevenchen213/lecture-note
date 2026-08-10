@@ -184,7 +184,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               </>
             ) : (
               <>
-                <span className="group-hover:animate-bounce">🎙️</span>
+                <span className="group-hover:scale-110 transition-transform duration-300">🎙️</span>
                 开始听课
               </>
             )}

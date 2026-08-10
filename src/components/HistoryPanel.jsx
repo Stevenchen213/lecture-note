@@ -61,7 +61,7 @@ export default function HistoryPanel({ onViewSession, onBack }) {
           </div>
           <button
             onClick={onBack}
-            className="px-4 py-2 glass-dark text-white text-sm font-medium rounded-xl hover:bg-white/20 transition-all"
+            className="px-4 py-2 bg-white/5 border border-white/10 text-white text-sm font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all"
           >
             ← 返回首页
           </button>
@@ -81,8 +81,11 @@ export default function HistoryPanel({ onViewSession, onBack }) {
             {sessions.map((s) => (
               <div
                 key={s.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => onViewSession(s.id)}
-                className="glass-dark rounded-2xl p-5 cursor-pointer hover:bg-white/15 transition-all duration-200 group animate-fade-up"
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onViewSession(s.id); } }}
+                className="w-full text-left bg-white/5 border border-white/10 rounded-2xl p-5 cursor-pointer hover:bg-white/10 hover:border-white/20 transition-all duration-200 group animate-fade-up focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
