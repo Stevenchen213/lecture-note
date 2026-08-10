@@ -12,8 +12,13 @@ import { config } from 'dotenv';
 import { McpServer, createMcpHandler } from '@modelcontextprotocol/server';
 import { createMcpExpressApp } from '@modelcontextprotocol/express';
 import * as z from 'zod';
+import { existsSync } from 'fs';
 
-config({ path: '../server/.env' });
+// 本地开发时加载 .env，Render 上直接读环境变量
+const envPaths = ['../server/.env', '.env'];
+for (const p of envPaths) {
+  if (existsSync(p)) { config({ path: p }); break; }
+}
 
 // ====== DeepSeek API ======
 const BASE_URL = 'https://api.deepseek.com/v1';
