@@ -174,6 +174,13 @@ export default function App() {
       );
     });
 
+    on('translation_error', (msg) => {
+      // 翻译失败时标红显示，不回退到 "..." 状态
+      setSubtitles((prev) =>
+        prev.map((s) => (s.original === msg.original ? { ...s, translated: '⚠️ 翻译失败' } : s))
+      );
+    });
+
     on('outline_update', (msg) => {
       setOutline((prev) => mergeOutline(prev, msg.outline));
     });

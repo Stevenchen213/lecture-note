@@ -178,6 +178,22 @@ wss.on('connection', (ws) => {
   let outlineInterval = null;
   let isPaused = false;
   let pptContext = '';
+  let translateQueue = [];
+  let runningTranslations = 0;
+  const MAX_CONCURRENT = 3;
+
+  function processTranslateQueue() {
+    while (runningTranslations < MAX_CONCURRENT && translateQueue.length > 0) {
+      const task = translateQueue.shift();
+      runningTranslations++;
+      task()
+        .catch(() => {})
+        .finally(() => {
+          runningTranslations--;
+          processTranslateQueue();
+        });
+    }
+  }
 
   function startOutline() {
     outlineInterval = setInterval(async () => {
@@ -223,13 +239,22 @@ wss.on('connection', (ws) => {
 
             transcriptBuffer.push({ text, timestamp });
 
-            // 异步翻译
-            try {
-              const zh = await translate(text);
-              ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp }));
-            } catch (e) {
-              console.error('翻译失败:', e.message);
-            }
+            // 翻译请求加入并发队列，避免同时大量请求导致限流
+            translateQueue.push(async () => {
+              try {
+                const zh = await translate(text);
+                if (ws.readyState === 1) {
+                  ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp }));
+                }
+              } catch (e) {
+                console.error('翻译失败:', e.message);
+                // 通知前端翻译出错（不要一句话的失败阻断整个流程）
+                if (ws.readyState === 1) {
+                  ws.send(JSON.stringify({ type: 'translation_error', original: text, error: e.message }));
+                }
+              }
+            });
+            processTranslateQueue();
           });
 
           startOutline();

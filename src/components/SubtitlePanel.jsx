@@ -152,6 +152,8 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
               className={`text-sm leading-relaxed ${
                 sub.translated === '...'
                   ? 'text-slate-300 italic text-xs'
+                  : sub.translated?.startsWith('⚠️')
+                  ? 'text-rose-500 text-xs'
                   : 'text-slate-800 font-medium'
               }`}
             >
