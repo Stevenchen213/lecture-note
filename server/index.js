@@ -1,6 +1,8 @@
 import { WebSocketServer } from 'ws';
-import { createServer } from 'http';
+import express from 'express';
 import { config } from 'dotenv';
+import { McpServer, createMcpHandler } from '@modelcontextprotocol/server';
+import * as z from 'zod';
 import AdmZip from 'adm-zip';
 import os from 'os';
 import path from 'path';
@@ -74,175 +76,278 @@ function extractPptxText(filePath) {
   }
 }
 
-// HTTP 服务器
-const httpServer = createServer((req, res) => {
-  // CORS
+// ====== Express App ======
+const app = express();
+app.use(express.json({ limit: '2mb' }));
+
+// CORS
+app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
   if (req.method === 'OPTIONS') {
-    res.writeHead(204);
-    res.end();
+    res.writeHead(204).end();
+    return;
+  }
+  next();
+});
+
+// 健康检查
+app.get(['/', '/health'], (req, res) => {
+  res.status(200).type('text/plain').send('ok');
+});
+
+// PPT 上传端点
+app.post('/upload-ppt', (req, res) => {
+  const contentType = req.headers['content-type'] || '';
+  if (!contentType.includes('multipart/form-data')) {
+    res.status(400).json({ error: '需要 multipart/form-data' });
     return;
   }
 
-  // 健康检查
-  if (req.method === 'GET' && (req.url === '/' || req.url === '/health')) {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('ok');
-    return;
-  }
+  const boundary = '--' + contentType.split('boundary=')[1];
+  const chunks = [];
+  req.on('data', (chunk) => chunks.push(chunk));
+  req.on('end', () => {
+    try {
+      const buffer = Buffer.concat(chunks);
+      const str = buffer.toString('binary');
+      const parts = str.split(boundary);
 
-  // PPT 上传端点
-  if (req.method === 'POST' && req.url === '/upload-ppt') {
-    const contentType = req.headers['content-type'] || '';
-    if (!contentType.includes('multipart/form-data')) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: '需要 multipart/form-data' }));
-      return;
-    }
+      for (const part of parts) {
+        if (!part.includes('Content-Disposition') || !part.includes('filename=')) continue;
 
-    // 解析 multipart body
-    const boundary = '--' + contentType.split('boundary=')[1];
-    const chunks = [];
-    req.on('data', (chunk) => chunks.push(chunk));
-    req.on('end', () => {
-      try {
-        const buffer = Buffer.concat(chunks);
-        const str = buffer.toString('binary');
-        const parts = str.split(boundary);
+        const filenameMatch = part.match(/filename="([^"]*)"/);
+        const filename = filenameMatch ? filenameMatch[1] : 'upload.pptx';
 
-        for (const part of parts) {
-          if (!part.includes('Content-Disposition') || !part.includes('filename=')) continue;
+        const bodyStart = part.indexOf('\r\n\r\n');
+        if (bodyStart === -1) continue;
+        let body = part.slice(bodyStart + 4);
+        if (body.endsWith('\r\n')) body = body.slice(0, -2);
 
-          // 提取文件名
-          const filenameMatch = part.match(/filename="([^"]*)"/);
-          const filename = filenameMatch ? filenameMatch[1] : 'upload.pptx';
+        const fileBuffer = Buffer.from(body, 'binary');
 
-          // 提取文件体
-          const bodyStart = part.indexOf('\r\n\r\n');
-          if (bodyStart === -1) continue;
-          let body = part.slice(bodyStart + 4);
-          // 去掉尾部 \r\n
-          if (body.endsWith('\r\n')) body = body.slice(0, -2);
-
-          const fileBuffer = Buffer.from(body, 'binary');
-
-          if (!filename.toLowerCase().endsWith('.pptx')) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '只支持 .pptx 文件' }));
-            return;
-          }
-
-          // 写入临时文件
-          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pptx`);
-          fs.writeFileSync(tmpPath, fileBuffer);
-
-          // 提取文字
-          const text = extractPptxText(tmpPath);
-
-          // 清理临时文件
-          try { fs.unlinkSync(tmpPath); } catch {}
-
-          console.log(`PPT 上传成功: ${filename}, 提取 ${text.length} 字符`);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, filename, text }));
+        if (!filename.toLowerCase().endsWith('.pptx')) {
+          res.status(400).json({ error: '只支持 .pptx 文件' });
           return;
         }
 
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: '未找到文件' }));
-      } catch (err) {
-        console.error('PPT 上传处理失败:', err);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: err.message }));
+        const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pptx`);
+        fs.writeFileSync(tmpPath, fileBuffer);
+        const text = extractPptxText(tmpPath);
+        try { fs.unlinkSync(tmpPath); } catch {}
+
+        console.log(`PPT 上传成功: ${filename}, 提取 ${text.length} 字符`);
+        res.json({ success: true, filename, text });
+        return;
       }
-    });
+
+      res.status(400).json({ error: '未找到文件' });
+    } catch (err) {
+      console.error('PPT 上传处理失败:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+});
+
+// PDF 上传端点
+app.post('/upload-pdf', (req, res) => {
+  const contentType = req.headers['content-type'] || '';
+  if (!contentType.includes('multipart/form-data')) {
+    res.status(400).json({ error: '需要 multipart/form-data' });
     return;
   }
 
-  // PDF 上传端点
-  if (req.method === 'POST' && req.url === '/upload-pdf') {
-    const contentType = req.headers['content-type'] || '';
-    if (!contentType.includes('multipart/form-data')) {
-      res.writeHead(400, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: '需要 multipart/form-data' }));
-      return;
-    }
+  const boundary = '--' + contentType.split('boundary=')[1];
+  const chunks = [];
+  req.on('data', (chunk) => chunks.push(chunk));
+  req.on('end', async () => {
+    try {
+      const buffer = Buffer.concat(chunks);
+      const str = buffer.toString('binary');
+      const parts = str.split(boundary);
 
-    const boundary = '--' + contentType.split('boundary=')[1];
-    const chunks = [];
-    req.on('data', (chunk) => chunks.push(chunk));
-    req.on('end', async () => {
-      try {
-        const buffer = Buffer.concat(chunks);
-        const str = buffer.toString('binary');
-        const parts = str.split(boundary);
+      for (const part of parts) {
+        if (!part.includes('Content-Disposition') || !part.includes('filename=')) continue;
 
-        for (const part of parts) {
-          if (!part.includes('Content-Disposition') || !part.includes('filename=')) continue;
+        const filenameMatch = part.match(/filename="([^"]*)"/);
+        const filename = filenameMatch ? filenameMatch[1] : 'upload.pdf';
 
-          const filenameMatch = part.match(/filename="([^"]*)"/);
-          const filename = filenameMatch ? filenameMatch[1] : 'upload.pdf';
+        const bodyStart = part.indexOf('\r\n\r\n');
+        if (bodyStart === -1) continue;
+        let body = part.slice(bodyStart + 4);
+        if (body.endsWith('\r\n')) body = body.slice(0, -2);
 
-          const bodyStart = part.indexOf('\r\n\r\n');
-          if (bodyStart === -1) continue;
-          let body = part.slice(bodyStart + 4);
-          if (body.endsWith('\r\n')) body = body.slice(0, -2);
+        const fileBuffer = Buffer.from(body, 'binary');
 
-          const fileBuffer = Buffer.from(body, 'binary');
-
-          if (!filename.toLowerCase().endsWith('.pdf')) {
-            res.writeHead(400, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: '只支持 .pdf 文件' }));
-            return;
-          }
-
-          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pdf`);
-          fs.writeFileSync(tmpPath, fileBuffer);
-
-          let text;
-          try {
-            text = await extractPdfText(tmpPath);
-          } catch (err) {
-            console.error('PDF 提取失败:', err);
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: `PDF 解析失败: ${err.message}` }));
-            try { fs.unlinkSync(tmpPath); } catch {}
-            return;
-          }
-
-          try { fs.unlinkSync(tmpPath); } catch {}
-
-          console.log(`PDF 上传成功: ${filename}, 提取 ${text.length} 字符`);
-          res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, filename, text }));
+        if (!filename.toLowerCase().endsWith('.pdf')) {
+          res.status(400).json({ error: '只支持 .pdf 文件' });
           return;
         }
 
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: '未找到文件' }));
-      } catch (err) {
-        console.error('PDF 上传处理失败:', err);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: err.message }));
-      }
-    });
-    return;
-  }
+        const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pdf`);
+        fs.writeFileSync(tmpPath, fileBuffer);
 
-  res.writeHead(404);
-  res.end('Not Found');
+        let text;
+        try {
+          text = await extractPdfText(tmpPath);
+        } catch (err) {
+          console.error('PDF 提取失败:', err);
+          res.status(500).json({ error: `PDF 解析失败: ${err.message}` });
+          try { fs.unlinkSync(tmpPath); } catch {}
+          return;
+        }
+
+        try { fs.unlinkSync(tmpPath); } catch {}
+
+        console.log(`PDF 上传成功: ${filename}, 提取 ${text.length} 字符`);
+        res.json({ success: true, filename, text });
+        return;
+      }
+
+      res.status(400).json({ error: '未找到文件' });
+    } catch (err) {
+      console.error('PDF 上传处理失败:', err);
+      res.status(500).json({ error: err.message });
+    }
+  });
+});
+
+// ====== MCP Server ======
+
+let mcpCallCount = 0;
+
+function createMcpServer() {
+  const server = new McpServer({
+    name: 'lecturenote-mcp',
+    version: '1.0.0',
+  });
+
+  server.registerTool('translate', {
+    title: '英中同传翻译',
+    description: '将英文文本实时翻译为简体中文，专为课堂场景优化（学术术语+口语表达兼顾）。用于同声传译场景。',
+    inputSchema: z.object({
+      text: z.string().describe('需要翻译的英文文本'),
+    }),
+  }, async ({ text }) => {
+    if (!text || text.trim().length === 0) {
+      return { content: [{ type: 'text', text: '(empty input)' }] };
+    }
+    try {
+      const result = await translate(text);
+      return { content: [{ type: 'text', text: result.trim() }] };
+    } catch (e) {
+      return { content: [{ type: 'text', text: `Translation failed: ${e.message}` }] };
+    }
+  });
+
+  server.registerTool('generate_outline', {
+    title: '生成课程大纲',
+    description: '根据课堂转录文本，自动生成结构化的双语课程大纲。识别课程章节、关键概念和逻辑结构。',
+    inputSchema: z.object({
+      transcript: z.string().describe('课堂转录文本'),
+      context: z.string().optional().describe('可选的课件文本'),
+    }),
+  }, async ({ transcript, context }) => {
+    if (!transcript || transcript.trim().length === 0) {
+      return { content: [{ type: 'text', text: JSON.stringify({ title: '(无内容)', sections: [] }) }] };
+    }
+    try {
+      const buffer = [{ text: transcript, timestamp: Date.now() }];
+      const outline = await generateOutline(buffer, context || '');
+      return { content: [{ type: 'text', text: JSON.stringify(outline, null, 2) }] };
+    } catch (e) {
+      return { content: [{ type: 'text', text: `Outline generation failed: ${e.message}` }] };
+    }
+  });
+
+  server.registerTool('generate_questions', {
+    title: '生成练习题',
+    description: '根据课堂内容和课程大纲，生成15道核心考试题（选择题/简答题/判断题），优先覆盖考点。每题含答案和解析。',
+    inputSchema: z.object({
+      transcript: z.string().describe('课堂转录文本'),
+      outline: z.string().optional().describe('已生成的大纲 JSON'),
+    }),
+  }, async ({ transcript, outline }) => {
+    if (!transcript || transcript.trim().length < 50) {
+      return { content: [{ type: 'text', text: JSON.stringify({ error: '内容太短', questions: [] }) }] };
+    }
+    try {
+      const buffer = [{ text: transcript, timestamp: Date.now() }];
+      const outlineObj = outline ? JSON.parse(outline) : null;
+      const result = await generateQuestions(buffer, outlineObj);
+      return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+    } catch (e) {
+      return { content: [{ type: 'text', text: `Question generation failed: ${e.message}` }] };
+    }
+  });
+
+  server.registerTool('health', {
+    title: '服务健康检查',
+    description: '检查 MCP 服务是否正常运行，返回服务状态和调用统计。',
+    inputSchema: z.object({}),
+  }, async () => {
+    return {
+      content: [{
+        type: 'text',
+        text: JSON.stringify({
+          status: 'healthy',
+          service: 'lecturenote-mcp',
+          version: '1.0.0',
+          model: 'deepseek-chat',
+          totalMCPCalls: ++mcpCallCount,
+        }),
+      }],
+    };
+  });
+
+  return server;
+}
+
+const mcpHandler = createMcpHandler(() => createMcpServer(), {
+  onerror: (err) => console.error('MCP 错误:', err.message),
+});
+
+// MCP Streamable HTTP 端点
+app.all('/mcp', async (req, res) => {
+  try {
+    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(req.headers)) {
+      if (value) headers.set(key, Array.isArray(value) ? value[0] : value);
+    }
+
+    const webReq = new Request(url, {
+      method: req.method,
+      headers,
+      body: req.method === 'GET' ? undefined : JSON.stringify(req.body),
+    });
+
+    const webRes = await mcpHandler.fetch(webReq);
+
+    res.status(webRes.status);
+    webRes.headers.forEach((value, key) => res.set(key, value));
+    const body = await webRes.text();
+    res.send(body);
+  } catch (err) {
+    console.error('MCP 请求失败:', err.message);
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Internal MCP error' });
+    }
+  }
+});
+
+// 404
+app.use((req, res) => { res.status(404).end('Not Found'); });
+
+// ====== Start Server ======
+const httpServer = app.listen(PORT, () => {
+  console.log(`服务器运行在端口 ${PORT} (Azure: ${process.env.AZURE_SPEECH_REGION})`);
+  console.log(`MCP 端点: /mcp`);
+  warmupOcr().catch((e) => console.error('OCR 预热失败:', e.message));
 });
 
 const wss = new WebSocketServer({ server: httpServer });
-
-httpServer.listen(PORT, () => {
-  console.log(`服务器运行在端口 ${PORT} (Azure: ${process.env.AZURE_SPEECH_REGION})`);
-  // 预热 OCR 引擎（后台下载语言包，不阻塞服务）
-  warmupOcr().catch((e) => console.error('OCR 预热失败:', e.message));
-});
 
 wss.on('connection', (ws) => {
   console.log('客户端已连接');
