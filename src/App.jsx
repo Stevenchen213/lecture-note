@@ -69,6 +69,11 @@ export default function App() {
       setWakingUp(false);
       setRecordingPhase('idle');
       setScreen('recording');
+      isStoppingRef.current = false;
+      if (stopTimeoutRef.current) {
+        clearTimeout(stopTimeoutRef.current);
+        stopTimeoutRef.current = null;
+      }
     } catch (err) {
       setWakingUp(false);
       console.error('进入课堂失败:', err.message);
@@ -123,6 +128,7 @@ export default function App() {
             saveSession({ subtitles: s, outline: outlineRef.current, questions: null });
           }
         }
+        isStoppingRef.current = false;
         wsDisconnect();
         setScreen('home');
       }, 15000);
@@ -235,6 +241,7 @@ export default function App() {
         }
       }
 
+      isStoppingRef.current = false;
       wsDisconnect();
       setScreen('home');
     });
