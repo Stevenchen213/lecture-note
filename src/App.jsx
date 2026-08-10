@@ -23,6 +23,14 @@ export default function App() {
   const [startError, setStartError] = useState(null);
   const [serverError, setServerError] = useState(null);
 
+  // ref 同步最新值，避免在 setState 函数式更新器里做副作用（saveSession）
+  const subtitlesRef = useRef(subtitles);
+  const outlineRef = useRef(outline);
+  const questionsRef = useRef(questions);
+  subtitlesRef.current = subtitles;
+  outlineRef.current = outline;
+  questionsRef.current = questions;
+
   // recordingPhase: 'idle' (进入页面但未开始) | 'active' | 'paused'
   const [recordingPhase, setRecordingPhase] = useState('idle');
   const [wakingUp, setWakingUp] = useState(false);
@@ -106,25 +114,13 @@ export default function App() {
       // fallback：如果 15 秒内没收到 session_stopped，强制断开
       stopTimeoutRef.current = setTimeout(() => {
         console.warn('未收到 session_stopped，强制断开');
+        const s = subtitlesRef.current;
+        const o = outlineRef.current;
+        const q = questionsRef.current;
+        if (s.length > 0) {
+          saveSession({ subtitles: s, outline: o, questions: q });
+        }
         wsDisconnect();
-
-        setSubtitles((currentSubtitles) => {
-          setOutline((currentOutline) => {
-            setQuestions((currentQuestions) => {
-              if (currentSubtitles.length > 0) {
-                saveSession({
-                  subtitles: currentSubtitles,
-                  outline: currentOutline,
-                  questions: currentQuestions,
-                });
-              }
-              return currentQuestions;
-            });
-            return currentOutline;
-          });
-          return currentSubtitles;
-        });
-
         setScreen('home');
       }, 15000);
     } else {
@@ -221,27 +217,17 @@ export default function App() {
         stopTimeoutRef.current = null;
       }
 
-      // 等服务端完成所有收尾工作（大纲+练习题）后再断开
+      // 用 ref 直接读取最新值保存，避免在 setState 更新器里做副作用
+      const s = subtitlesRef.current;
+      const o = outlineRef.current;
+      const q = questionsRef.current;
+      console.log('[前端] session_stopped 保存: 字幕', s.length, '条, 大纲', !!o, ', 练习题', q?.length || 0, '道');
+
+      if (s.length > 0) {
+        saveSession({ subtitles: s, outline: o, questions: q });
+      }
+
       wsDisconnect();
-
-      setSubtitles((currentSubtitles) => {
-        setOutline((currentOutline) => {
-          setQuestions((currentQuestions) => {
-            console.log('[前端] session_stopped 保存: 字幕', currentSubtitles.length, '条, 大纲', !!currentOutline, ', 练习题', currentQuestions?.length || 0, '道');
-            if (currentSubtitles.length > 0) {
-              saveSession({
-                subtitles: currentSubtitles,
-                outline: currentOutline,
-                questions: currentQuestions,
-              });
-            }
-            return currentQuestions;
-          });
-          return currentOutline;
-        });
-        return currentSubtitles;
-      });
-
       setScreen('home');
     });
 
