@@ -1,0 +1,16 @@
+{
+  "name": "lecturenote-mcp",
+  "version": "1.0.0",
+  "description": "LectureNote MCP Server — 课堂同传翻译 + 大纲生成 + 出题",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/express": "^2.0.0",
+    "@modelcontextprotocol/server": "^2.0.0",
+    "dotenv": "^16.4.0",
+    "openai": "^4.70.0",
+    "zod": "^4.4.3"
+  }
+}
