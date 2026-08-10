@@ -7,6 +7,7 @@ import path from 'path';
 import fs from 'fs';
 import { startRecognition, pushAudioData, stopRecognition } from './azure-speech.js';
 import { translate, generateOutline, generateQuestions } from './deepseek.js';
+import { extractPdfText, warmupOcr } from './pdf-utils.js';
 
 config();
 
@@ -161,6 +162,76 @@ const httpServer = createServer((req, res) => {
     return;
   }
 
+  // PDF 上传端点
+  if (req.method === 'POST' && req.url === '/upload-pdf') {
+    const contentType = req.headers['content-type'] || '';
+    if (!contentType.includes('multipart/form-data')) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: '需要 multipart/form-data' }));
+      return;
+    }
+
+    const boundary = '--' + contentType.split('boundary=')[1];
+    const chunks = [];
+    req.on('data', (chunk) => chunks.push(chunk));
+    req.on('end', async () => {
+      try {
+        const buffer = Buffer.concat(chunks);
+        const str = buffer.toString('binary');
+        const parts = str.split(boundary);
+
+        for (const part of parts) {
+          if (!part.includes('Content-Disposition') || !part.includes('filename=')) continue;
+
+          const filenameMatch = part.match(/filename="([^"]*)"/);
+          const filename = filenameMatch ? filenameMatch[1] : 'upload.pdf';
+
+          const bodyStart = part.indexOf('\r\n\r\n');
+          if (bodyStart === -1) continue;
+          let body = part.slice(bodyStart + 4);
+          if (body.endsWith('\r\n')) body = body.slice(0, -2);
+
+          const fileBuffer = Buffer.from(body, 'binary');
+
+          if (!filename.toLowerCase().endsWith('.pdf')) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: '只支持 .pdf 文件' }));
+            return;
+          }
+
+          const tmpPath = path.join(os.tmpdir(), `upload_${Date.now()}.pdf`);
+          fs.writeFileSync(tmpPath, fileBuffer);
+
+          let text;
+          try {
+            text = await extractPdfText(tmpPath);
+          } catch (err) {
+            console.error('PDF 提取失败:', err);
+            res.writeHead(500, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: `PDF 解析失败: ${err.message}` }));
+            try { fs.unlinkSync(tmpPath); } catch {}
+            return;
+          }
+
+          try { fs.unlinkSync(tmpPath); } catch {}
+
+          console.log(`PDF 上传成功: ${filename}, 提取 ${text.length} 字符`);
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, filename, text }));
+          return;
+        }
+
+        res.writeHead(400, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: '未找到文件' }));
+      } catch (err) {
+        console.error('PDF 上传处理失败:', err);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ error: err.message }));
+      }
+    });
+    return;
+  }
+
   res.writeHead(404);
   res.end('Not Found');
 });
@@ -169,6 +240,8 @@ const wss = new WebSocketServer({ server: httpServer });
 
 httpServer.listen(PORT, () => {
   console.log(`服务器运行在端口 ${PORT} (Azure: ${process.env.AZURE_SPEECH_REGION})`);
+  // 预热 OCR 引擎（后台下载语言包，不阻塞服务）
+  warmupOcr().catch((e) => console.error('OCR 预热失败:', e.message));
 });
 
 wss.on('connection', (ws) => {

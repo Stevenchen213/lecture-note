@@ -4,32 +4,35 @@ const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
 const HTTP_URL = WS_URL.replace(/^wss?:\/\//, 'https://').replace(/^ws:\/\//, 'http://');
 
 export default function StartScreen({ onStart, onViewHistory, error, wakingUp }) {
-  const [pptText, setPptText] = useState('');
-  const [pptName, setPptName] = useState('');
-  const [pptUploading, setPptUploading] = useState(false);
-  const [pptError, setPptError] = useState('');
-  const [pasteText, setPasteText] = useState('');
-  const [showPaste, setShowPaste] = useState(false);
+  const [coursewareText, setCoursewareText] = useState('');
+  const [coursewareName, setCoursewareName] = useState('');
+  const [coursewareUploading, setCoursewareUploading] = useState(false);
+  const [coursewareError, setCoursewareError] = useState('');
   const fileInputRef = useRef(null);
 
-  const handlePptUpload = async (e) => {
+  const handleFileUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.name.toLowerCase().endsWith('.pptx')) {
-      setPptError('只支持 .pptx 格式');
+    const name = file.name.toLowerCase();
+    const isPptx = name.endsWith('.pptx');
+    const isPdf = name.endsWith('.pdf');
+
+    if (!isPptx && !isPdf) {
+      setCoursewareError('只支持 .pptx / .pdf 格式');
       return;
     }
 
-    setPptError('');
-    setPptUploading(true);
-    setPptName(file.name);
+    setCoursewareError('');
+    setCoursewareUploading(true);
+    setCoursewareName(file.name);
 
     try {
       const formData = new FormData();
-      formData.append('ppt', file);
+      formData.append('file', file);
 
-      const res = await fetch(`${HTTP_URL}/upload-ppt`, {
+      const endpoint = isPdf ? '/upload-pdf' : '/upload-ppt';
+      const res = await fetch(`${HTTP_URL}${endpoint}`, {
         method: 'POST',
         body: formData,
       });
@@ -37,18 +40,18 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || '上传失败');
 
-      setPptText(data.text);
+      setCoursewareText(data.text);
     } catch (err) {
-      setPptError(err.message);
-      setPptName('');
+      setCoursewareError(err.message);
+      setCoursewareName('');
     } finally {
-      setPptUploading(false);
+      setCoursewareUploading(false);
     }
   };
 
-  const handleRemovePpt = () => {
-    setPptText('');
-    setPptName('');
+  const handleRemoveFile = () => {
+    setCoursewareText('');
+    setCoursewareName('');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -75,40 +78,40 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
           支持印度英语 · AI 实时翻译 · 自动生成结构化大纲
         </p>
 
-        {/* PPT 上传 */}
+        {/* 课件上传（PPT / PDF） */}
         <div className="mb-6 animate-fade-up">
-          {!pptText ? (
-            <label className={`flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl cursor-pointer transition-all duration-200 bg-white/5 ${pptUploading ? 'opacity-60 pointer-events-none' : 'hover:bg-white/10 hover:border-white/20'}`}>
-              {pptUploading ? (
+          {!coursewareText ? (
+            <label className={`flex items-center justify-center gap-2 px-4 py-3 border border-white/10 rounded-xl cursor-pointer transition-all duration-200 bg-white/5 ${coursewareUploading ? 'opacity-60 pointer-events-none' : 'hover:bg-white/10 hover:border-white/20'}`}>
+              {coursewareUploading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-slate-300">正在解析 PPT…</span>
+                  <span className="text-sm text-slate-300">正在解析课件…</span>
                 </>
               ) : (
                 <>
                   <span className="text-lg">📎</span>
-                  <span className="text-sm text-slate-300">上传 PPT 辅助生成大纲（可选）</span>
+                  <span className="text-sm text-slate-300">上传课件辅助生成大纲（.pptx / .pdf，可选）</span>
                 </>
               )}
               <input
                 ref={fileInputRef}
                 type="file"
-                accept=".pptx"
-                onChange={handlePptUpload}
+                accept=".pptx,.pdf"
+                onChange={handleFileUpload}
                 className="hidden"
               />
             </label>
           ) : (
             <div className="flex items-center justify-between px-4 py-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl animate-fade-in">
               <div className="flex items-center gap-2 text-left min-w-0">
-                <span className="text-lg flex-shrink-0">📄</span>
+                <span className="text-lg flex-shrink-0">{coursewareName.toLowerCase().endsWith('.pdf') ? '📕' : '📄'}</span>
                 <div className="min-w-0">
-                  <p className="text-sm text-emerald-300 font-medium truncate">{pptName}</p>
-                  <p className="text-[11px] text-emerald-400/70">已提取 {pptText.length} 字符</p>
+                  <p className="text-sm text-emerald-300 font-medium truncate">{coursewareName}</p>
+                  <p className="text-[11px] text-emerald-400/70">已提取 {coursewareText.length} 字符</p>
                 </div>
               </div>
               <button
-                onClick={handleRemovePpt}
+                onClick={handleRemoveFile}
                 className="text-slate-400 hover:text-rose-400 text-sm p-1 flex-shrink-0"
               >
                 ✕
@@ -116,8 +119,8 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
             </div>
           )}
 
-          {pptError && (
-            <p className="text-xs text-red-400 mt-1.5">{pptError}</p>
+          {coursewareError && (
+            <p className="text-xs text-red-400 mt-1.5">{coursewareError}</p>
           )}
         </div>
 
@@ -169,7 +172,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
 
         {/* 开始按钮 */}
         <button
-          onClick={() => onStart(pptText)}
+          onClick={() => onStart(coursewareText)}
           disabled={wakingUp}
           className="group relative px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-lg font-semibold rounded-2xl
                      hover:from-indigo-400 hover:to-purple-500 active:scale-[0.97] transition-all duration-200

@@ -8,9 +8,13 @@
     "dev": "node --watch index.js"
   },
   "dependencies": {
-    "ws": "^8.17.0",
+    "adm-zip": "^0.5.14",
+    "canvas": "^3.2.3",
     "dotenv": "^16.4.5",
     "microsoft-cognitiveservices-speech-sdk": "^1.36.0",
-    "adm-zip": "^0.5.14"
+    "pdf-parse": "^2.4.5",
+    "pdfjs-dist": "^6.2.108",
+    "tesseract.js": "^7.0.0",
+    "ws": "^8.17.0"
   }
 }
