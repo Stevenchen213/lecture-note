@@ -12,8 +12,15 @@ function key() {
   return k;
 }
 
+let callCount = 0;
+let failCount = 0;
+
 async function chat(messages, opts = {}) {
   const { temperature = 0.3, maxTokens = 2048 } = opts;
+  const reqId = ++callCount;
+
+  console.log(`[DeepSeek #${reqId}] 发起请求… (已成功${reqId - failCount - 1}, 已失败${failCount})`);
+
   const res = await fetch(`${BASE_URL}/chat/completions`, {
     method: 'POST',
     headers: {
@@ -24,11 +31,16 @@ async function chat(messages, opts = {}) {
   });
 
   if (!res.ok) {
+    failCount++;
     const text = await res.text();
+    console.error(`[DeepSeek #${reqId}] 失败! HTTP ${res.status}`);
+    console.error(`[DeepSeek #${reqId}] 响应头: ${JSON.stringify(Object.fromEntries(res.headers))}`);
+    console.error(`[DeepSeek #${reqId}] 响应体: ${text.slice(0, 500)}`);
     throw new Error(`DeepSeek API ${res.status}: ${text}`);
   }
 
   const data = await res.json();
+  console.log(`[DeepSeek #${reqId}] 成功 (${data.usage?.total_tokens || '?'} tokens)`);
   return data.choices[0].message.content;
 }
 

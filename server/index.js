@@ -181,6 +181,9 @@ wss.on('connection', (ws) => {
   let translateQueue = [];
   let runningTranslations = 0;
   const MAX_CONCURRENT = 5;
+  let totalRecognized = 0;
+  let totalFiltered = 0;
+  let totalTranslated = 0;
 
   function processTranslateQueue() {
     while (runningTranslations < MAX_CONCURRENT && translateQueue.length > 0) {
@@ -231,11 +234,15 @@ wss.on('connection', (ws) => {
 
         try {
           await startRecognition(ws, async (text, timestamp) => {
+            totalRecognized++;
             // 过滤非英语语音（中文汉字 / 拼音 / 其他语言）
             if (isNotEnglish(text)) {
-              console.log(`过滤非英语: ${text.slice(0, 50)}...`);
+              totalFiltered++;
+              console.log(`[识别 #${totalRecognized}] 过滤: "${text.slice(0, 60)}" (已过滤${totalFiltered}条)`);
               return;
             }
+
+            console.log(`[识别 #${totalRecognized}] 通过: "${text.slice(0, 60)}" → 排队翻译`);
 
             transcriptBuffer.push({ text, timestamp });
 
@@ -243,12 +250,13 @@ wss.on('connection', (ws) => {
             translateQueue.push(async () => {
               try {
                 const zh = await translate(text);
+                totalTranslated++;
                 if (ws.readyState === 1) {
                   ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp }));
                 }
               } catch (e) {
-                console.error('翻译失败:', e.message);
-                // 通知前端翻译出错（不要一句话的失败阻断整个流程）
+                console.error(`[翻译失败] 原文: "${text.slice(0, 50)}" 错误: ${e.message}`);
+                // 通知前端翻译出错
                 if (ws.readyState === 1) {
                   ws.send(JSON.stringify({ type: 'translation_error', original: text, error: e.message }));
                 }
@@ -267,6 +275,7 @@ wss.on('connection', (ws) => {
 
       case 'stop_session':
         console.log('会话结束');
+        console.log(`[统计] 识别${totalRecognized}句, 过滤${totalFiltered}句, 翻译成功${totalTranslated}句`);
         await stopRecognition();
         if (outlineInterval) { clearInterval(outlineInterval); outlineInterval = null; }
 
