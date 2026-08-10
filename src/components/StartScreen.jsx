@@ -126,7 +126,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
           {[
             { icon: '🎙️', label: '实时识别', desc: '印度英语优化', color: 'indigo' },
             { icon: '🌐', label: '同传翻译', desc: '英→中即时', color: 'violet' },
-            { icon: '📝', label: '智能大纲', desc: '结构化笔记', color: 'emerald' },
+            { icon: '📝', label: '智能大纲', desc: '结构化笔记', color: 'purple' },
           ].map((f) => (
             <div
               key={f.label}
@@ -140,11 +140,11 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl mb-2.5
                               ${f.color === 'indigo' ? 'bg-indigo-500/20 text-indigo-400' : ''}
                               ${f.color === 'violet' ? 'bg-violet-500/20 text-violet-400' : ''}
-                              ${f.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' : ''}
+                              ${f.color === 'purple' ? 'bg-purple-500/20 text-purple-400' : ''}
                               ring-1 ring-inset
                               ${f.color === 'indigo' ? 'ring-indigo-500/20' : ''}
                               ${f.color === 'violet' ? 'ring-violet-500/20' : ''}
-                              ${f.color === 'emerald' ? 'ring-emerald-500/20' : ''}
+                              ${f.color === 'purple' ? 'ring-purple-500/20' : ''}
                               group-hover:scale-110 transition-transform duration-300`}>
                 <span className="text-lg">{f.icon}</span>
               </div>
@@ -152,7 +152,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               <div className={`text-[11px] font-medium
                               ${f.color === 'indigo' ? 'text-indigo-300/70' : ''}
                               ${f.color === 'violet' ? 'text-violet-300/70' : ''}
-                              ${f.color === 'emerald' ? 'text-emerald-300/70' : ''}`}>
+                              ${f.color === 'purple' ? 'text-purple-300/70' : ''}`}>
                 {f.desc}
               </div>
             </div>
