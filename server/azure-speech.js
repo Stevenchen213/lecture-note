@@ -43,19 +43,23 @@ export async function initializeSpeech() {
   return recognizer;
 }
 
-export async function startRecognition(ws, onTranscript) {
+export async function startRecognition(ws, onTranscript, onPartial) {
   if (!recognizer) {
     await initializeSpeech();
   }
 
   recognizer.recognizing = (s, e) => {
-    // 中间结果——实时推送到前端
+    // 中间结果——实时推送到前端 + 触发实时翻译
     if (e.result.text && e.result.text.trim()) {
+      const partialText = e.result.text.trim();
       ws.send(JSON.stringify({
         type: 'partial_transcript',
-        text: e.result.text.trim(),
+        text: partialText,
         timestamp: Date.now(),
       }));
+      if (onPartial) {
+        onPartial(partialText, Date.now());
+      }
     }
   };
 

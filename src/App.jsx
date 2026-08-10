@@ -150,17 +150,21 @@ export default function App() {
     on('partial_transcript', (msg) => {
       setSubtitles((prev) => {
         const filtered = prev.filter((s) => s.id !== '__partial__');
-        return [...filtered, { id: '__partial__', original: msg.text, translated: '', isNew: true, isPartial: true }];
+        // 保留上一次的翻译结果，不要每次清空
+        const prevPartial = prev.find((s) => s.id === '__partial__');
+        return [...filtered, { id: '__partial__', original: msg.text, translated: prevPartial?.translated || '', isNew: true, isPartial: true }];
       });
     });
 
     on('final_transcript', (msg) => {
       setSubtitles((prev) => {
         const filtered = prev.filter((s) => s.id !== '__partial__');
+        // 保留 partial 阶段的翻译结果，避免空白闪烁
+        const prevPartial = prev.find((s) => s.id === '__partial__');
         const newSub = {
           id: ++subtitleId,
           original: msg.text,
-          translated: '...',
+          translated: prevPartial?.translated || '...',
           isNew: true,
           isPartial: false,
         };
@@ -169,9 +173,18 @@ export default function App() {
     });
 
     on('translation', (msg) => {
-      setSubtitles((prev) =>
-        prev.map((s) => (s.original === msg.original ? { ...s, translated: msg.text } : s))
-      );
+      setSubtitles((prev) => {
+        // 部分翻译：更新 __partial__ 条目，原文在不断增长但翻译始终在同一行
+        if (!msg.isFinal) {
+          return prev.map((s) =>
+            s.id === '__partial__' ? { ...s, translated: msg.text } : s
+          );
+        }
+        // 最终翻译：按原文精确匹配
+        return prev.map((s) =>
+          s.original === msg.original ? { ...s, translated: msg.text } : s
+        );
+      });
     });
 
     on('translation_error', (msg) => {

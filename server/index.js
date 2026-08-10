@@ -184,6 +184,8 @@ wss.on('connection', (ws) => {
   let totalRecognized = 0;
   let totalFiltered = 0;
   let totalTranslated = 0;
+  let lastPartialText = '';
+  let lastPartialTime = 0;
 
   function processTranslateQueue() {
     while (runningTranslations < MAX_CONCURRENT && translateQueue.length > 0) {
@@ -233,36 +235,68 @@ wss.on('connection', (ws) => {
         transcriptBuffer = [];
 
         try {
-          await startRecognition(ws, async (text, timestamp) => {
-            totalRecognized++;
-            // 过滤非英语语音（中文汉字 / 拼音 / 其他语言）
-            if (isNotEnglish(text)) {
-              totalFiltered++;
-              console.log(`[识别 #${totalRecognized}] 过滤: "${text.slice(0, 60)}" (已过滤${totalFiltered}条)`);
-              return;
-            }
-
-            console.log(`[识别 #${totalRecognized}] 通过: "${text.slice(0, 60)}" → 排队翻译`);
-
-            transcriptBuffer.push({ text, timestamp });
-
-            // 翻译请求加入并发队列，避免同时大量请求导致限流
-            translateQueue.push(async () => {
-              try {
-                const zh = await translate(text);
-                totalTranslated++;
-                if (ws.readyState === 1) {
-                  ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp }));
-                }
-              } catch (e) {
-                console.error(`[翻译失败] 原文: "${text.slice(0, 50)}" 错误: ${e.message}`);
-                // 通知前端翻译出错
-                if (ws.readyState === 1) {
-                  ws.send(JSON.stringify({ type: 'translation_error', original: text, error: e.message }));
-                }
+          await startRecognition(
+            ws,
+            // onTranscript (final) — 完整句子
+            async (text, timestamp) => {
+              totalRecognized++;
+              if (isNotEnglish(text)) {
+                totalFiltered++;
+                console.log(`[识别 #${totalRecognized}] 过滤: "${text.slice(0, 60)}"`);
+                return;
               }
-            });
-            processTranslateQueue();
+
+              console.log(`[识别 #${totalRecognized}] 通过: "${text.slice(0, 60)}" → 排队翻译`);
+              transcriptBuffer.push({ text, timestamp });
+              lastPartialText = ''; // 重置，准备下一句
+
+              // 加入翻译队列
+              translateQueue.push(async () => {
+                try {
+                  const zh = await translate(text);
+                  totalTranslated++;
+                  if (ws.readyState === 1) {
+                    ws.send(JSON.stringify({ type: 'translation', text: zh, original: text, timestamp, isFinal: true }));
+                  }
+                } catch (e) {
+                  console.error(`[翻译失败] 原文: "${text.slice(0, 50)}" 错误: ${e.message}`);
+                  if (ws.readyState === 1) {
+                    ws.send(JSON.stringify({ type: 'translation_error', original: text, error: e.message }));
+                  }
+                }
+              });
+              processTranslateQueue();
+            },
+            // onPartial — 实时片段翻译，低延迟同传体验
+            (partialText, timestamp) => {
+              if (isNotEnglish(partialText)) return;
+
+              // 去重：和上次比至少多 10 个字符才重新翻译
+              if (partialText === lastPartialText) return;
+              if (partialText.length - lastPartialText.length < 10) return;
+
+              // 节流：每个句子最多每秒翻译一次
+              const now = Date.now();
+              if (now - lastPartialTime < 1000) return;
+
+              lastPartialText = partialText;
+              lastPartialTime = now;
+
+              // 加入翻译队列（用较低的优先级，让完整句子的翻译优先）
+              translateQueue.push(async () => {
+                try {
+                  const zh = await translate(partialText);
+                  if (ws.readyState === 1) {
+                    ws.send(JSON.stringify({ type: 'translation', text: zh, original: partialText, timestamp, isFinal: false }));
+                  }
+                } catch (e) {
+                  // partial 翻译失败不通知前端，等 final 翻译即可
+                  console.error(`[部分翻译失败] "${partialText.slice(0, 40)}" ${e.message}`);
+                }
+              });
+              processTranslateQueue();
+            }
+          );
           });
 
           startOutline();
