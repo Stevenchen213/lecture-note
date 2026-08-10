@@ -259,6 +259,7 @@ wss.on('connection', (ws) => {
   let totalTranslated = 0;
   let lastPartialText = '';
   let lastPartialTime = 0;
+  let isStopping = false;
 
   function processTranslateQueue() {
     while (runningTranslations < MAX_CONCURRENT && translateQueue.length > 0) {
@@ -387,6 +388,8 @@ wss.on('connection', (ws) => {
         break;
 
       case 'stop_session':
+        if (isStopping) { console.log('已在处理结束流程，忽略'); return; }
+        isStopping = true;
         console.log('会话结束');
         console.log(`[统计] 识别${totalRecognized}句, 过滤${totalFiltered}句, 翻译成功${totalTranslated}句`);
         await stopRecognition();

@@ -104,10 +104,13 @@ export default function App() {
   }, [send]);
 
   const stopTimeoutRef = useRef(null);
+  const isStoppingRef = useRef(false);
 
   // 结束——等服务端完成收尾（大纲+练习题）后再断开
   const handleStop = useCallback(() => {
+    if (isStoppingRef.current) return;  // 防止重复点击/重复调用
     if (recordingPhase !== 'idle') {
+      isStoppingRef.current = true;
       stopMic();
       send({ type: 'stop_session' });
 
