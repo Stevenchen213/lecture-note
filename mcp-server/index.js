@@ -212,7 +212,7 @@ function createServer() {
 // ====== HTTP 服务 ======
 
 const PORT = process.env.PORT || process.env.MCP_PORT || 3000;
-const HOST = process.env.RENDER ? '0.0.0.0' : '127.0.0.1';
+const HOST = '0.0.0.0';
 
 const app = createMcpExpressApp({
   host: HOST,
@@ -253,7 +253,10 @@ app.all('/mcp', async (req, res) => {
   }
 });
 
-// 健康检查
+// 根路径 + 健康检查
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'lecturenote-mcp', version: '1.0.0', endpoint: '/mcp' });
+});
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', service: 'lecturenote-mcp', version: '1.0.0' });
 });
