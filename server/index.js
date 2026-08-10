@@ -320,24 +320,32 @@ wss.on('connection', (ws) => {
         if (outlineInterval) { clearInterval(outlineInterval); outlineInterval = null; }
 
         // 生成最终大纲
+        let finalOutline = null;
         if (transcriptBuffer.length > 0) {
           try {
-            const outline = await generateOutline(transcriptBuffer, pptContext);
-            ws.send(JSON.stringify({ type: 'outline_update', outline }));
-          } catch (e) { /* ignore */ }
+            finalOutline = await generateOutline(transcriptBuffer, pptContext);
+            console.log(`最终大纲已生成: ${finalOutline?.title || '(无标题)'}, ${finalOutline?.sections?.length || 0} 章节`);
+            ws.send(JSON.stringify({ type: 'outline_update', outline: finalOutline }));
+          } catch (e) {
+            console.error('最终大纲生成失败:', e.message, e.stack?.slice(0, 200));
+          }
         }
 
-        // 生成练习题
-        if (transcriptBuffer.length > 3) {
+        // 生成练习题（复用上面的大纲，不再重复生成）
+        if (transcriptBuffer.length > 3 && finalOutline) {
           try {
-            console.log('生成练习题...');
-            // 先拿到当前大纲数据给练习题生成用
-            const finalOutline = await generateOutline(transcriptBuffer, pptContext);
+            console.log(`生成练习题… (基于${transcriptBuffer.length}条记录)`);
             const questions = await generateQuestions(transcriptBuffer, finalOutline);
+            console.log(`练习题已生成: ${questions?.questions?.length || 0} 道`);
             ws.send(JSON.stringify({ type: 'practice_questions', ...questions }));
           } catch (e) {
             console.error('练习题生成失败:', e.message);
+            console.error('完整错误:', e.stack?.slice(0, 300));
+            // 通知前端练习题生成失败
+            ws.send(JSON.stringify({ type: 'error', message: `练习题生成失败: ${e.message}` }));
           }
+        } else {
+          console.log(`跳过练习题: buffer=${transcriptBuffer.length}, outline=${!!finalOutline}`);
         }
 
         ws.send(JSON.stringify({ type: 'session_stopped' }));
