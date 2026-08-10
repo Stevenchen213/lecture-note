@@ -95,17 +95,19 @@ export default function App() {
     send({ type: 'resume' });
   }, [send]);
 
-  // 结束
+  const stopTimeoutRef = useRef(null);
+
+  // 结束——等服务端完成收尾（大纲+练习题）后再断开
   const handleStop = useCallback(() => {
     if (recordingPhase !== 'idle') {
       stopMic();
       send({ type: 'stop_session' });
-    }
 
-    setTimeout(() => {
-      wsDisconnect();
+      // fallback：如果 15 秒内没收到 session_stopped，强制断开
+      stopTimeoutRef.current = setTimeout(() => {
+        console.warn('未收到 session_stopped，强制断开');
+        wsDisconnect();
 
-      if (recordingPhase !== 'idle') {
         setSubtitles((currentSubtitles) => {
           setOutline((currentOutline) => {
             setQuestions((currentQuestions) => {
@@ -122,10 +124,14 @@ export default function App() {
           });
           return currentSubtitles;
         });
-      }
 
+        setScreen('home');
+      }, 15000);
+    } else {
+      // 空闲态直接返回首页（没有 stop_session 可发）
+      wsDisconnect();
       setScreen('home');
-    }, 2000);
+    }
   }, [recordingPhase, stopMic, send, wsDisconnect]);
 
   const handleViewHistory = useCallback(() => {
@@ -202,6 +208,36 @@ export default function App() {
       if (msg.questions && msg.questions.length > 0) {
         setQuestions(msg.questions);
       }
+    });
+
+    on('session_stopped', () => {
+      // 清除 fallback 超时
+      if (stopTimeoutRef.current) {
+        clearTimeout(stopTimeoutRef.current);
+        stopTimeoutRef.current = null;
+      }
+
+      // 等服务端完成所有收尾工作（大纲+练习题）后再断开
+      wsDisconnect();
+
+      setSubtitles((currentSubtitles) => {
+        setOutline((currentOutline) => {
+          setQuestions((currentQuestions) => {
+            if (currentSubtitles.length > 0) {
+              saveSession({
+                subtitles: currentSubtitles,
+                outline: currentOutline,
+                questions: currentQuestions,
+              });
+            }
+            return currentQuestions;
+          });
+          return currentOutline;
+        });
+        return currentSubtitles;
+      });
+
+      setScreen('home');
     });
 
     on('error', (msg) => {
