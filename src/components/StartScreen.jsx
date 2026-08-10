@@ -124,17 +124,37 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
         {/* 特性卡片 */}
         <div className="grid grid-cols-3 gap-3 mb-6 animate-fade-up">
           {[
-            { icon: '🎙️', label: '实时识别', desc: '印度英语优化' },
-            { icon: '🌐', label: '同传翻译', desc: '英→中即时' },
-            { icon: '📝', label: '智能大纲', desc: '结构化笔记' },
+            { icon: '🎙️', label: '实时识别', desc: '印度英语优化', color: 'indigo' },
+            { icon: '🌐', label: '同传翻译', desc: '英→中即时', color: 'violet' },
+            { icon: '📝', label: '智能大纲', desc: '结构化笔记', color: 'emerald' },
           ].map((f) => (
             <div
               key={f.label}
-              className="glass-dark rounded-xl px-3 py-4 text-center backdrop-blur-sm"
+              className="group relative rounded-2xl p-4 text-center
+                         bg-white/[0.06] border border-white/[0.08]
+                         hover:bg-white/[0.10] hover:border-white/[0.14]
+                         hover:-translate-y-0.5
+                         transition-all duration-300"
             >
-              <div className="text-2xl mb-1">{f.icon}</div>
-              <div className="text-xs font-semibold text-white mb-0.5">{f.label}</div>
-              <div className="text-[10px] text-slate-300">{f.desc}</div>
+              {/* 图标 */}
+              <div className={`inline-flex items-center justify-center w-10 h-10 rounded-xl mb-2.5
+                              ${f.color === 'indigo' ? 'bg-indigo-500/20 text-indigo-400' : ''}
+                              ${f.color === 'violet' ? 'bg-violet-500/20 text-violet-400' : ''}
+                              ${f.color === 'emerald' ? 'bg-emerald-500/20 text-emerald-400' : ''}
+                              ring-1 ring-inset
+                              ${f.color === 'indigo' ? 'ring-indigo-500/20' : ''}
+                              ${f.color === 'violet' ? 'ring-violet-500/20' : ''}
+                              ${f.color === 'emerald' ? 'ring-emerald-500/20' : ''}
+                              group-hover:scale-110 transition-transform duration-300`}>
+                <span className="text-lg">{f.icon}</span>
+              </div>
+              <div className="text-[13px] font-semibold text-white/95 mb-1">{f.label}</div>
+              <div className={`text-[11px] font-medium
+                              ${f.color === 'indigo' ? 'text-indigo-300/70' : ''}
+                              ${f.color === 'violet' ? 'text-violet-300/70' : ''}
+                              ${f.color === 'emerald' ? 'text-emerald-300/70' : ''}`}>
+                {f.desc}
+              </div>
             </div>
           ))}
         </div>
