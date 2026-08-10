@@ -1,9 +1,11 @@
 /**
  * PDF 文字提取 — 文字型 PDF 直接提取，图片型 PDF 转 OCR
  */
-import pdfParse from 'pdf-parse';
 import fs from 'fs';
 import { createCanvas } from 'canvas';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const pdfParse = require('pdf-parse');
 
 let pdfjsLib = null;
 let tesseractWorker = null;
