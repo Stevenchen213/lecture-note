@@ -205,8 +205,12 @@ export default function App() {
     });
 
     on('practice_questions', (msg) => {
+      console.log('[前端] 收到练习题:', msg.questions?.length || 0, '道, 原始消息keys:', Object.keys(msg));
       if (msg.questions && msg.questions.length > 0) {
         setQuestions(msg.questions);
+        console.log('[前端] 练习题已设置到 state');
+      } else {
+        console.warn('[前端] 练习题为空，未设置');
       }
     });
 
@@ -223,6 +227,7 @@ export default function App() {
       setSubtitles((currentSubtitles) => {
         setOutline((currentOutline) => {
           setQuestions((currentQuestions) => {
+            console.log('[前端] session_stopped 保存: 字幕', currentSubtitles.length, '条, 大纲', !!currentOutline, ', 练习题', currentQuestions?.length || 0, '道');
             if (currentSubtitles.length > 0) {
               saveSession({
                 subtitles: currentSubtitles,
