@@ -11,7 +11,7 @@ function uid() {
 /**
  * 给 AI 大纲加上 id 和 source 标记
  */
-export function stampOutline(outline) {
+function stampOutline(outline) {
   return {
     id: uid(),
     title: outline.title || '课程笔记',

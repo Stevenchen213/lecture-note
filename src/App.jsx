@@ -317,7 +317,6 @@ export default function App() {
             outline={outline}
             setOutline={setOutline}
             subtitles={subtitles}
-            isStopped={false}
             questions={questions}
           />
         </div>

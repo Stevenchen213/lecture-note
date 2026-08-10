@@ -380,7 +380,7 @@ wss.on('connection', (ws) => {
           );
 
           startOutline();
-          ws.send(JSON.stringify({ type: 'session_started' }));
+          // session_started 仅用于前端确认会话已就绪（当前前端不监听此事件）
         } catch (err) {
           console.error('启动 ASR 失败:', err);
           ws.send(JSON.stringify({ type: 'error', message: `ASR 启动失败: ${err.message}` }));

@@ -5,7 +5,6 @@ import { useRef, useState, useCallback } from 'react';
  * 输出 16kHz 16bit 单声道 PCM 数据，直接对接 Azure Speech push stream
  */
 export function useAudioRecorder() {
-  const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState(null);
 
   const streamRef = useRef(null);
@@ -55,7 +54,6 @@ export function useAudioRecorder() {
       source.connect(processor);
       processor.connect(audioContext.destination); // 必须连 destination 才会触发 onaudioprocess
 
-      setIsRecording(true);
       setError(null);
     } catch (err) {
       const msg = err.name === 'NotAllowedError'
@@ -82,8 +80,7 @@ export function useAudioRecorder() {
       streamRef.current = null;
     }
 
-    setIsRecording(false);
   }, []);
 
-  return { isRecording, error, start, stop };
+  return { error, start, stop };
 }

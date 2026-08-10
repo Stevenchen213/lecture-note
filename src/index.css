@@ -39,12 +39,6 @@
     100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
   }
 
-  /* 渐变背景动画 */
-  @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-  }
-
   /* 淡入上滑 */
   @keyframes fade-up {
     from { opacity: 0; transform: translateY(12px); }
@@ -100,9 +94,4 @@
     border: 1px solid rgba(255, 255, 255, 0.6);
   }
 
-  .glass-dark {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
 }

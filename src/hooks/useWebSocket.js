@@ -9,7 +9,6 @@ const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
  */
 export function useWebSocket() {
   const wsRef = useRef(null);
-  const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState(null);
   const listenersRef = useRef(new Map());
 
@@ -36,7 +35,6 @@ export function useWebSocket() {
       ws.binaryType = 'arraybuffer';
 
       ws.onopen = () => {
-        setIsConnected(true);
         setError(null);
         resolve();
       };
@@ -58,9 +56,7 @@ export function useWebSocket() {
         reject(new Error('WebSocket 连接失败'));
       };
 
-      ws.onclose = () => {
-        setIsConnected(false);
-      };
+      ws.onclose = () => {};
 
       wsRef.current = ws;
     });
@@ -86,7 +82,6 @@ export function useWebSocket() {
       wsRef.current.close();
       wsRef.current = null;
     }
-    setIsConnected(false);
   }, []);
 
   // 组件卸载时自动断开
@@ -99,5 +94,5 @@ export function useWebSocket() {
     };
   }, []);
 
-  return { isConnected, error, connect, disconnect, send, sendAudio, on };
+  return { error, connect, disconnect, send, sendAudio, on };
 }

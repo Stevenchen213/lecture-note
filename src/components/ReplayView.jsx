@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getSession } from '../utils/sessionStore';
-import { downloadWord, downloadPDF, copyOutlineText } from '../utils/export';
+import { downloadWord, downloadPDF } from '../utils/export';
 
 export default function ReplayView({ sessionId, onBack }) {
   const [session, setSession] = useState(null);

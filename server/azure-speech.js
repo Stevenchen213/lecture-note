@@ -1,9 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 let speechConfig = null;
 let recognizer = null;
 let pushStream = null;
@@ -16,7 +10,7 @@ async function getSdk() {
   return sdkModule;
 }
 
-export async function initializeSpeech() {
+async function initializeSpeech() {
   const subscriptionKey = process.env.AZURE_SPEECH_KEY;
   const region = process.env.AZURE_SPEECH_REGION || 'southeastasia';
 
