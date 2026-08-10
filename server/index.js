@@ -180,7 +180,7 @@ wss.on('connection', (ws) => {
   let pptContext = '';
   let translateQueue = [];
   let runningTranslations = 0;
-  const MAX_CONCURRENT = 3;
+  const MAX_CONCURRENT = 5;
 
   function processTranslateQueue() {
     while (runningTranslations < MAX_CONCURRENT && translateQueue.length > 0) {
