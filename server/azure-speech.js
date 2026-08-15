@@ -2,6 +2,7 @@ let speechConfig = null;
 let recognizer = null;
 let pushStream = null;
 let sdkModule = null;
+let isStopping = false;
 
 async function getSdk() {
   if (!sdkModule) {
@@ -41,6 +42,7 @@ export async function startRecognition(ws, onTranscript, onPartial) {
   if (!recognizer) {
     await initializeSpeech();
   }
+  isStopping = false;
 
   recognizer.recognizing = (s, e) => {
     // 中间结果——实时推送到前端 + 触发实时翻译
@@ -87,6 +89,14 @@ export async function startRecognition(ws, onTranscript, onPartial) {
 
   recognizer.sessionStopped = () => {
     console.log('语音识别会话结束');
+    // 被动超时（非用户主动结束）时自动重启，避免长时间上课识别静默中断
+    if (!isStopping && recognizer) {
+      console.log('检测到会话超时，自动重启识别…');
+      recognizer.startContinuousRecognitionAsync(
+        () => console.log('识别会话已自动重启'),
+        (err) => console.error('自动重启识别失败:', err)
+      );
+    }
   };
 
   return new Promise((resolve, reject) => {
@@ -110,6 +120,7 @@ export function pushAudioData(audioBuffer) {
 }
 
 export async function stopRecognition() {
+  isStopping = true;
   if (!recognizer) return;
 
   return new Promise((resolve) => {
