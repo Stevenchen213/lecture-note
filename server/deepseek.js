@@ -16,10 +16,14 @@ let callCount = 0;
 let failCount = 0;
 
 async function chat(messages, opts = {}) {
-  const { temperature = 0.3, maxTokens = 2048 } = opts;
+  const { temperature = 0.3, maxTokens = 2048, jsonMode = false } = opts;
   const reqId = ++callCount;
 
   console.log(`[DeepSeek #${reqId}] 发起请求… (已成功${reqId - failCount - 1}, 已失败${failCount})`);
+
+  const body = { model: MODEL, messages, temperature, max_tokens: maxTokens };
+  // json_object 模式强制模型输出合法 JSON，避免长输出漏括号/结构错乱
+  if (jsonMode) body.response_format = { type: 'json_object' };
 
   const res = await fetch(`${BASE_URL}/chat/completions`, {
     method: 'POST',
@@ -27,7 +31,7 @@ async function chat(messages, opts = {}) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${key()}`,
     },
-    body: JSON.stringify({ model: MODEL, messages, temperature, max_tokens: maxTokens }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
@@ -105,7 +109,7 @@ export async function generateOutline(transcripts, pptContext = '') {
       },
       { role: 'user', content: `课堂录音文字：\n\n${fullText}` },
     ],
-    { temperature: 0.3, maxTokens: 2048 }
+    { temperature: 0.3, maxTokens: 2048, jsonMode: true }
   );
 
   let json = result.trim();
@@ -174,7 +178,7 @@ export async function generateQuestions(transcripts, outline) {
         content: `课堂内容：\n\n${fullText.slice(0, 15000)}\n\n${outlineText}`,
       },
     ],
-    { temperature: 0.5, maxTokens: 4096 }
+    { temperature: 0.5, maxTokens: 4096, jsonMode: true }
   );
 
   let json = result.trim();
