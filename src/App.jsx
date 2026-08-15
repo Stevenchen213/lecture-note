@@ -7,7 +7,7 @@ import ReplayView from './components/ReplayView';
 import { useAudioRecorder } from './hooks/useAudioRecorder';
 import { useWebSocket } from './hooks/useWebSocket';
 import { mergeOutline } from './utils/outlineMerge';
-import { saveSession } from './utils/sessionStore';
+import { saveSession, getSession } from './utils/sessionStore';
 
 let subtitleId = 0;
 
@@ -44,14 +44,20 @@ export default function App() {
   }, []);
 
   // 从首页进入课堂——仅连接WS，不开始录音
-  const handleEnterRoom = useCallback(async (pptText) => {
+  const handleEnterRoom = useCallback(async (pptText, resumeData = null) => {
     try {
       setStartError(null);
       setWakingUp(true);
-      setPptContext(pptText);
-      setQuestions(null);
-      setSubtitles([]);
-      setOutline(null);
+      setPptContext(resumeData?.pptContext || pptText || '');
+      if (resumeData) {
+        setQuestions(resumeData.questions || null);
+        setSubtitles(resumeData.subtitles || []);
+        setOutline(resumeData.outline || null);
+      } else {
+        setQuestions(null);
+        setSubtitles([]);
+        setOutline(null);
+      }
 
       let retries = 0;
       const maxRetries = 12;
@@ -70,6 +76,7 @@ export default function App() {
       setRecordingPhase('idle');
       setScreen('recording');
       isStoppingRef.current = false;
+      setIsStopping(false);
       if (stopTimeoutRef.current) {
         clearTimeout(stopTimeoutRef.current);
         stopTimeoutRef.current = null;
@@ -85,7 +92,10 @@ export default function App() {
   const handleStartRecording = useCallback(async () => {
     try {
       setServerError(null);
-      send({ type: 'start_session', pptContext: pptContext || '' });
+      const initialTranscripts = subtitlesRef.current
+        .filter((s) => s && s.original)
+        .map((s) => s.original);
+      send({ type: 'start_session', pptContext: pptContext || '', initialTranscripts });
       await startMic((pcmBuffer) => {
         sendAudio(pcmBuffer);
       });
@@ -110,16 +120,18 @@ export default function App() {
 
   const stopTimeoutRef = useRef(null);
   const isStoppingRef = useRef(false);
+  const [isStopping, setIsStopping] = useState(false);
 
   // 结束——等服务端完成收尾（大纲+练习题）后再断开
   const handleStop = useCallback(() => {
     if (isStoppingRef.current) return;  // 防止重复点击/重复调用
     if (recordingPhase !== 'idle') {
       isStoppingRef.current = true;
+      setIsStopping(true);
       stopMic();
       send({ type: 'stop_session' });
 
-      // fallback：如果 15 秒内没收到 session_stopped，强制断开
+      // fallback：如果 45 秒内没收到 session_stopped，强制断开（大纲+练习题生成可能较慢）
       stopTimeoutRef.current = setTimeout(() => {
         console.warn('未收到 session_stopped，强制断开');
         if (!questionsRef.current) {
@@ -129,9 +141,10 @@ export default function App() {
           }
         }
         isStoppingRef.current = false;
+        setIsStopping(false);
         wsDisconnect();
         setScreen('home');
-      }, 15000);
+      }, 45000);
     } else {
       // 空闲态直接返回首页（没有 stop_session 可发）
       wsDisconnect();
@@ -148,6 +161,24 @@ export default function App() {
     setReplayId(id);
     setScreen('replay');
   }, []);
+
+  const handleResumeSession = useCallback((sessionId) => {
+    const session = getSession(sessionId);
+    if (!session) return;
+    const restoredSubtitles = (session.subtitles || []).map((s) => ({
+      id: ++subtitleId,
+      original: s.original || '',
+      translated: s.translated || '',
+      isNew: false,
+      isPartial: false,
+    }));
+    handleEnterRoom('', {
+      pptContext: '',
+      subtitles: restoredSubtitles,
+      outline: session.outline || null,
+      questions: session.questions || null,
+    });
+  }, [handleEnterRoom]);
 
   const handleBackToHome = useCallback(() => {
     setScreen('home');
@@ -242,6 +273,7 @@ export default function App() {
       }
 
       isStoppingRef.current = false;
+      setIsStopping(false);
       wsDisconnect();
       setScreen('home');
     });
@@ -258,7 +290,7 @@ export default function App() {
   const displayError = startError || micError || wsError;
 
   if (screen === 'history') {
-    return <HistoryPanel onViewSession={handleViewSession} onBack={handleBackToHome} />;
+    return <HistoryPanel onViewSession={handleViewSession} onResume={handleResumeSession} onBack={handleBackToHome} />;
   }
 
   if (screen === 'replay' && replayId) {
@@ -310,6 +342,7 @@ export default function App() {
             onResume={handleResume}
             onStop={handleStop}
             serverError={serverError}
+            isStopping={isStopping}
           />
         </div>
         <div className="w-3/5 max-md:w-full max-md:h-[55vh] overflow-hidden">

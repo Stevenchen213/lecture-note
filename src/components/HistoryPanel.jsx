@@ -30,7 +30,7 @@ function formatDuration(subtitles) {
   return `${count} 句字幕`;
 }
 
-export default function HistoryPanel({ onViewSession, onBack }) {
+export default function HistoryPanel({ onViewSession, onResume, onBack }) {
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
@@ -42,6 +42,11 @@ export default function HistoryPanel({ onViewSession, onBack }) {
     if (!confirm('确定要删除这条记录吗？')) return;
     deleteSession(id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  const handleResume = (id, e) => {
+    e.stopPropagation();
+    onResume(id);
   };
 
   return (
@@ -105,6 +110,13 @@ export default function HistoryPanel({ onViewSession, onBack }) {
                   </div>
 
                   <div className="flex items-center gap-2 ml-4">
+                    <button
+                      onClick={(e) => handleResume(s.id, e)}
+                      className="px-3 py-1.5 text-xs font-medium text-indigo-200 bg-indigo-500/15 border border-indigo-400/30 rounded-lg hover:bg-indigo-500/25 hover:text-white transition-all"
+                      title="继续上课"
+                    >
+                      ▶️ 继续
+                    </button>
                     <button
                       onClick={(e) => handleDelete(s.id, e)}
                       className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"

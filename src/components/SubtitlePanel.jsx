@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback } from 'react';
 
-export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPause, onResume, onStop, serverError }) {
+export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPause, onResume, onStop, serverError, isStopping }) {
   const scrollRef = useRef(null);
   const userScrolledUp = useRef(false);
 
@@ -124,6 +124,14 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
         <div className="mx-4 mt-3 px-4 py-3 bg-rose-50/80 border border-rose-200/80 rounded-xl text-rose-600 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
           <span className="text-base">⚠️</span>
           <span>{serverError}</span>
+        </div>
+      )}
+
+      {/* 结束流程反馈 */}
+      {isStopping && (
+        <div className="mx-4 mt-3 px-4 py-3 bg-indigo-50/80 border border-indigo-200/80 rounded-xl text-indigo-700 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
+          <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
+          <span>正在生成大纲和练习题…</span>
         </div>
       )}
 

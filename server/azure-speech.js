@@ -26,6 +26,8 @@ async function initializeSpeech() {
   speechConfig.speechRecognitionLanguage = 'en-IN';
   speechConfig.enableDictation();
   speechConfig.setProfanity(sdk.ProfanityOption.Raw);
+  // 加长分段静音超时（默认约 500ms），减少句子被切得太碎的情况
+  speechConfig.setProperty(sdk.PropertyId.Speech_SegmentationSilenceTimeoutMs, '1500');
 
   // PCM 16kHz 16-bit 单声道（匹配浏览器 MediaRecorder）
   const audioFormat = sdk.AudioStreamFormat.getWaveFormatPCM(16000, 16, 1);

@@ -412,6 +412,12 @@ wss.on('connection', (ws) => {
           console.log(`PPT 上下文: ${pptContext.length} 字符`);
         }
         transcriptBuffer = [];
+        // 继续课程：恢复已有字幕到缓冲，让大纲/练习题基于完整内容重新生成
+        if (message.initialTranscripts && Array.isArray(message.initialTranscripts)) {
+          for (const t of message.initialTranscripts) {
+            if (t && t.trim()) transcriptBuffer.push({ text: t, timestamp: Date.now() });
+          }
+        }
 
         try {
           await startRecognition(
