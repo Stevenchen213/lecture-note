@@ -1,0 +1,19 @@
+{
+  "segment": "seg03",
+  "source": "MIT 18.06 Linear Algebra, Lecture 1 (Gilbert Strang), ~34-42 min",
+  "source_words": 710,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "If the ninth column is the same as the eighth column, it contributes nothing new and some right-hand sides b become unreachable.",
+    "Nine columns and all their linear combinations may fill the whole nine-dimensional space.",
+    "With one redundant column, the combinations fill only an eight-dimensional plane inside nine-dimensional space.",
+    "The matrix form of a linear system is A times x equals b (a matrix A times a vector x equals a right-hand side b).",
+    "Matrix times vector, the column way: A times x is a linear combination of the columns of A.",
+    "Example: the matrix [[2,5],[1,3]] times the vector (1,2) equals (12, 7).",
+    "Matrix times vector, the row way: each component is a dot product of a row of A with x, e.g. 2*1 + 5*2 = 12.",
+    "The second component check is 1*1 + 3*2 = 7.",
+    "If b = (12, 7) for that matrix, the correct solution is x = (1, 2).",
+    "Next lecture covers elimination: a systematic way to solve a system of any size and to detect when no solution exists."
+  ]
+}

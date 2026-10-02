@@ -1,0 +1,21 @@
+{
+  "segment": "seg07",
+  "source": "MIT 6.006 Introduction to Algorithms, Lecture 1, ~6-13 min",
+  "source_words": 801,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "6.006 covers classic data structures (Python dictionaries, balanced binary search trees) and augments them for efficiency on certain problems.",
+    "The follow-on course for much more algorithm design is 6.046 Design and Analysis of Algorithms.",
+    "6.006 involves some design but a whole lot of analysis of algorithms.",
+    "Students do real implementations of the data structures and algorithms in Python.",
+    "Each problem set has both a theory part and a programming part.",
+    "The course has eight modules, each roughly with an associated problem set.",
+    "The first module is algorithmic thinking, kick-started with the peak-finding problem.",
+    "In the first problem set, some provided Python algorithms contain bugs; students analyze their complexity, identify which are correct and efficient, and write a proof for one.",
+    "The second problem set is simulating a logic network using a particular sorting algorithm and data structure.",
+    "The hashing module includes genome comparison; human and rat genomes were found to be 99% similar.",
+    "If an algorithm's complexity is too high, the program will not finish on the large inputs used in problem sets.",
+    "By 'fun' problem sets the instructor means challenging and worthwhile, not easy."
+  ]
+}

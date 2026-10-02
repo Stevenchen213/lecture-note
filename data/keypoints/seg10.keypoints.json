@@ -1,0 +1,21 @@
+{
+  "segment": "seg10",
+  "source": "MIT 14.01 Principles of Microeconomics, Lecture 1, ~22-30 min",
+  "source_words": 801,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "Someone auctioned a kidney on eBay with bidding starting at $25,000; bidding reached $5 million before eBay shut it down.",
+    "The positive question is 'Why did the price get so high?', answerable with the supply and demand model alone.",
+    "The kidney price soared because demand is extremely high (people pay everything to live) and legal supply is extremely low.",
+    "The normative question is 'Should we be allowed to sell our bodily organs?', which is fundamentally an economics question.",
+    "Many Americans die because the supply of organs cannot meet the demand from those with organ failure.",
+    "The standard economic argument for organ sales: a person with two healthy kidneys can function fine with one and use the money to transform their family's life.",
+    "For about the first 11 lectures of the course, the free market is treated as king.",
+    "The lecturer describes economics as fundamentally a right-wing science: the market knows best.",
+    "There are only two reasons to interfere with the market, and the first is market failure: the market not working properly.",
+    "Market-failure concerns in organ sales include coercion (people forcing their children), criminal activity, and sellers not understanding the danger.",
+    "About 100,000 Americans currently live with hepatitis C, which causes kidney failure and can lie dormant for years, so a seller might unknowingly be at risk.",
+    "The black market is not itself a market failure: economists simply view it as another market."
+  ]
+}

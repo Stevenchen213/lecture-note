@@ -1,0 +1,18 @@
+{
+  "segment": "seg02",
+  "source": "MIT 18.06 Linear Algebra, Lecture 1 (Gilbert Strang), ~20-28 min",
+  "source_words": 803,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "Each row of a 3x3 system gives a plane in three dimensions.",
+    "Two planes (the first two equations) meet in a line.",
+    "Three non-parallel, non-special planes meet in one point, and that point is the solution.",
+    "The row picture is easy for two lines but hard to visualize for three planes, and worse in higher dimensions.",
+    "The column picture of the 3x3 example is x(2,-1,0) + y(-1,2,-3) + z(0,-1,4) = (0,-1,4).",
+    "In this specially chosen example the right-hand side equals the third column, so the solution is (x, y, z) = (0, 0, 1).",
+    "The solution (0,0,1) is exactly the point where the three planes meet.",
+    "Elimination, covered next lecture, is the systematic method that all production large-scale software uses to solve systems in all cases.",
+    "The column picture asks: what combination of the three three-dimensional column vectors produces the right-hand side vector?"
+  ]
+}

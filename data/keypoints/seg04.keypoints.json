@@ -1,0 +1,19 @@
+{
+  "segment": "seg04",
+  "source": "MIT 6.006 Introduction to Algorithms, Lecture 1, ~33-41 min",
+  "source_words": 807,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "The binary-search 1D peak finder is described by the recurrence T(n) = T(n/2) + theta(1), where theta(1) covers the at most two comparisons with the left and right neighbors.",
+    "The base case is T(1) = theta(1): a one-element array just returns that element as a peak.",
+    "Expanding the recurrence sums theta(1) a total of log2(n) times, giving T(n) = theta(log2 n).",
+    "The difference between theta(n) and theta(log n) is an exponential difference, literally like 2^n versus n.",
+    "On n = 10 million, the lecturer's Python theta(n) algorithm takes 13 seconds while the theta(log n) one takes 0.001 seconds.",
+    "A 2D peak definition: element a is a 2D peak if and only if a is greater than or equal to all four neighbors b, c, d, e.",
+    "With the greater-than-or-equal-to definition, every 2D matrix always has a peak, just as in the 1D case.",
+    "The straightforward 2D algorithm is the Greedy Ascent algorithm: pick a start point and repeatedly move toward a larger neighbor (e.g. left first, otherwise right, down at an edge).",
+    "Example greedy traversal: starting at 12 the path goes 12, 13, 14, 15, 16, 17, 19, 20 to reach a peak.",
+    "Greedy Ascent requires arbitrary choices of starting point and default traversal directions, and its worst case must be argued for any such choice."
+  ]
+}

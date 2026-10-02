@@ -1,0 +1,17 @@
+{
+  "segment": "seg05",
+  "source": "MIT 6.006 Introduction to Algorithms, Lecture 1, ~43-51 min",
+  "source_words": 804,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "The tempting 2D algorithm - find a 1D peak on the middle column j = m/2, then a 1D peak on that row - is efficient (log n) but incorrect.",
+    "Being correct and inefficient is better than being incorrect and efficient.",
+    "Counterexample: the algorithm may return 14 (a 1D peak on its row) even though 14 is not a 2D peak, because a 2D peak may not exist on row i.",
+    "The correct recursive algorithm picks the middle column j = m/2 and finds the GLOBAL MAXIMUM on that column, at position (i, j).",
+    "It then compares (i, j) only with its left neighbor (i, j-1) and right neighbor (i, j+1).",
+    "If (i, j) is greater than or equal to both horizontal neighbors, then (i, j) is a 2D peak, because as the column maximum it already dominates the up and down neighbors.",
+    "Otherwise the algorithm recurses into the half (left or right columns) that contains the larger neighbor.",
+    "The problem set contains four different algorithms that students must analyze for complexity, efficiency, and correctness."
+  ]
+}

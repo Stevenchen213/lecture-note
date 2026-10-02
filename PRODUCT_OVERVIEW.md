@@ -123,6 +123,27 @@ MCP 服务：Render（免费，独立部署）
 **端点**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
 
 ---
+
+## 📏 评估指标（目标 vs 达成）
+
+评估数据与方法见 [data/README.md](data/README.md) 与 [evals/README.md](evals/README.md)；
+详细批判见 [docs/REPORT.md](docs/REPORT.md)，成本见 [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md)。
+
+**目标（Milestone 1）**：大纲对老师强调关键点的覆盖率 ≥ 80%。
+
+**指标修正（中期反馈后）**：单一覆盖率存在「平凡赢家」漏洞（全文复制≈100%），改为三指标 + 基线对比：
+
+| 方案 | Coverage（关键点覆盖） | Precision（条目纯度） | 长度比（大纲/转写） |
+|---|---|---|---|
+| 纯转写（基线） | *见 evals/results/RESULTS.md* | — | 100% |
+| 产品大纲（不限长） | *见 RESULTS.md* | *见 RESULTS.md* | *见 RESULTS.md* |
+| 限长大纲（≤15%） | *见 RESULTS.md* | *见 RESULTS.md* | *见 RESULTS.md* |
+
+**评估规模**：10 段 MIT 公开课讲座（3 门课、3 位讲师、数学/CS/经济学），102 个人工核查级关键点。
+
+**成本**：一堂 50 分钟课端到端 ≈ US$1（语音识别占 ~80%，LLM 占 ~20%）。
+
+---
 ## 🔗 相关链接
 
 - **公开访问**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)

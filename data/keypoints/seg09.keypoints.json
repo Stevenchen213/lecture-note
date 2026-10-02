@@ -1,0 +1,19 @@
+{
+  "segment": "seg09",
+  "source": "MIT 14.01 Principles of Microeconomics, Lecture 1, ~6-14 min",
+  "source_words": 802,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "A model is technically the description of any relationship between two or more variables.",
+    "Economics is a social science, not a real science: it has no rigid, universally applicable laws like those linking energy and mass in physics.",
+    "Models require simplifying assumptions that trade off two goals: explaining as much as possible versus keeping models parsimonious and teachable.",
+    "Two-good models give all the intuition needed for n-good models, just with easier math.",
+    "Statistician George Box wrote: all models are wrong, but some are useful.",
+    "The course teaches economics on three levels: mathematical, graphical, and intuitive, and success requires understanding all three.",
+    "Supply and demand was the first economic model, developed by Adam Smith in 1776 in The Wealth of Nations.",
+    "Smith's water-diamond paradox: water is essential for life yet nearly free, while diamonds are inessential yet very expensive.",
+    "The paradox is resolved by supply: the supply of water is vastly larger relative to demand than the supply of diamonds, which are rare.",
+    "The lecturer claims modern economics was born at MIT through the introduction of the tools of constrained optimization."
+  ]
+}

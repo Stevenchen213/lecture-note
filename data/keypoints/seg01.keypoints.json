@@ -1,0 +1,20 @@
+{
+  "segment": "seg01",
+  "source": "MIT 18.06 Linear Algebra, Lecture 1 (Gilbert Strang), ~6-13 min",
+  "source_words": 804,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "The row picture of a 2x2 system draws each equation as a line; the solution is the point where the two lines meet.",
+    "The example system is 2x - y = 0 and -x + 2y = 3, whose solution is x = 1, y = 2.",
+    "The line 2x - y = 0 passes through the origin because (0,0) satisfies the equation.",
+    "The line -x + 2y = 3 does not pass through the origin; when y = 0 it passes through x = -3.",
+    "Checking the solution x = 1, y = 2 in the second equation gives -1 + 4 = 3.",
+    "The column picture rewrites the system as x times column one (2, -1) plus y times column two (-1, 2) equals the right-hand side (0, 3).",
+    "A linear combination means multiplying columns (vectors) by numbers and adding the results.",
+    "The linear combination of columns is described as the most fundamental operation in the whole course.",
+    "Solving the system means finding the right amounts (coefficients) that combine the column vectors to produce the right-hand side vector.",
+    "The right linear combination here is x = 1 of column one plus y = 2 of column two, producing (0, 3).",
+    "In the column-picture drawing, column one is the vector (2, -1) and column two is the vector (-1, 2)."
+  ]
+}

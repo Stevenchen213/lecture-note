@@ -169,7 +169,32 @@ lecture-note/
 │   ├── index.js                  # Standalone MCP server (Streamable HTTP)
 │   ├── package.json              # MCP server dependencies
 │   └── .gitignore                # Node modules + .env
+├── docs/                         # PE6201: report, cost analysis, video script
+├── data/                         # PE6201: evaluation dataset (segments + key points)
+├── evals/                        # PE6201: evaluation harness (run_evals.mjs)
 └── .env.example                  # Environment variables template
+```
+
+---
+
+## 🎓 PE6201 Course Deliverables (NTU)
+
+End-of-course project materials for PE6201 Emerging AI Technologies:
+
+| Deliverable | Location |
+|---|---|
+| Final report (~1,200 words) | [docs/REPORT.md](docs/REPORT.md) |
+| Cost analysis (rubric 5) | [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md) |
+| Demo video script | [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md) |
+| Product documentation (persona / I/O / architecture) | [PRODUCT_OVERVIEW.md](PRODUCT_OVERVIEW.md) |
+| Evaluation data + explainer | [data/](data/README.md) |
+| Evaluation harness + explainer | [evals/](evals/README.md) |
+| Evaluation results | [evals/results/RESULTS.md](evals/results/RESULTS.md) |
+
+To reproduce the evaluation:
+
+```bash
+node evals/run_evals.mjs   # requires DEEPSEEK_API_KEY in server/.env
 ```
 
 ---

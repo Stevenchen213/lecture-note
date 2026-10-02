@@ -1,0 +1,19 @@
+{
+  "segment": "seg08",
+  "source": "MIT 6.006 Introduction to Algorithms, Lecture 1, ~20-28 min",
+  "source_words": 802,
+  "labeled_by": "AI (Claude), pending human spot-check",
+  "human_verified": false,
+  "keypoints": [
+    "With the greater-than-or-equal-to definition of a peak, every array always has a peak (left as a homework argument).",
+    "With a strict greater-than definition, you cannot argue that a peak always exists.",
+    "Algorithmic thinking means creating general algorithms that still give a starting point when the problem definition changes.",
+    "When no peak can be found, the valid answer is an exhaustive-search argument: a proof that you searched everywhere and none exists.",
+    "The straightforward one-dimensional peak finder starts from the left and walks across the array.",
+    "Worst case for the straightforward algorithm: the peak is at the far right (e.g. 1,2,3,4,5,6), requiring a look at all n elements.",
+    "The worst-case complexity of the straightforward algorithm is theta(n), i.e. linear.",
+    "Theta(n) gives both a lower bound and an upper bound ('of the order of n'); Big-O(n) is only an upper bound.",
+    "The analysis here cares only about asymptotic complexity, ignoring constants.",
+    "A faster approach (binary search): look at the middle element and recurse into the half with the higher neighbor, because a peak must exist on that side."
+  ]
+}
