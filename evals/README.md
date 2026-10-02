@@ -11,6 +11,13 @@ problems raised in Milestone 1 feedback:
 
 ```bash
 # prerequisite: DEEPSEEK_API_KEY in server/.env
+# (or point at any OpenAI-compatible provider, e.g. Kimi:)
+#   LLM_BASE_URL=https://api.moonshot.ai/v1
+#   LLM_MODEL=kimi-k2.6
+#   LLM_API_KEY=sk-...
+# Note: with a custom provider, temperature is not sent (Kimi locks it).
+# Kimi free tier = 3 RPM — the script retries 429s with 65s backoff,
+# so a full run on the free tier takes ~30 min; Tier1 ($10) is much faster.
 node evals/label_keypoints.mjs   # (optional) regenerate AI-drafted key points
 node evals/run_evals.mjs         # main evaluation → evals/results/
 ```

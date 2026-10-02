@@ -11,8 +11,9 @@ This document answers the missing rubric criterion 5 from the Milestone 1 feedba
 | DeepSeek API (`deepseek-chat`, peak) | Input (cache miss) $1.32 / 1M tokens · Output $3.96 / 1M tokens |
 | DeepSeek API (`deepseek-chat`, off-peak) | Half of peak rates |
 | DeepSeek context caching | Cache-hit input $0.044 / 1M tokens (~30× cheaper than miss) |
+| Kimi API (`kimi-k2.6`, fallback provider) | Input $0.95 / 1M (cache hit $0.16) · Output $4.00 / 1M |
 
-Sources: Azure Speech pricing page; DeepSeek API docs pricing page (peak/off-peak: off-peak = all hours except 01:00–04:00 and 06:00–10:00 UTC weekdays).
+Sources: Azure Speech pricing page; DeepSeek API docs pricing page (peak/off-peak: off-peak = all hours except 01:00–04:00 and 06:00–10:00 UTC weekdays); Moonshot platform pricing page (verified 2026-10-02 — note all retired Kimi models 404, only `kimi-k3` / `kimi-k2.6` / `kimi-k2.7-code(-highspeed)` are on sale).
 
 ## Token budget per 50-minute lecture
 
@@ -34,6 +35,12 @@ Spoken English at ~150 wpm → ≈ 7,500 words ≈ **10k tokens** of transcript.
 | DeepSeek output (34k × $3.96/1M) | $0.13 | $0.07 |
 | **Total per lecture** | **≈ $1.07** | **≈ $0.96** |
 | …with F0 free ASR (first 5 hrs/month) | ≈ $0.24 | ≈ $0.13 |
+
+**Cross-check with the fallback provider (Kimi `kimi-k2.6`):** same token budget →
+input 85k × $0.95/1M ≈ $0.08, output 34k × $4.00/1M ≈ $0.14, LLM ≈ $0.22
+→ **≈ $1.05 per lecture**. Swapping providers moves the total by less than 5% —
+evidence that the cost structure is dominated by ASR and by *orchestration
+decisions* (how often we re-run generation), not by which LLM we rent.
 
 ## Reading
 

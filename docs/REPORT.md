@@ -12,9 +12,13 @@ What this changes versus today: today's alternatives are (a) taking incomplete n
 
 The pipeline is microphone → WebSocket → Azure Speech (narrow-ML ASR) → transcript buffer → DeepSeek (foundation model) for translation, outline, and quiz, coordinated by an agent-style Node backend that holds session state and decides *when* each step re-runs: translation per finalized sentence, outline regeneration as content accumulates, quiz generation once at session end.
 
-We deliberately **built** the orchestration layer (session state machine, rolling outline merge, resume-from-history) and **rented** both intelligence layers. This was the right call: self-hosting ASR or an LLM would have consumed the whole project for zero user-visible gain, and the cost analysis (`docs/COST_ANALYSIS.md`) shows the rented path costs ≈ US$1 per 50-minute lecture — with ~80% of that being ASR, not the LLM. The agent layer is also our cost lever: outline re-run frequency dominates LLM input tokens, and DeepSeek's context caching makes the rolling design affordable.
+We deliberately **built** the orchestration layer (session state machine, rolling outline merge, resume-from-history) and **rented** both intelligence layers. This was the right call: self-hosting ASR or an LLM would have consumed the whole project for zero user-visible gain, and the cost analysis (`docs/COST_ANALYSIS.md`) shows the rented path costs ≈ US$1 per 50-minute lecture — with ~80% of that being ASR, not the LLM. The agent layer is also our cost lever: outline re-run frequency dominates LLM input tokens, and provider-side context caching makes the rolling design affordable.
+
+The "rent" thesis was stress-tested in practice: during evaluation week our DeepSeek balance ran dry, and because the LLM sits behind an OpenAI-compatible interface, we re-pointed the entire system — product and eval harness — at Kimi (`kimi-k2.6`) with three environment variables and no code-path changes. (One real migration wrinkle, documented in `server/deepseek.js`: Kimi's current models *lock* the `temperature` parameter and reject explicit values, so the client omits it when a custom provider is configured.) The evaluation numbers below were therefore produced on `kimi-k2.6`; per-lecture cost differs from DeepSeek by under 5% (`docs/COST_ANALYSIS.md`), and we treat provider-swap-ability as a feature of the architecture, not an accident of the week.
 
 ## 3. Metrics: targeted, reached, and critiqued
+
+*(All LLM-generated artifacts and judgments in this section were produced on `kimi-k2.6` via the OpenAI-compatible provider switch described in Section 2.)*
 
 **Targeted (Milestone 1):** note coverage ≥ 80% of instructor-emphasized key points.
 

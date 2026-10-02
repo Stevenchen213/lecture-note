@@ -108,6 +108,16 @@ AZURE_SPEECH_REGION=japaneast
 DEEPSEEK_API_KEY=your_deepseek_api_key
 ```
 
+Optional — switch the LLM to any OpenAI-compatible provider (e.g. Kimi/Moonshot). These override DeepSeek when set:
+
+```env
+LLM_BASE_URL=https://api.moonshot.ai/v1
+LLM_MODEL=kimi-k2.6
+LLM_API_KEY=your_kimi_api_key
+```
+
+Note: when a custom provider is set, `temperature` is NOT sent (Kimi's current models lock it and reject explicit values); set `LLM_TEMPERATURE` to force one.
+
 For production frontend:
 
 ```env
@@ -123,7 +133,7 @@ VITE_WS_URL=wss://your-render-backend.onrender.com
 | Frontend | React 18, Vite 5, TailwindCSS 3 |
 | Backend | Node.js 20, WebSocket (`ws`) |
 | ASR | Azure Speech Services (en-IN, continuous recognition) |
-| LLM | DeepSeek API (OpenAI-compatible) |
+| LLM | DeepSeek API（默认）或任意 OpenAI 兼容服务（如 Kimi/Moonshot），经 `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY` 切换 |
 | PPT Parsing | `adm-zip` (PPTX = ZIP of XML) |
 | PDF Parsing | `pdfjs-dist` + `canvas` (text extraction + render) |
 | OCR | `tesseract.js` (image-based PDF fallback) |

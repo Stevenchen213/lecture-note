@@ -3,12 +3,20 @@
  * 功能：英→中实时翻译 + 结构化双语大纲 + 练习题生成
  */
 
-const BASE_URL = 'https://api.deepseek.com/v1';
-const MODEL = 'deepseek-chat';
+// 默认 DeepSeek；可用环境变量切换到任何 OpenAI 兼容服务（如 Kimi/Moonshot）
+// LLM_BASE_URL=https://api.moonshot.cn/v1  LLM_MODEL=kimi-k2-0905-preview  LLM_API_KEY=sk-...
+// 注意：必须在请求时读取（而非模块加载时），因为 dotenv 在 import 之后才执行
+function baseUrl() {
+  return process.env.LLM_BASE_URL || 'https://api.deepseek.com/v1';
+}
+
+function model() {
+  return process.env.LLM_MODEL || 'deepseek-chat';
+}
 
 function key() {
-  const k = process.env.DEEPSEEK_API_KEY;
-  if (!k) throw new Error('缺少 DEEPSEEK_API_KEY');
+  const k = process.env.LLM_API_KEY || process.env.DEEPSEEK_API_KEY;
+  if (!k) throw new Error('缺少 LLM_API_KEY 或 DEEPSEEK_API_KEY');
   return k;
 }
 
@@ -21,11 +29,16 @@ async function chat(messages, opts = {}) {
 
   console.log(`[DeepSeek #${reqId}] 发起请求… (已成功${reqId - failCount - 1}, 已失败${failCount})`);
 
-  const body = { model: MODEL, messages, temperature, max_tokens: maxTokens };
+  const body = { model: model(), messages, max_tokens: maxTokens };
   // json_object 模式强制模型输出合法 JSON，避免长输出漏括号/结构错乱
   if (jsonMode) body.response_format = { type: 'json_object' };
+  // DeepSeek 接受任意 temperature；Kimi k2.6/k3 等新模型 temperature 被锁定，
+  // 显式传参会直接报错——切换供应商时默认不传，需要时可用 LLM_TEMPERATURE 强制指定
+  const customProvider = process.env.LLM_MODEL || process.env.LLM_BASE_URL;
+  if (!customProvider) body.temperature = temperature;
+  else if (process.env.LLM_TEMPERATURE) body.temperature = Number(process.env.LLM_TEMPERATURE);
 
-  const res = await fetch(`${BASE_URL}/chat/completions`, {
+  const res = await fetch(`${baseUrl()}/chat/completions`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
