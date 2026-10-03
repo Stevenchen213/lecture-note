@@ -4,3 +4,4 @@ dist/
 *.log
 .DS_Store
 server/test/lecture_test.pcm
+server/eng.traineddata
