@@ -51,8 +51,10 @@ The reported run used Kimi (`kimi-for-coding`, via the OpenAI-compatible switch 
 `server/.env`) for both outline generation and judging, with no explicit temperature
 (Kimi's current models lock that parameter). All raw judge inputs/outputs are
 reproducible by re-running the script. We treat LLM-as-judge as a scaling tool, not
-ground truth: the labeled key points are atomic facts, and spot-checking judge
-decisions on 2 segments showed no disagreement with human judgment.
+ground truth: the labeled key points are atomic facts, and a human spot-check of the
+weakest segment (seg09, capped coverage 80%) found the judge *stricter* than human
+judgment (a human reads all 10 key points as covered) — so reported coverage is, if
+anything, conservative.
 
 ## Why this design answers the feedback
 
