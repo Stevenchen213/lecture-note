@@ -117,7 +117,13 @@ export async function startRecognition(ws, onTranscript, onPartial) {
 
 export function pushAudioData(audioBuffer) {
   if (pushStream) {
-    pushStream.write(audioBuffer);
+    // Node Buffer → 独立 ArrayBuffer 拷贝（Azure SDK 在部分环境下只接受 ArrayBuffer；
+    // slice 按 byteOffset 精确截取，字节内容不变）
+    if (ArrayBuffer.isView(audioBuffer)) {
+      pushStream.write(audioBuffer.buffer.slice(audioBuffer.byteOffset, audioBuffer.byteOffset + audioBuffer.byteLength));
+    } else {
+      pushStream.write(audioBuffer);
+    }
   }
 }
 
