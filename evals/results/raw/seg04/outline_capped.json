@@ -1,0 +1,82 @@
+{
+  "title": "峰值查找：一维复杂度与二维贪心爬山",
+  "titleEn": "Peak Finding: 1D Complexity and 2D Greedy Ascent",
+  "sections": [
+    {
+      "heading": "一维二分查找递推与复杂度",
+      "headingEn": "1D Divide-and-Conquer Recurrence",
+      "items": [
+        {
+          "text": "执行算法写方程：T(n)=T(n/2)+Θ(1)；常数2来自左右两侧最多两次比较，因此记为Θ(1)。",
+          "textEn": "T(n)=T(n/2)+Theta(1); constant 2 means left/right comparisons."
+        },
+        {
+          "text": "展开到基例 T(1)=Θ(1)：单元素数组直接返回为峰值。",
+          "textEn": "Base case T(1)=Theta(1): one-element array returns peak."
+        },
+        {
+          "text": "总复杂度为 Θ(log2 n)，由 log2 n 层常数项相加得到。",
+          "textEn": "Total Theta(log2 n) from log2 n constant levels."
+        },
+        {
+          "text": "老师强调：Θ(n) 与 Θ(log n) 是指数级差距，本质是 2^n 与 n 的差别；大输入下应尽量降复杂度。",
+          "textEn": "Key: Theta(n) vs Theta(log n) is exponential: 2^n vs n."
+        }
+      ]
+    },
+    {
+      "heading": "实验对比数据",
+      "headingEn": "Empirical Comparison",
+      "items": [
+        {
+          "text": "Python 实现一维两算法；n 约一千万时，Θ(n) 算法约 13 秒。",
+          "textEn": "Python n=10 million: Theta(n) takes 13 seconds."
+        },
+        {
+          "text": "同一输入下二分峰值算法约 0.001 秒，差异巨大。",
+          "textEn": "Binary peak algorithm takes 0.001 seconds."
+        }
+      ]
+    },
+    {
+      "heading": "二维峰值定义",
+      "headingEn": "2D Peak Definition",
+      "items": [
+        {
+          "text": "二维版本是矩阵/二维数组，n 行 m 列；峰值是“小山顶”。",
+          "textEn": "2D matrix has n rows and m columns."
+        },
+        {
+          "text": "若邻域为 b 左、c 上、d 右、e 下，则 a 是 2D 峰值当且仅当 a≥b、c、d、e。",
+          "textEn": "a is a peak iff a>=b,c,d,e."
+        },
+        {
+          "text": "使用 ≥ 与一维一致：任意 2D 矩阵总能找到峰值。",
+          "textEn": "Using >= ensures a peak always exists in any 2D matrix."
+        }
+      ]
+    },
+    {
+      "heading": "Greedy Ascent 直观算法",
+      "headingEn": "Greedy Ascent Algorithm",
+      "items": [
+        {
+          "text": "直接算法称 Greedy Ascent：先选起点，再沿某方向爬山寻找峰值。",
+          "textEn": "Greedy Ascent picks a start, then climbs toward a peak."
+        },
+        {
+          "text": "必须确定默认遍历策略：例如从中点开始，先向左；到边后向下；若邻居更大则跟随，否则反向。",
+          "textEn": "It chooses start and defaults such as left first, then down at edges."
+        },
+        {
+          "text": "例：矩阵含 14,13,12,15,9,11,17；从 12 出发可沿 12->13->14->15->16->17->19->20 找到峰值。",
+          "textEn": "Example path: 12->13->14->15->16->17->19->20 reaches a peak."
+        },
+        {
+          "text": "老师未给严格细节；最坏情况需看给定矩阵、任意起点、任意策略，如是否 left-first。",
+          "textEn": "Worst case depends on matrix, start point, and left-first strategy."
+        }
+      ]
+    }
+  ]
+}

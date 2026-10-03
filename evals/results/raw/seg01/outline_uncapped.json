@@ -1,0 +1,162 @@
+{
+  "title": "线性方程组求解：行图像与列图像（二维情形）",
+  "titleEn": "Solving Linear Equations: Row Picture and Column Picture in 2D",
+  "sections": [
+    {
+      "heading": "示例方程组与矩阵形式",
+      "headingEn": "Example System and Matrix Form",
+      "items": [
+        {
+          "text": "课程用 n=2、两个方程两个未知数的例子作为起点：矩阵 A 的两列是 (2, -1) 与 (-1, 2)，右端项 b 是 (0, 3)。",
+          "textEn": "The lecture starts with the n=2 case, two equations and two unknowns: the columns of A are (2, -1) and (-1, 2), and the right-hand side b is (0, 3)."
+        },
+        {
+          "text": "对应方程可还原为 2x - y = 0 和 -x + 2y = 3；老师说这是二维情形的“正确起点”。",
+          "textEn": "The corresponding equations are 2x - y = 0 and -x + 2y = 3; the instructor says this is the right place to start for n equal 2."
+        },
+        {
+          "text": "解被反复核验为 x = 1, y = 2；代入第二条有 -1 + 4 = 3，且该点位于两条直线上。",
+          "textEn": "The solution is repeatedly checked as x = 1, y = 2; substituting into the second equation gives -1 + 4 = 3, and the point lies on both lines."
+        }
+      ]
+    },
+    {
+      "heading": "行图像：先判断直线是否过原点",
+      "headingEn": "Row Picture: Check Whether the Line Passes Through the Origin",
+      "items": [
+        {
+          "text": "老师强调“总是很重要的是：过不过原点？”第一条直线过原点，因为右端有 0；典型点可取 x = 1/2, y = 1。",
+          "textEn": "The instructor stresses, 'It's always important: do we go through the origin or not?' The first line does pass through the origin because of the zero; a typical point is x = 1/2, y = 1."
+        },
+        {
+          "text": "第二条直线不过原点：若 x = 0 且 y = 0，左端不能得到 3，因此原点不是解。",
+          "textEn": "The second line does not pass through the origin: if x and y are zero, the left side cannot give 3, so the origin is not on the line."
+        },
+        {
+          "text": "求直线与坐标轴交点是快速画图技巧：令 y = 0，第二条直线给出 x = -3，所以 (-3, 0) 是直线上一点。",
+          "textEn": "Finding axis intercepts is a quick graphing trick: set y = 0 for the second line and get x = -3, so (-3, 0) is one point on the line."
+        }
+      ]
+    },
+    {
+      "heading": "行图像：取点画第二条直线",
+      "headingEn": "Row Picture: Plot Points for the Second Line",
+      "items": [
+        {
+          "text": "老师再取 x = -1：此时 -x = 1，令 y = 1 则 2y = 2，1 + 2 = 3，所以 (-1, 1) 满足方程。",
+          "textEn": "The instructor then takes x = -1: -x = 1, and with y = 1 we have 2y = 2, so 1 + 2 = 3; therefore (-1, 1) satisfies the equation."
+        },
+        {
+          "text": "连接 (-3, 0) 与 (-1, 1) 两点即得第二条直线；老师说明两点定一线即可得到整条直线。",
+          "textEn": "Connecting (-3, 0) and (-1, 1) gives the second line; the instructor notes that two points determine the whole line."
+        },
+        {
+          "text": "第二条直线被“安排”经过交点 (1, 2)；这引出最关键的“同时落在两条直线上的点”。",
+          "textEn": "The second line was arranged to pass through the intersection (1, 2), leading to the all-important point lying on both lines."
+        }
+      ]
+    },
+    {
+      "heading": "行图像的解：两条直线的交点",
+      "headingEn": "Solution in the Row Picture: Intersection of Two Lines",
+      "items": [
+        {
+          "text": "行图像的解就是两条直线交点：x = 1, y = 2；该点同时解两个方程。",
+          "textEn": "In the row picture, the solution is the intersection of the two lines: x = 1, y = 2, which solves both equations simultaneously."
+        },
+        {
+          "text": "老师特别说“这是所有关键点中最重要的点——位于两条直线上的点”。",
+          "textEn": "The instructor especially calls it 'the all-important point that lies on both lines.'"
+        },
+        {
+          "text": "课堂现场核验：x = 1 时第二条方程为 -1 + 4 = 3，确认 (1, 2) 同时满足两个方程。",
+          "textEn": "Checked in class: for x = 1, the second equation gives -1 + 4 = 3, confirming (1, 2) satisfies both equations."
+        }
+      ]
+    },
+    {
+      "heading": "列图像：把 Ax=b 看成列的线性组合",
+      "headingEn": "Column Picture: View Ax=b as a Linear Combination of Columns",
+      "items": [
+        {
+          "text": "老师提醒“注意，这是关键点”，随后从行图像切换到列图像，开始看矩阵的列。",
+          "textEn": "The instructor says, 'Pay attention, this is the key point,' then switches from the row picture to the column picture by looking at the columns of the matrix."
+        },
+        {
+          "text": "把两个方程一次性写成 x*(2,-1) + y*(-1,2) = (0,3)：左边第一列乘以 x，第二列乘以 y，再加起来。",
+          "textEn": "Write both equations at once as x*(2,-1) + y*(-1,2) = (0,3): the first column is multiplied by x, the second by y, and then added."
+        },
+        {
+          "text": "方程在问：找到合适的数量，把第一列向量和第二列向量组合成右端向量 (0,3)。",
+          "textEn": "The equation asks: find the right amounts to combine the first column vector and the second column vector into the right-hand vector (0,3)."
+        },
+        {
+          "text": "这种“一列乘一个数，再加另一列乘一个数”的操作叫线性组合；老师称其为“整门课最基本的运算”。",
+          "textEn": "This operation — multiply a column by a number and add another column times a number — is a linear combination; the instructor calls it the most fundamental operation in the whole course."
+        }
+      ]
+    },
+    {
+      "heading": "列图像中的两个列向量",
+      "headingEn": "The Two Column Vectors in the Column Picture",
+      "items": [
+        {
+          "text": "第一列是向量 (2, -1)：向右 2、向下 1，老师口头称其为 column one。",
+          "textEn": "The first column is the vector (2, -1): two to the right and one down, referred to orally as column one."
+        },
+        {
+          "text": "第二列是向量 (-1, 2)：第一分量 -1，第二分量向上 2，即 (-1, 2)。",
+          "textEn": "The second column is the vector (-1, 2): first component -1 and second component up 2, i.e. (-1, 2)."
+        },
+        {
+          "text": "老师不写下大定义，而强调看图就能明白：column one 在那里，column two 在那里，乘某些数再相加就是组合。",
+          "textEn": "Rather than writing a big definition, the instructor stresses that you can see it: there is column one, there is column two, multiply by some numbers and add — that is the combination."
+        }
+      ]
+    },
+    {
+      "heading": "列图像的几何目标：组合出 b=(0,3)",
+      "headingEn": "Geometric Goal in the Column Picture: Combine to Get b=(0,3)",
+      "items": [
+        {
+          "text": "列图像先把代数写出来，再问它的几何图像是什么：这些向量有两个分量，所以应画二维向量图。",
+          "textEn": "The column picture first writes the algebra and then asks for the geometry: since the vectors have two components, draw a 2D vector picture."
+        },
+        {
+          "text": "老师直接选择“正确的组合”，也就是能产出 (0,3) 的组合；他说“为什么不取正确的组合呢？”",
+          "textEn": "The instructor directly chooses 'the right combination,' the one that produces (0,3), saying, 'Why not the right combination?'"
+        },
+        {
+          "text": "正确组合对应取 x = 1 份第一列 (2,-1)，y = 2 份第二列 (-1,2)，合起来正好得到 (0,3)。",
+          "textEn": "The right combination takes x = 1 copy of the first column (2,-1) and y = 2 copies of the second column (-1,2), which together give exactly (0,3)."
+        },
+        {
+          "text": "行图像的交点 (1,2) 与列图像的系数 x=1、y=2 是同一个解的两种看法。",
+          "textEn": "The intersection (1,2) in the row picture and the coefficients x=1, y=2 in the column picture are the same solution viewed two ways."
+        }
+      ]
+    },
+    {
+      "heading": "课堂强调与考点提示",
+      "headingEn": "Emphases and Exam-Relevant Warnings",
+      "items": [
+        {
+          "text": "必须会判断每条直线是否过原点：看右端项是否为 0；本例第一条过原点，第二条不过。",
+          "textEn": "You must be able to decide whether each line passes through the origin: check whether the right-hand side is 0; here line one does, line two does not."
+        },
+        {
+          "text": "画直线用两点法：可令 y=0 求 x 截距，也可任取 x 解出 y；本例用 (-3,0) 和 (-1,1) 定第二条线。",
+          "textEn": "Graph lines using two points: set y=0 to get an x-intercept, or choose any x and solve for y; here (-3,0) and (-1,1) determine the second line."
+        },
+        {
+          "text": "记住核心术语：linear combination of columns；老师说这是本课程最基础的操作，需能识别“列一乘 x 加列二乘 y”。",
+          "textEn": "Remember the key term: linear combination of columns; the instructor says it is the course's most basic operation, so recognize 'column one times x plus column two times y.'"
+        },
+        {
+          "text": "二维情形要会在心里同时保留两种图像：行图像求“交点”，列图像求“组合系数”。",
+          "textEn": "For the 2D case, keep both pictures in mind: the row picture finds the intersection point, while the column picture finds the combination coefficients."
+        }
+      ]
+    }
+  ]
+}

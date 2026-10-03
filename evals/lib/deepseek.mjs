@@ -14,7 +14,7 @@ function loadEnv() {
   const envPath = path.join(ROOT, 'server', '.env');
   const lines = fs.readFileSync(envPath, 'utf-8').split('\n');
   for (const line of lines) {
-    const m = line.match(/^([A-Z_]+)=(.*)$/);
+    const m = line.trim().match(/^([A-Z_]+)=(.*)$/); // trim 去掉 CRLF 的 \r
     if (m && !process.env[m[1]]) process.env[m[1]] = m[2].trim();
   }
 }
@@ -33,10 +33,12 @@ function apiKey() {
 
 export async function chat(messages, opts = {}) {
   const { temperature = 0.3, maxTokens = 2048, jsonMode = false } = opts;
-  const body = { model: MODEL, messages, max_tokens: maxTokens };
+  const customProvider = process.env.LLM_MODEL || process.env.LLM_BASE_URL;
+  // 推理型模型（如 kimi-for-coding）的 reasoning 会占用 max_tokens，给 3 倍余量防截断
+  const effectiveMaxTokens = customProvider ? maxTokens * 3 : maxTokens;
+  const body = { model: MODEL, messages, max_tokens: effectiveMaxTokens };
   if (jsonMode) body.response_format = { type: 'json_object' };
   // Kimi k2.6/k3 等新模型 temperature 被锁定，显式传参会报错——自定义供应商时默认不传
-  const customProvider = process.env.LLM_MODEL || process.env.LLM_BASE_URL;
   if (!customProvider) body.temperature = temperature;
   else if (process.env.LLM_TEMPERATURE) body.temperature = Number(process.env.LLM_TEMPERATURE);
 

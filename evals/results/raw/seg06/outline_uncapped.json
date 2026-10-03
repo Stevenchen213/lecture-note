@@ -1,0 +1,192 @@
+{
+  "title": "市场经济、不平等与课程路线图",
+  "titleEn": "Market Economies, Inequality, and the Course Roadmap",
+  "sections": [
+    {
+      "heading": "课程核心问题与“看不见的手”",
+      "headingEn": "The Core Question and the Invisible Hand",
+      "items": [
+        {
+          "text": "本学期核心内容：市场如何运转；亚当·斯密意义上的“看不见的手”如何通过“市场的魔力”使正确商品被生产出来，并交到正确的人手中。",
+          "textEn": "The core of the course is how the market works and how Smith's 'invisible hand' can, through the 'magic of the market,' lead to the right goods being produced and getting into the hands of the right people."
+        },
+        {
+          "text": "课堂反复使用的市场隐喻：人们聚在市场中并共同作出决策；价格与交易协调分散的个体选择，而不是由中央权威统一分配。",
+          "textEn": "The recurring market metaphor is people coming together in a market and working together to make decisions; prices and exchange coordinate decentralized individual choices rather than a central authority allocating goods."
+        },
+        {
+          "text": "老师强调要把握“大图景/big picture”：如果不仅对细节困惑，也对整门课的逻辑结构困惑，应去找老师谈，而不要只卡在单个知识点上。",
+          "textEn": "The professor stressed keeping the 'big picture': if you are confused not only about the details but about the overall logic of the course, come talk rather than staying stuck on one point."
+        }
+      ]
+    },
+    {
+      "heading": "市场经济的巨大优势：增长与财富创造",
+      "headingEn": "The Great Advantage of Markets: Growth and Wealth Creation",
+      "items": [
+        {
+          "text": "老师明确结论：市场机制“成功了/it worked”，使美国成为世界上最富有的国家，并在数个世纪里保持快速增长。",
+          "textEn": "The professor's clear conclusion: the market mechanism 'worked,' making America the richest nation in the world and enabling rapid growth for centuries."
+        },
+        {
+          "text": "优势来源：市场激励与创新带来极高生产率；相比命令经济，分散决策更能利用局部信息并奖励有效率的生产者。",
+          "textEn": "The advantage comes from incentives and innovation driving very high productivity; compared with a command economy, decentralized decisions better use local information and reward efficient producers."
+        },
+        {
+          "text": "课堂语境：成功的另一面不是免费午餐；同一套“谁能支付最多谁得到商品”的逻辑，也制造了分配后果。",
+          "textEn": "In the lecture's framing, success is not a free lunch; the same logic of 'whoever can pay the most gets the good' also creates distributional consequences."
+        }
+      ]
+    },
+    {
+      "heading": "资本主义的必然代价：不平等",
+      "headingEn": "The Inevitable Cost of Capitalism: Inequality",
+      "items": [
+        {
+          "text": "关键判断：市场经济会导致“巨大的不平等/tremendous inequality”，这是资本主义经济不可避免的产出，而非偶然副作用。",
+          "textEn": "Key claim: market economies lead to 'tremendous inequality,' which is an inevitable outcome of a capitalist economy, not an accidental side effect."
+        },
+        {
+          "text": "分配规则对比：市场经济中“正确的人/合适的人”是能付最高价的人；命令经济中，撇开腐败，应是“最需要的人”得到商品。",
+          "textEn": "Allocation rule contrast: in a market economy the 'right person' is the one who can pay the most; in a command economy, setting aside corruption, it is the person who needs it most."
+        },
+        {
+          "text": "肾脏案例：命令经济会说“找到濒临死亡的人并把肾给他”；资本主义经济会说“找到愿意为肾支付最多的人并把肾给他”。老师评价：这不公平。",
+          "textEn": "Kidney example: the command economy would 'find the person close to death and give them the kidney'; the capitalist economy would 'find the person willing to pay the most.' The professor's verdict: that is unfair."
+        },
+        {
+          "text": "老师把不平等归因于市场逻辑本身：在市场中，想要且能够支付最多的人会得到商品，因此较大不平等会发生。",
+          "textEn": "The professor attributes inequality to the market logic itself: in a market, those who want and can pay the most get the stuff, so large inequality will happen."
+        },
+        {
+          "text": "表述强调：美国是“最不平等的主要国家之一/最不平等的主要大国”，其不平等程度令其他国家相形见绌。",
+          "textEn": "Emphasis: America is described as the most unequal major nation, with inequality that dwarfs what is seen in other countries."
+        }
+      ]
+    },
+    {
+      "heading": "美国不平等的具体数据",
+      "headingEn": "Specific U.S. Inequality Data",
+      "items": [
+        {
+          "text": "必须记住的数据：美国前 1% 人群控制全国全部收入的 25%。",
+          "textEn": "Data to remember: the top 1% of Americans control 25% of all income in the U.S."
+        },
+        {
+          "text": "横向比较：这一比例至少比其他任何主要大国高 5 个百分点；也就是说美国顶层收入集中度显著更高。",
+          "textEn": "Cross-country comparison: that share is at least 5 percentage points higher than in any other major nation, meaning U.S. top-income concentration is significantly higher."
+        },
+        {
+          "text": "老师将数据与机制相连：高收入集中不是孤立统计，而是“支付能力决定配置”的市场规则的结果。",
+          "textEn": "The professor connects the statistic to the mechanism: high income concentration is not an isolated number but the result of the market rule that ability to pay determines allocation."
+        }
+      ]
+    },
+    {
+      "heading": "经济体制光谱：命令、社会主义与受限资本主义",
+      "headingEn": "The Spectrum: Command, Socialist, and Constrained Capitalist Economies",
+      "items": [
+        {
+          "text": "老师给出的共识：几乎每位经济学家都会同意，命令经济不是可行方向；真正争论发生在资本主义模型内部，即政府应介入多深。",
+          "textEn": "The stated consensus: virtually every economist agrees a command economy is not the way to go; the real debate is within the capitalist model over how far government should intervene."
+        },
+        {
+          "text": "纠正常见误称：欧洲国家常被称为“社会主义”，但它们不是社会主义；社会主义意味着政府控制产业，而不是仅仅高税收高福利。",
+          "textEn": "Correcting a common mislabel: European countries are often called socialist, but they are not; socialism means government controls industry, not merely high taxes and welfare."
+        },
+        {
+          "text": "社会主义的定义细节：消费者仍可决定买什么，但政府生产一切；政府经营银行、航空公司，并决定生产多少钢铁。",
+          "textEn": "Definition details of socialism: consumers still decide what to buy, but the government produces everything; it runs the banks, runs the airlines, and decides how much steel to produce."
+        },
+        {
+          "text": "实质定位：社会主义大致位于资本主义与命令经济之间——政府负责生产，市场力量决定配置；老师说世界上没有其他主要国家真正如此。",
+          "textEn": "Substantive location: socialism is roughly halfway between capitalism and a command economy—the government does production while market forces decide allocation; no other major country truly fits this, according to the professor."
+        },
+        {
+          "text": "更准确的分类：其他主要国家都是不同程度的“受限资本主义经济/constrained capitalist economies”，差别只在约束带有多宽。",
+          "textEn": "The more accurate classification: other major countries are all different levels of 'constrained capitalist economies'; they differ in how wide the constraint is."
+        },
+        {
+          "text": "保龄球道类比：不同国家像宽窄不同的保龄球道；资本主义给企业与消费者留出活动通道，但政府通过税收、监管和福利把道收窄。",
+          "textEn": "Bowling-lane analogy: countries are like bowling alleys of different widths; capitalism leaves lanes for firms and consumers, while government narrows them through taxes, regulation, and welfare."
+        }
+      ]
+    },
+    {
+      "heading": "欧洲模式与核心权衡",
+      "headingEn": "The European Model and the Core Trade-off",
+      "items": [
+        {
+          "text": "欧洲特征：约束更强的资本主义、高得多的税收、更多政府干预，同时也更平等。",
+          "textEn": "European features: much more constrained capitalism, much higher taxes, much more government intervention, and also much more equality."
+        },
+        {
+          "text": "课程将反复讨论的关键权衡：更自由的经济规模更大，但不平等也更大；更不自由的经济不平等更小。",
+          "textEn": "The key trade-off to be discussed all semester: a freer economy is larger but produces more inequality; a less free economy has less inequality."
+        },
+        {
+          "text": "比较对象：自由端若比美国更自由，则增长/产出可能更高但不平等更重；约束端若比美国更干预，则平等改善但市场激励被削弱。",
+          "textEn": "Comparison points: an economy freer than the U.S. may have higher output but heavier inequality; an economy more interventionist than the U.S. improves equality but weakens market incentives."
+        },
+        {
+          "text": "老师提到自己课程 1441 更聚焦这些权衡；本课会用标准模型先建立基准，再理解何时市场结果会偏离理想。",
+          "textEn": "The professor noted his course 1441 focuses more on these trade-offs; this course first builds the benchmark with the standard model, then understands when market outcomes deviate from the ideal."
+        }
+      ]
+    },
+    {
+      "heading": "师生沟通与答疑规则",
+      "headingEn": "Communication and Office-Hour Rules",
+      "items": [
+        {
+          "text": "求助分工：若是作业题/problem set 的问题，去找助教 TA；若是不理解概念、想聊经济学、生活、音乐等，来找教授本人。",
+          "textEn": "Division of labor for help: for problem-set questions, go to the TAs; for not understanding a concept or wanting to talk economics, life, music, etc., come to the professor."
+        },
+        {
+          "text": "老师强烈鼓励面谈：由于他担任系主任/chairman，需要经常在系里，时间充足，但请提前预约后再来。",
+          "textEn": "The professor strongly encourages visits: now that he is chairman he has to be around all the time and is available plenty, but please make an appointment before coming."
+        },
+        {
+          "text": "沟通原则：困惑于“大图景”也值得约谈；老师把概念理解与课程导航看作比单个作业答案更重要。",
+          "textEn": "Communication principle: confusion about the 'big picture' is also worth a meeting; the professor treats conceptual understanding and course navigation as more important than a single homework answer."
+        }
+      ]
+    },
+    {
+      "heading": "本学期路线图",
+      "headingEn": "Roadmap for the Semester",
+      "items": [
+        {
+          "text": "接下来若干讲：先画出需求曲线由什么决定，再画出供给曲线由什么决定。",
+          "textEn": "Over the next lectures: first map out what makes a demand curve, then map out what makes a supply curve."
+        },
+        {
+          "text": "随后将需求与供给合在一起，回到课程开头的起点，但现在能理解需求、供给的含义，以及为什么均衡是合理的。",
+          "textEn": "Then put demand and supply together and return, in a sense, to where the course started—but now with an understanding of what demand and supply mean and why equilibrium makes sense."
+        },
+        {
+          "text": "之后转向规范经济学：论证市场均衡为何真的是最优结果。",
+          "textEn": "After that, turn to normative economics: discuss why the market equilibrium is really the best outcome."
+        },
+        {
+          "text": "时间分配：大约前半学期讲标准经济模型；后半学期将转向对标准模型的偏离，但录音在此处中断，未给出完整主题。",
+          "textEn": "Time allocation: about the first half of the class covers the standard economic model; the second half will turn to departures from the standard model, but the recording cuts off before the topic is completed."
+        }
+      ]
+    },
+    {
+      "heading": "录音中断处与可用结论",
+      "headingEn": "Where the Recording Ends and What Can Be Concluded",
+      "items": [
+        {
+          "text": "可靠结论截止点：课程前半段建立标准模型并支持市场均衡；结尾只说到“The second half of the class will be...”，后续具体内容不应凭空补充。",
+          "textEn": "Reliable endpoint: the first half builds the standard model and defends market equilibrium; the lecture ends at 'The second half of the class will be...' and the rest should not be invented."
+        },
+        {
+          "text": "从上下文可推断但不展开：后半学期大概率讨论市场失灵、政府干预、不平等或行为/现实偏离等“标准模型之外”的主题；需以后续课堂确认。",
+          "textEn": "Context suggests but does not confirm: the second half likely covers beyond-the-standard-model topics such as market failure, government intervention, inequality, or behavioral/real-world deviations; this needs later lectures to confirm."
+        }
+      ]
+    }
+  ]
+}

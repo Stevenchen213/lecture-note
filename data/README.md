@@ -6,7 +6,7 @@ created in response to Milestone 1 feedback ("3 to 5 lecture segments is thin �
 ## Contents
 
 - `segments/seg01.txt … seg10.txt` — 10 lecture transcript excerpts, ~700–800 words each (~6 minutes of speech, ≈ 1,000 tokens).
-- `keypoints/segNN.keypoints.json` — the ground-truth key points for each segment (8–12 per segment, 102 in total).
+- `keypoints/segNN.keypoints.json` — the ground-truth key points for each segment (8–12 per segment, 103 in total).
 - `raw/` — original VTT caption files and the slicing script (`slice_segments.py`) that produced the segments, for full reproducibility.
 
 ## Sources

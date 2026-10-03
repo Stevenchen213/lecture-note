@@ -1,0 +1,70 @@
+{
+  "title": "微观经济学导论：模型、简化假设与供需",
+  "titleEn": "Intro to Micro: Models, Simplifying Assumptions, and Supply-Demand",
+  "sections": [
+    {
+      "heading": "课程定位与经济学方法",
+      "headingEn": "Course Framing and Economic Method",
+      "items": [
+        {
+          "text": "现代经济学诞生于MIT，核心工具是约束最优化。",
+          "textEn": "Modern economics was developed at MIT through constrained-optimization tools."
+        },
+        {
+          "text": "经济学用简化模型描述两个或多个变量之间的关系；经济学没有普适科学定律，属于社会科学。",
+          "textEn": "Economics uses simplified models: descriptions of relationships among variables, without universal constants."
+        }
+      ]
+    },
+    {
+      "heading": "简化假设：解释力与可教性的权衡",
+      "headingEn": "Simplifying Assumptions: Explanation vs. Parsimony",
+      "items": [
+        {
+          "text": "建模要在“尽可能解释世界”和“模型简洁、可教可解”之间权衡。",
+          "textEn": "We trade off explaining the world against parsimonious models that are teachable and solvable."
+        },
+        {
+          "text": "看似强的假设：只写两种商品；其直觉可推广到n种商品，且数学更简单。",
+          "textEn": "Assume two goods: two-good intuition extends to n goods with easier math."
+        },
+        {
+          "text": "有些假设会引起反感；检验放松这些假设正是继续修经济学的原因。",
+          "textEn": "Some assumptions are offensive; testing them is why you become an economics major."
+        },
+        {
+          "text": "统计学家George Box名言：所有模型都是错的，但有些是有用的。",
+          "textEn": "George Box: all models are wrong, but some are useful."
+        }
+      ]
+    },
+    {
+      "heading": "三层学习要求",
+      "headingEn": "Three Levels of Understanding",
+      "items": [
+        {
+          "text": "学好本课需同时掌握数学、图形和直觉三种表达方式。",
+          "textEn": "Master mathematical, graphical, and intuitive levels to succeed."
+        }
+      ]
+    },
+    {
+      "heading": "首个模型：供需与亚当·斯密",
+      "headingEn": "First Model: Supply-Demand and Adam Smith",
+      "items": [
+        {
+          "text": "亚当·斯密在1776年《国富论》中奠定经济学，以供需模型解释价格。",
+          "textEn": "Adam Smith introduced supply and demand in The Wealth of Nations (1776)."
+        },
+        {
+          "text": "水对生命极重要、需求巨大却几乎免费；钻石非必需却价格高昂。",
+          "textEn": "Water is essential with huge demand, yet nearly free; diamonds are luxuries yet costly."
+        },
+        {
+          "text": "价格由需求与供给共同决定：水供给极丰裕，钻石稀缺。",
+          "textEn": "Price depends on both demand and supply: water is abundant, diamonds are rare."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "title": "一维峰值查找：问题定义与直接算法",
+  "titleEn": "1D Peak Finding: Problem Definition and Straightforward Algorithm",
+  "sections": [
+    {
+      "heading": "峰值存在性与问题定义",
+      "headingEn": "Peak Existence and Problem Definition",
+      "items": [
+        {
+          "text": "作业题：论证在「大于等于」定义下任何数组必然存在峰值（可去掉\"如果存在\"）。",
+          "textEn": "Homework: argue that with the \">=\" definition, any array always has a peak; the \"if it exists\" can be eliminated."
+        },
+        {
+          "text": "若定义改为严格大于（\">\"），峰值不一定存在；此时算法必须能证明不存在或找到峰值。",
+          "textEn": "With strict \">\", a peak may not exist; the algorithm must prove nonexistence or find one."
+        },
+        {
+          "text": "算法思维要点：设计通用算法，问题定义变化时仍有出发点解决第二版问题。",
+          "textEn": "Design general algorithms so a changed problem definition still gives you a starting point."
+        },
+        {
+          "text": "老师强调：穷尽搜索后要能论证\"我穷尽了，确实找不到\"，否则无法自证清白。",
+          "textEn": "Emphasized: after exhaustive search, you must argue you searched exhaustively and couldn't find it."
+        }
+      ]
+    },
+    {
+      "heading": "直接算法：从左向右扫描",
+      "headingEn": "Straightforward Algorithm: Left-to-Right Scan",
+      "items": [
+        {
+          "text": "从最左端开始逐个向右扫描，直到遇到峰值。",
+          "textEn": "Start from the left and walk across until a peak is found."
+        },
+        {
+          "text": "峰值在数组右端时（如1,2,3,4,5,6）最坏，需检查全部 n 个元素。",
+          "textEn": "Worst case: peak at far right (1,2,3,4,5,6), requiring all n elements."
+        },
+        {
+          "text": "峰值恰在中点时约需检查 n/2 个元素。",
+          "textEn": "If the peak is in the middle, about n/2 elements are checked."
+        }
+      ]
+    },
+    {
+      "heading": "复杂度分析",
+      "headingEn": "Complexity Analysis",
+      "items": [
+        {
+          "text": "最坏情况复杂度为 Θ(n)：最坏需看全部 n 个元素。",
+          "textEn": "Worst-case complexity is Theta(n): you may have to examine all n elements."
+        },
+        {
+          "text": "Θ(n) 同时给出上界和下界；O(n) 仅是上界。",
+          "textEn": "Theta(n) gives both lower and upper bounds; Big O of n is just an upper bound."
+        },
+        {
+          "text": "常数因子（如常数为1）可优化，但当前只关心渐近复杂度：该算法是线性的。",
+          "textEn": "Constants may vary, but we only care about asymptotic complexity here: linear."
+        }
+      ]
+    },
+    {
+      "heading": "更优思路：二分查找",
+      "headingEn": "Better Approach: Binary Search (Divide and Conquer)",
+      "items": [
+        {
+          "text": "学生回答：看中间元素，哪一侧更高就只看哪一半，因为该侧必有峰值。",
+          "textEn": "Student: check the middle; whichever side is higher must contain a peak, so cut the other half."
+        },
+        {
+          "text": "教授确认正确：不断将搜索区间减半，降低渐近复杂度。",
+          "textEn": "Professor confirmed: repeatedly halve the interval to lower the asymptotic complexity."
+        }
+      ]
+    }
+  ]
+}

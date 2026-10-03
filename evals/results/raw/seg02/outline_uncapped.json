@@ -1,0 +1,122 @@
+{
+  "title": "线性代数：三维方程组的行图像与列图像",
+  "titleEn": "Linear Algebra: Row Picture vs. Column Picture for 3×3 Systems",
+  "sections": [
+    {
+      "heading": "行图像（Row Picture）：三个平面相交于一点",
+      "headingEn": "The Row Picture: Three Planes Meeting at a Point",
+      "items": [
+        {
+          "text": "在 3×3 问题中，每一行（每个方程）在三维空间中代表一个平面（plane），z 可以是任意值",
+          "textEn": "In a 3×3 problem, each row (each equation) gives a plane in three dimensions; z can be anything"
+        },
+        {
+          "text": "两个方程（两个平面）相交于一条直线（line）——即两个平面相交的那条线",
+          "textEn": "Two equations (two planes) meet in a line — the line where the two planes intersect"
+        },
+        {
+          "text": "第三个方程是第三个平面，三个平面相交于一个点（point），这个点就是方程组的解",
+          "textEn": "The third equation is a third plane; the three planes meet in one point, which is the solution"
+        },
+        {
+          "text": "三个平面因为互不平行（not parallel）、不是特殊情形，所以确实交于唯一一点",
+          "textEn": "Because the three planes are not parallel and not special, they do meet in exactly one point — the solution"
+        },
+        {
+          "text": "老师强调：行图像在二维时很容易看（两条直线相交），但三维中三个平面相交就不那么直观了",
+          "textEn": "The row picture was a cinch for two lines meeting, but three planes meeting in 3D is not so clear"
+        },
+        {
+          "text": "在四维（four dimensions）中行图像更加难以可视化",
+          "textEn": "In four dimensions, the row picture becomes even less clear"
+        },
+        {
+          "text": "行图像的核心结论：行图像由三个平面组成，若一切正常，三平面交于一点，即为解",
+          "textEn": "Key takeaway of the row picture: it consists of three planes; if everything works right, they meet in one point — the solution"
+        }
+      ]
+    },
+    {
+      "heading": "列图像（Column Picture）：三个三维向量的线性组合",
+      "headingEn": "The Column Picture: Linear Combination of Three 3D Vectors",
+      "items": [
+        {
+          "text": "老师明确表示他更偏好列图像（column picture）",
+          "textEn": "The lecturer states he prefers the column picture"
+        },
+        {
+          "text": "列图像形式：x 乘以第一列 (2, -1, 0)，y 乘以第二列 (-1, 2, -3)，z 乘以第三列 (0, -1, 4)",
+          "textEn": "Column picture form: x times the first column (2, -1, 0), y times the second column (-1, 2, -3), z times the third column (0, -1, 4)"
+        },
+        {
+          "text": "等式右边（right-hand side）为 b = (0, -1, 4)，即要组合的列恰好等于右端项",
+          "textEn": "The right-hand side is b = (0, -1, 4); the columns must be combined to produce it"
+        },
+        {
+          "text": "等式左边是一个线性组合（linear combination），由三个三维向量（three dimensional vectors）组合而成",
+          "textEn": "The left-hand side is a linear combination of three vectors, each being a three-dimensional vector"
+        },
+        {
+          "text": "核心问题：找到三个向量的什么组合（combination）能够产生右端向量 b",
+          "textEn": "Core question: what combination of the three vectors produces the right-hand side vector b"
+        },
+        {
+          "text": "画图描述：第一列画为 (2, -1)，第二列 (-1, 2, -3) 画在某处，第三列 (0, -1, 4) 的第一个分量为 0、第二个为 -1",
+          "textEn": "Drawing description: first column drawn as (2, -1); second column (-1, 2, -3) somewhere; third column (0, -1, 4) with first component 0 and second component -1"
+        }
+      ]
+    },
+    {
+      "heading": "本例的解：b 恰好等于第三列",
+      "headingEn": "The Solution: b Happens to Equal the Third Column",
+      "items": [
+        {
+          "text": "老师特意（specially chosen by the lecturer）构造了这个问题：右端向量 b 恰好就是第三个列向量",
+          "textEn": "The problem was specially chosen by the lecturer: the right-hand side b is actually one of the columns"
+        },
+        {
+          "text": "因此解为：x = 0, y = 0, z = 1 —— 只需要第三个向量，前两个取零",
+          "textEn": "Therefore the solution is x = 0, y = 0, z = 1 — take one of column three and none of the others"
+        },
+        {
+          "text": "组合 (0, 0, 1) 正好就是之前三个平面相交的那个点（之前从行图像看不出）",
+          "textEn": "The combination (0, 0, 1) is exactly the point where the three planes met, which couldn't be seen from the row picture"
+        },
+        {
+          "text": "本例中第三列与 b 完全相同（column three is the same as b），所以答案一眼可见",
+          "textEn": "In this particular problem, column three is the same as b, so the answer is immediately visible"
+        }
+      ]
+    },
+    {
+      "heading": "预告：消元法与大图景",
+      "headingEn": "Preview: Elimination and the Big Picture",
+      "items": [
+        {
+          "text": "老师强调：并非总能从列图像直接看出解，需要系统化的方法",
+          "textEn": "The lecturer notes that the answer won't always be visible from the column picture either"
+        },
+        {
+          "text": "下一讲（next lecture）主题是消元法（elimination）——求解方程组的系统化方法",
+          "textEn": "The next lecture is about elimination — the systematic way to solve the equations"
+        },
+        {
+          "text": "所有软件（every bit of software），包括大规模生产级软件，都用消元法来解方程",
+          "textEn": "Every bit of software, including large-scale production software, solves equations by elimination"
+        },
+        {
+          "text": "消元法将在所有情形下求出 x, y, z（in all cases）",
+          "textEn": "Elimination will find x, y, z in all cases"
+        },
+        {
+          "text": "老师引入『大图景』（big picture）：保持左边的矩阵不变，只改变右端项（right-hand side）",
+          "textEn": "The 'big picture' idea: keep the same matrix on the left but change the right-hand side"
+        },
+        {
+          "text": "老师将右端项换成另一个同样相当特殊（pretty special）的向量，继续讨论",
+          "textEn": "The lecturer changes the right-hand side to something that is also pretty special and continues the discussion"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "title": "6.006 课程介绍：课程内容与模块概览",
+  "titleEn": "6.006 Course Introduction: Content and Module Overview",
+  "sections": [
+    {
+      "heading": "课程使用的经典数据结构",
+      "headingEn": "Classic Data Structures Used in the Course",
+      "items": [
+        {
+          "text": "课程将使用 Python 中称为字典（dictionaries）的数据结构，以及比常规二叉搜索树更高效的平衡二叉搜索树（balanced binary search trees）。",
+          "textEn": "The course will use data structures called dictionaries in Python, as well as balanced binary search trees, which are more efficient than regular binary search trees."
+        },
+        {
+          "text": "这些数据结构都是几十年前发明的，但经受住了时间的考验，至今仍然有用。",
+          "textEn": "These data structures were invented many decades ago, but they've stood the test of time and continue to be useful."
+        },
+        {
+          "text": "课程将以各种方式扩充（augment）这些数据结构，使其对特定类型的问题更高效。",
+          "textEn": "We will augment these data structures in various ways to make them more efficient for certain kinds of problems."
+        }
+      ]
+    },
+    {
+      "heading": "课程定位：分析与设计",
+      "headingEn": "Course Focus: Analysis vs. Design",
+      "items": [
+        {
+          "text": "本课程不会大量涉及算法设计（algorithm design），但会涉及一些设计以及大量的分析（analysis）。",
+          "textEn": "You won't be doing a whole lot of algorithm design in this class, but you will be doing some design and a whole lot of analysis."
+        },
+        {
+          "text": "后续课程 6.046《算法设计与分析》（Designing and Analysis of Algorithms）：如果喜欢本课程应该选修，可以在其中进行更多的算法设计。",
+          "textEn": "The following class, 6.046 Designing and Analysis of Algorithms, is a class you should take if you like this one; you can do a whole lot more design of algorithms in 6.046."
+        },
+        {
+          "text": "课程将学习这些数据结构的经典算法，包括排序（sorting）、匹配（matching）等。",
+          "textEn": "You will look at classic data structures and classical algorithms for these data structures, including things like sorting and matching, and so on."
+        }
+      ]
+    },
+    {
+      "heading": "Python 实现与作业（Problem Sets）结构",
+      "headingEn": "Python Implementations and Problem Set Structure",
+      "items": [
+        {
+          "text": "本课程的一大特色：将用 Python 对数据结构和算法进行真实实现（real implementations）。",
+          "textEn": "One of the nice things about this class is that you'll be doing real implementations of these data structures and algorithms in Python."
+        },
+        {
+          "text": "每份作业都包含理论部分（theory part）和编程部分（programming part）。",
+          "textEn": "Each of the problem sets in this class is going to have both a theory part and a programming part."
+        },
+        {
+          "text": "讲座和复习课（lectures and recitations）内容与作业的理论部分直接相关；你将编程实现课上讲的算法或对它们进行扩充、运行，并检验它们在大型输入上是否表现良好。",
+          "textEn": "Lectures and recitations are directly connected to the theory parts of the problem sets; you'll be programming the algorithms from lecture, or augmenting them, running them, and figuring out whether they work well on large inputs."
+        },
+        {
+          "text": "老师强调作业的'有趣'（fun）不是指容易（easy），而是指有挑战性且值得做（challenging and worthwhile），完成后会有收获感。",
+          "textEn": "By 'fun' the instructor does not mean easy — he means challenging and worthwhile, so at the end you feel like you've learned something and had some fun along the way."
+        }
+      ]
+    },
+    {
+      "heading": "课程模块总体结构：八个模块",
+      "headingEn": "Overall Course Structure: Eight Modules",
+      "items": [
+        {
+          "text": "课程内容共八个模块（eight modules），每个模块大致对应一份作业。",
+          "textEn": "There are eight modules in the class, each of which roughly speaking has a problem set associated with it."
+        }
+      ]
+    },
+    {
+      "heading": "模块一：算法思维（Algorithmic Thinking）",
+      "headingEn": "Module 1: Algorithmic Thinking",
+      "items": [
+        {
+          "text": "第一模块为算法思维，今天开始，将讨论一个具体问题：峰值查找（peak finding）。",
+          "textEn": "The first module is algorithmic thinking, which kicks off today, looking at a particular problem: peak finding."
+        },
+        {
+          "text": "第一份作业今天发布：其中今天讲到的一些算法已用 Python 实现并提供给学生，其中几个含有 bug（错误）。",
+          "textEn": "The first problem set goes out today; some of the algorithms discussed in lecture will be coded in Python and given to you, and a couple of them are going to have bugs."
+        },
+        {
+          "text": "作业任务包括：分析这些算法的复杂度（complexity）、判断哪些算法正确且高效、并为其中一个算法写出证明（proof）。",
+          "textEn": "The problem set tasks include: analyzing the complexity of these algorithms, figuring out which ones are correct and efficient, and writing a proof for one of them."
+        },
+        {
+          "text": "老师说明：大多数作业都将遵循这一模板；今天课程结束并看到第一份作业后会有更具体的感受。",
+          "textEn": "Most problem sets will follow this template; you'll get a concrete sense of this by the end of today, once lecture is done and you see your first problem set."
+        }
+      ]
+    },
+    {
+      "heading": "模块二：排序与树（Sorting and Trees）",
+      "headingEn": "Module 2: Sorting and Trees",
+      "items": [
+        {
+          "text": "排序：如果有 1 万亿（a trillion）个数字需要排序，应该使用什么样的算法？",
+          "textEn": "Sorting: if you had a trillion numbers you wanted to sort, what kind of algorithm could you use for that?"
+        },
+        {
+          "text": "树（trees）是一种出色的数据结构，最常见的是二叉树（binary trees）；可以用各种树（包括二叉树）完成调度（scheduling）、排序等多种任务。",
+          "textEn": "Trees are a wonderful data structure, the most common being binary trees; you can do all sorts of things like scheduling and sorting using various kinds of trees, including binary trees."
+        },
+        {
+          "text": "第二份作业：使用特定排序算法和数据结构来模拟逻辑网络（logic network）。",
+          "textEn": "The second problem set is on simulating a logic network using a particular kind of sorting algorithm in a data structure."
+        }
+      ]
+    },
+    {
+      "heading": "模块三：哈希（Hashing）与基因组比较",
+      "headingEn": "Module 3: Hashing and Genome Comparison",
+      "items": [
+        {
+          "text": "哈希模块将做基因组比较（genome comparison）：以往学期曾比较人类基因组与大鼠基因组，发现两者惊人的相似——相似度达 99%。",
+          "textEn": "In the hashing module we'll do genome comparison; in past terms we compared a human genome to a rat genome and discovered they were 99% similar, which is kind of amazing."
+        },
+        {
+          "text": "基因组数据非常庞大，因此比较方法必须高效；如果复杂度不够低，程序将无法在作业截止日期前运行完成。",
+          "textEn": "These genomes are so large that you have to have efficiency in the comparison methods; if you don't get the complexity low enough, your program won't be able to finish running within the time your problem set is due."
+        },
+        {
+          "text": "老师强调：测试代码时要记住，会给你的代码提供大型输入运行，因此在编写代码和思考算法伪代码时必须时刻牢记复杂度（keep complexity in mind）。",
+          "textEn": "The instructor emphasizes: keep in mind that you will get large inputs to run your code on, and you want to keep complexity in mind as you're coding and thinking about the pseudocode of your algorithm."
+        }
+      ]
+    },
+    {
+      "heading": "后续模块预告：数值计算（Numerics）",
+      "headingEn": "Upcoming Module Preview: Numerics",
+      "items": [
+        {
+          "text": "课程还将涉及数值计算（numerics）模块（录音到此为止，未展开细节）。",
+          "textEn": "The course will also cover numerics (the transcript ends here before details are given)."
+        }
+      ]
+    }
+  ]
+}

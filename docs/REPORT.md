@@ -14,25 +14,27 @@ The pipeline is microphone → WebSocket → Azure Speech (narrow-ML ASR) → tr
 
 We deliberately **built** the orchestration layer (session state machine, rolling outline merge, resume-from-history) and **rented** both intelligence layers. This was the right call: self-hosting ASR or an LLM would have consumed the whole project for zero user-visible gain, and the cost analysis (`docs/COST_ANALYSIS.md`) shows the rented path costs ≈ US$1 per 50-minute lecture — with ~80% of that being ASR, not the LLM. The agent layer is also our cost lever: outline re-run frequency dominates LLM input tokens, and provider-side context caching makes the rolling design affordable.
 
-The "rent" thesis was stress-tested in practice: during evaluation week our DeepSeek balance ran dry, and because the LLM sits behind an OpenAI-compatible interface, we re-pointed the entire system — product and eval harness — at Kimi (`kimi-k2.6`) with three environment variables and no code-path changes. (One real migration wrinkle, documented in `server/deepseek.js`: Kimi's current models *lock* the `temperature` parameter and reject explicit values, so the client omits it when a custom provider is configured.) The evaluation numbers below were therefore produced on `kimi-k2.6`; per-lecture cost differs from DeepSeek by under 5% (`docs/COST_ANALYSIS.md`), and we treat provider-swap-ability as a feature of the architecture, not an accident of the week.
+The "rent" thesis was stress-tested in practice: during evaluation week our DeepSeek balance ran dry, and because the LLM sits behind an OpenAI-compatible interface, we re-pointed the entire system — product and eval harness — at Kimi with three environment variables and no code-path changes. (Two real migration wrinkles, documented in `server/deepseek.js`: Kimi's current models *lock* the `temperature` parameter and reject explicit values, so the client omits it when a custom provider is configured; and reasoning-style models spend part of the `max_tokens` budget on thinking, so the client allows headroom.) The evaluation numbers below were produced on Kimi (`kimi-for-coding`); per-lecture cost differs from DeepSeek by under 5% (`docs/COST_ANALYSIS.md`), and we treat provider-swap-ability as a feature of the architecture, not an accident of the week.
 
 ## 3. Metrics: targeted, reached, and critiqued
 
-*(All LLM-generated artifacts and judgments in this section were produced on `kimi-k2.6` via the OpenAI-compatible provider switch described in Section 2.)*
+*(All LLM-generated artifacts and judgments in this section were produced on Kimi via the OpenAI-compatible provider switch described in Section 2.)*
 
 **Targeted (Milestone 1):** note coverage ≥ 80% of instructor-emphasized key points.
 
 **What intermediate feedback exposed:** coverage alone has a *trivial winner* — emit the whole transcript as the "outline" and coverage is ~100%. Worse, we had no baseline: if the raw transcript already contains every key point (it does — it is verbatim), coverage proves nothing about the model's contribution. The honest claim our system can make is not "we contain the key points" but **"we keep the key points while deleting ~85% of the words."**
 
-**Revised evaluation** (`evals/`, 10 segments from 3 MIT OCW lectures, 102 atomic labeled key points):
+**Revised evaluation** (`evals/`, 10 segments from 3 MIT OCW lectures, 103 atomic labeled key points):
 
 | Candidate | Coverage | Precision | Length ratio |
 |---|---|---|---|
-| Raw transcript (baseline) | *TBD* | — (by definition ~100%, unbounded length) | 100% |
-| Product outline (uncapped) | *TBD* | *TBD* | *TBD* |
-| Length-capped outline (≤15%) | *TBD* | *TBD* | *TBD* |
+| Raw transcript (baseline) | 99.1% | — | 100% |
+| Product outline (uncapped) | 100% | 75.9% | 74% |
+| Length-capped outline (≤15%) | **91.3%** | **93.6%** | **15%** |
 
-*(Table populated from `evals/results/RESULTS.md`.)*
+*(Per-segment breakdown in `evals/results/RESULTS.md`.)*
+
+**What the numbers say.** The baseline confirms the trivial-winner objection: the raw transcript already "covers" 99.1% of key points (one segment scored 90.9% — a judge/label artifact we kept rather than silently fixed). The uncapped product outline is the uncomfortable middle row: perfect 100% coverage, but at **74% of transcript length** (two segments came out *longer* than the transcript) and 75.9% precision — barely compression, drifting toward the trivial winner. The capped outline is the honest headline: **91.3% of instructor-emphasized key points in 15% of the words (~7× compression), at 93.6% precision** — above our original 80% target, now on a metric that cannot be gamed by copying.
 
 **Metrics critique.** Three lessons. First, *a metric that cannot distinguish the system from a copy-paste script is not a metric* — we now report coverage only alongside precision (share of outline items that are genuine key points) and a hard length budget. Second, the baseline must be run first: our baseline row exists to make the trivial winner visible rather than to hide it. Third, LLM-as-judge is a scaling tool, not ground truth — we mitigated by labeling *atomic, checkable* facts (numbers, formulas, named claims) so judgments are objective, and by spot-checking judge outputs by hand.
 
@@ -51,6 +53,7 @@ We also tuned the generation prompts toward *evidence retention* (numbers, formu
 
 ## 5. Rough edges (honest list)
 
+- **The eval caught our own product**: the uncapped production outline averaged 74% of transcript length — real compression only happened under a length budget. A default length cap is now a planned product change, not just an evaluation device.
 - **Hallucination risk is real and only mitigated, not solved**: the outline can assert things the instructor never said. Our affordances (raw transcript beside translation, AI-content labeling) help a vigilant user but do not protect a trusting one.
 - **Accent sensitivity**: Indian-English model choice (`en-IN`) helped our test lectures but is a blunt instrument for mixed-accent classrooms.
 - **Resume-from-history regenerates rather than appends**: resuming a course re-runs generation over the full transcript — correct but costs tokens.
@@ -62,6 +65,6 @@ Three directions: (1) closed-loop evals — let students mark outline items as "
 
 ## 7. Conclusion
 
-The most valuable thing we built was not the pipeline but the *measurement discipline*: our milestone-1 metric could not have distinguished the product from a copy-paste script, and fixing that — baseline first, precision beside coverage, length as a first-class constraint — is what lets us now say, with evidence rather than enthusiasm, what the model actually earns: roughly the same key points, in a fraction of the words, for about a dollar a lecture.
+The most valuable thing we built was not the pipeline but the *measurement discipline*: our milestone-1 metric could not have distinguished the product from a copy-paste script, and fixing that — baseline first, precision beside coverage, length as a first-class constraint — is what lets us now say, with evidence rather than enthusiasm, what the model actually earns: **91% of instructor-emphasized key points in 15% of the words, for about a dollar a lecture.**
 
-*(Word count: ~1,180)*
+*(Word count: ~1,300)*

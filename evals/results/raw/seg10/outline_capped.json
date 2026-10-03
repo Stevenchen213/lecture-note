@@ -1,0 +1,52 @@
+{
+  "title": "肾脏拍卖案例：实证与规范问题",
+  "titleEn": "Kidney Auction Case: Positive vs. Normative Questions",
+  "sections": [
+    {
+      "heading": "eBay肾脏拍卖案例",
+      "headingEn": "eBay Kidney Auction Case",
+      "items": [
+        {
+          "text": "有人以2.5万美元起拍在eBay拍卖肾脏，价格被炒至500万美元后才被eBay关闭；eBay禁止拍卖人体器官。",
+          "textEn": "A kidney was auctioned on eBay starting at $25,000; bidding reached $5 million before eBay shut it down."
+        },
+        {
+          "text": "实证问题：价格为何这么高？用供需模型解释：肾的需求极高（需要肾才能活的人会倾其所有），自由市场供给极低，故价格极高。",
+          "textEn": "Positive question: why so high? High demand (people will pay everything to live) and very low supply produce a very high price."
+        }
+      ]
+    },
+    {
+      "heading": "规范问题：器官该不该卖？",
+      "headingEn": "Normative Question: Should Organs Be Sold?",
+      "items": [
+        {
+          "text": "规范问题：我们该不该被允许在eBay上出售器官？这本质是经济学问题，不是哲学问题。",
+          "textEn": "Normative question: should we be allowed to sell organs? This is fundamentally an economics question, not philosophy."
+        },
+        {
+          "text": "美国每年约5万人死于器官短缺，约10万人患丙肝（丙肝可导致肾衰竭）；富人愿买、穷人愿卖（一个肾也能正常生活，可改变家庭命运）。",
+          "textEn": "~50,000 Americans die yearly from organ shortage; ~100,000 live with hepatitis C, which causes kidney failure."
+        },
+        {
+          "text": "老师强调：前11讲自由市场为王；经济学基本是右翼科学，只有两种理由可以干预市场，第一种是市场失灵。",
+          "textEn": "For the first 11 lectures the free market is king; only two reasons justify interfering with markets—the first is market failure."
+        }
+      ]
+    },
+    {
+      "heading": "反对器官市场的理由",
+      "headingEn": "Reasons Against an Organ Market",
+      "items": [
+        {
+          "text": "人们可能不知情：丙肝可潜伏多年，卖肾后才发现患病则可能死亡；人们可能被强迫（如强迫子女捐肾）或卷入犯罪活动。",
+          "textEn": "People may be misinformed (hepatitis C can lie dormant for years) or coerced (e.g., forcing children to donate)."
+        },
+        {
+          "text": "重点：黑市本身不算市场失灵的理由——经济学家认为黑市也是市场，若无其他失灵，黑市交易也可以。",
+          "textEn": "Key point: the black market is NOT a market failure—economists treat it as a market; without other failures it's acceptable."
+        }
+      ]
+    }
+  ]
+}

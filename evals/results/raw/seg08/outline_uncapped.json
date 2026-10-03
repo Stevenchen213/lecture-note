@@ -1,0 +1,98 @@
+{
+  "title": "一维峰值查找算法：问题定义与复杂度分析",
+  "titleEn": "1-D Peak Finding: Problem Definition and Complexity Analysis",
+  "sections": [
+    {
+      "heading": "问题定义讨论：峰值是否一定存在",
+      "headingEn": "Problem Definition Discussion: Does a Peak Always Exist?",
+      "items": [
+        {
+          "text": "使用 \"大于等于\"（greater than or equal to）定义时，任何数组都必然存在峰值，这是作业题：学生需要论证任何数组总会有一个峰值（argue that any array will always have a peak）。",
+          "textEn": "With the 'greater than or equal to' definition, a peak always exists in any array — this is a homework question: argue that any array will always have a peak."
+        },
+        {
+          "text": "如果使用 \"严格大于\"（greater than）定义，则不能保证峰值一定存在，无法做出同样的论证。",
+          "textEn": "With a strict 'greater than' definition, the argument fails — you cannot guarantee that a peak always exists."
+        },
+        {
+          "text": "算法思维要点：要设计通用的算法，即使问题定义改变，你仍有一个起点去攻击问题的第二个版本。",
+          "textEn": "Key point of algorithmic thinking: you want to be able to create algorithms that are general, so if the problem definition changes, you still have a starting point to attack the second version of the problem."
+        },
+        {
+          "text": "在 \"大于等于\" 定义下，可以去掉问题描述中的 \"if it exists\"（如果存在），因为峰值必然存在——但你可能需要论证这一点来证明算法的正确性。",
+          "textEn": "Under the 'greater than or equal to' definition, you can eliminate the 'if it exists' clause because a peak always exists — but you probably want to argue this to show the correctness of your algorithm."
+        },
+        {
+          "text": "更一般的情形：算法必须能确定性地回答两种情况——峰值不存在时给出证明，或峰值存在时将其找出。",
+          "textEn": "The general case: an algorithm must definitively either prove that a peak doesn't exist, or find a peak if it exists."
+        },
+        {
+          "text": "老师原话（强调）：很多时候你被要求做一件事，实际上无法给出答案或找到满足所有约束的解。这时你要能举手说：\"我穷举搜索过了，我有论证证明我做了穷举搜索，但我找不到。\" 如果做到这点，你就能保住工作；否则总有人会说你搜索得不够努力。",
+          "textEn": "Professor's point: often you're asked to do something and can't find an answer satisfying all constraints. Then you want to say: 'I searched long and hard, I searched exhaustively — here's my argument, and I couldn't find it.' If you do that, you get to keep your job; otherwise there's always the case that you didn't search hard enough."
+        }
+      ]
+    },
+    {
+      "heading": "直接算法：从左到右线性扫描",
+      "headingEn": "The Straightforward Algorithm: Scanning from Left to Right",
+      "items": [
+        {
+          "text": "朴素算法：从最左边开始，一路向右遍历数组寻找峰值。",
+          "textEn": "The straightforward algorithm starts from the left and just walks across the array."
+        },
+        {
+          "text": "典型情形：数字从左开始递增，峰值在中间某处，之后开始递减，此时约需查看 n/2 个元素。",
+          "textEn": "Typical case: numbers increase from the left, the peak is somewhere in the middle, then things decrease — in this case you look at about n/2 elements."
+        },
+        {
+          "text": "最坏情形：数组严格递增（1, 2, 3, 4, 5, 6...），峰值在最右端，必须从最左端一直查看到第 n 个元素。",
+          "textEn": "Worst case: the array is strictly increasing (1, 2, 3, 4, 5, 6...), and the peak is all the way on the right — you must look at n elements going all the way to the right."
+        }
+      ]
+    },
+    {
+      "heading": "复杂度分析：Θ(n) 的意义",
+      "headingEn": "Complexity Analysis: The Meaning of Θ(n)",
+      "items": [
+        {
+          "text": "该算法的最坏情况复杂度是 Θ(n)（theta n），因为最坏情况下必须查看全部 n 个元素。",
+          "textEn": "The worst-case complexity of this algorithm is Θ(n), because in the worst case you may have to look at all n elements."
+        },
+        {
+          "text": "Θ(n) 表示 \"n 的数量级\"，同时给出下界和上界；而 Big O of n 只给出上界。",
+          "textEn": "Θ(n) means 'of the order of n' — it gives both a lower bound and an upper bound, while Big O of n is just an upper bound."
+        },
+        {
+          "text": "该算法最坏情况需要常数倍的 n 次操作，常数可能是 1，也可能通过改进算法缩小常数因子。",
+          "textEn": "The algorithm requires, in the worst case, a constant times n operations — the constant could be 1, or you could work on the constant with a different algorithm."
+        },
+        {
+          "text": "当前只关心渐近复杂度（asymptotic complexity），该算法的渐近复杂度是线性的（linear）。",
+          "textEn": "At this moment we are only concerned with asymptotic complexity, and the asymptotic complexity of this algorithm is linear."
+        }
+      ]
+    },
+    {
+      "heading": "改进思路：学生提出的二分搜索方案",
+      "headingEn": "Improvement Idea: A Student's Binary Search Approach",
+      "items": [
+        {
+          "text": "老师提问：如何降低一维峰值查找的渐近复杂度？（\"Someone help me do better. How can we lower the asymptotic complexity of a one dimensional peak finder?\"）",
+          "textEn": "The professor asks: how can we do better? How can we lower the asymptotic complexity of a one-dimensional peak finder?"
+        },
+        {
+          "text": "学生方案（获老师表扬 \"Excellent!\"）：采用二分搜索——查看中点元素，比较左右两侧，哪边更高就保留哪一半，因为可以论证那一半一定存在峰值。",
+          "textEn": "Student's answer (praised as 'Excellent!'): do a binary search — look at the middle, whichever side is higher, cut the array in half on that side, because you know there's a peak on that side."
+        },
+        {
+          "text": "具体逻辑：若中点右侧有更高的数，则峰值一定在右半部分，只需在右半部分继续查找，并不断对半切割。",
+          "textEn": "Specific logic: if there's a higher number on the right side of the middle, then the peak must be somewhere in that half — you only look at that side and continue cutting in half."
+        },
+        {
+          "text": "老师鼓励课堂互动：欢迎随时举手打断提问，他随时乐意回答问题。",
+          "textEn": "The professor encourages interaction: feel free to interrupt and raise your hand — he is happy to answer questions at any time."
+        }
+      ]
+    }
+  ]
+}

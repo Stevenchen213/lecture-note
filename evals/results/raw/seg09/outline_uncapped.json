@@ -1,0 +1,126 @@
+{
+  "title": "微观经济学导论：课程介绍与经济学模型",
+  "titleEn": "Introduction to Microeconomics: Course Overview and Economic Models",
+  "sections": [
+    {
+      "heading": "课程背景与MIT的学术传统",
+      "headingEn": "Course Background and MIT's Academic Legacy",
+      "items": [
+        {
+          "text": "现代经济学诞生于MIT，因为MIT引入了约束优化（constrained optimization）这套工具；世界（经济学的发展）正是在这里被推动的。",
+          "textEn": "Modern economics was born at MIT because MIT introduced the tools of constrained optimization — 'the world was developed right here at MIT.'"
+        },
+        {
+          "text": "老师会在黑板/课件上写出每节课的内容大纲（outline），本讲覆盖：课程细节、什么是微观经济学、经济学如何使用模型（以供求模型为例）、以及如何通过模型教授权衡取舍（tradeoffs）。",
+          "textEn": "The instructor outlines each lecture's coverage: course details, what micro is, how economics uses models (the supply model), and how models teach tradeoffs."
+        }
+      ]
+    },
+    {
+      "heading": "经济学研究方法：简化模型",
+      "headingEn": "Methodology of Economics: Simplified Models",
+      "items": [
+        {
+          "text": "经济学的研究方法是通过构建简化模型（simplified models）来教授权衡取舍。",
+          "textEn": "Economics teaches tradeoffs by building simplified models."
+        },
+        {
+          "text": "模型的技术定义：对两个或多个变量之间任何关系的描述，就是一个模型。",
+          "textEn": "A model is technically 'the description of any relationship between two or more variables.'"
+        },
+        {
+          "text": "与物理学（如能量与质量的关系）不同，经济学没有科学定律和常数（scientific laws and constants）；经济学不是真正的自然科学，而是社会科学（social science）。",
+          "textEn": "Unlike physics (energy–mass relationship), economics has no scientific laws and constants; it is a social science, not a 'real' science."
+        },
+        {
+          "text": "因为我们没有放之四海皆准的刚性定律，必须用模型尽可能解释世界。",
+          "textEn": "Without rigid, universally applicable laws, economists use models to explain the world as much as possible."
+        },
+        {
+          "text": "构建模型必须在两个目标之间权衡：一是尽可能多地解释现象（explain as much as we can），二是模型要简约（parsimonious）以便教学和解出。",
+          "textEn": "Modeling involves trading off two goals: explaining as much as possible vs. keeping models parsimonious so they can be taught and solved."
+        },
+        {
+          "text": "模型越复杂越难教、越难解；因此需要一组简化假设（simplifying assumptions）。",
+          "textEn": "The more complicated a model, the harder it is to teach and solve — hence a set of simplifying assumptions."
+        }
+      ]
+    },
+    {
+      "heading": "简化假设：两种商品模型及其合理性",
+      "headingEn": "Simplifying Assumptions: The Two-Goods Model",
+      "items": [
+        {
+          "text": "面对提问'你真的只在两种商品之间权衡吗'：现实中你当然从来不只是在两种商品之间取舍，但我们会把模型写成你只有两种商品可选。",
+          "textEn": "Re: 'Are you really just trading off two goods?' — of course not in reality, but we write models as if you are."
+        },
+        {
+          "text": "用两种商品写成的模型能给你理解三、四种商品模型所需的全部直觉，只是数学更简单。",
+          "textEn": "A two-goods model gives you all the intuition needed for models with three or four goods, just with easier math."
+        },
+        {
+          "text": "关键结论：在两种商品模型中学到的一切，告诉你理解n种商品模型所需的全部知识，只是数学更容易——这是相当'无害'（non-offensive）的简化假设，因为它实际上不改变任何结论。",
+          "textEn": "Everything learned in a two-goods model applies to an n-goods model, with easier math — a fairly 'non-offensive' simplifying assumption because it doesn't really change anything."
+        },
+        {
+          "text": "我们也会做出一些'有毒且冒犯'（noxious and offensive）的简化假设；如果对它们感到不满、想探究去掉这些假设会发生什么，这正是你应该成为经济学专业学生（economics major）的原因——后续课程会把模型加回丰富性（add richness）再看结果。",
+          "textEn": "We'll also make 'noxious and offensive' assumptions; being bothered by them and wanting to see what happens without them is exactly why you should be an economics major — later classes add richness to the models."
+        }
+      ]
+    },
+    {
+      "heading": "统计学家George Box的名言",
+      "headingEn": "George Box's Famous Quote",
+      "items": [
+        {
+          "text": "统计学家George Box曾写道：'所有模型都是错的，但有些是有用的'（All models are wrong, but some are useful.）——这正是本课程建模方法的核心理念。",
+          "textEn": "Statistician George Box wrote: 'All models are wrong, but some are useful' — the guiding philosophy for modeling in this course."
+        }
+      ]
+    },
+    {
+      "heading": "三层教学法：数学、图形与直觉",
+      "headingEn": "Three-Level Teaching: Mathematical, Graphical, and Intuitive",
+      "items": [
+        {
+          "text": "老师将从三个层面教授经济学：第一层是数学（mathematical）——MIT的方式；第二层是图形（graphical）；第三层是直觉（intuitive）。",
+          "textEn": "Economics will be taught on three levels: mathematical (the MIT way), graphical, and intuitive."
+        },
+        {
+          "text": "要想在这门课中成功，三个层面都需要理解；并非每个模型都会用到全部三种方式，但掌握三者才能真正理解所学内容。",
+          "textEn": "To succeed in this class, you need to understand all three levels; not every model uses all three, but all three are needed to truly understand the material."
+        }
+      ]
+    },
+    {
+      "heading": "第一个经济学模型：供求模型与亚当·斯密",
+      "headingEn": "The First Economic Model: Supply and Demand and Adam Smith",
+      "items": [
+        {
+          "text": "课程从供求模型（model of supply and demand）开始——这是第一个经济学模型，由亚当·斯密（Adam Smith）于1776年在其奠基性著作《国富论》（The Wealth of Nations）中提出。",
+          "textEn": "We start with the model of supply and demand — the very first economic model, developed by Adam Smith in 1776 in 'The Wealth of Nations,' the founding book of economics."
+        },
+        {
+          "text": "亚当·斯密的问题：思考水和钻石两种商品——对生命而言，没有什么比水更必需，人离开水无法生存；没有什么比钻石更不必需（在当时钻石没有工业用途，只是小饰品 baubles）。",
+          "textEn": "Adam Smith's question: compare water and diamonds — nothing is more essential to life than water; nothing less essential than diamonds (then mere baubles with no industrial uses)."
+        },
+        {
+          "text": "悖论（paradox）：水对生命必不可少，钻石无关紧要，然而钻石价格很高，水却几乎免费。'这怎么可能？'（How could this be?）",
+          "textEn": "The paradox: water is essential, diamonds are not, yet diamonds are very expensive and water is essentially free — 'How could this be?'"
+        },
+        {
+          "text": "斯密的解答要点一：上述描述只是价格模型的一半——即需求（demand）侧；水的需求远远大于钻石的需求。",
+          "textEn": "Part of Smith's answer: what was just described is only half the model — the demand side; the demand for water is much larger than the demand for diamonds."
+        },
+        {
+          "text": "斯密的解答要点二：还没讨论的是供给（supply）侧——相对于钻石，水的供给更加庞大：水无处不在，钻石却稀有难寻。",
+          "textEn": "The missing half is supply: the supply of water is even larger relative to diamonds — water is everywhere, diamonds are rare to find."
+        },
+        {
+          "text": "斯密的结论：虽然钻石的需求不如水的需求大，但钻石的供给比水的供给小得多得多——价格由供给与需求双方共同决定。",
+          "textEn": "Smith's conclusion: while the demand for diamonds is not as high as for water, the supply of diamonds is much, much smaller than that of water — price is determined by both supply and demand."
+        }
+      ]
+    }
+  ]
+}

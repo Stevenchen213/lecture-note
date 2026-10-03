@@ -1,0 +1,14 @@
+{
+  "segment": "seg04",
+  "transcript_words": 807,
+  "keypoints": 10,
+  "baseline_coverage": 100,
+  "uncapped_words": 427,
+  "uncapped_ratio": 0.529,
+  "uncapped_coverage": 100,
+  "uncapped_precision": 81.3,
+  "capped_words": 108,
+  "capped_ratio": 0.134,
+  "capped_coverage": 100,
+  "capped_precision": 92.3
+}

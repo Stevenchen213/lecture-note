@@ -1,0 +1,52 @@
+{
+  "title": "课程导论：数据结构、模块与问题集",
+  "titleEn": "Course Intro: Data Structures, Modules, and Problem Sets",
+  "sections": [
+    {
+      "heading": "课程定位与数据结构",
+      "headingEn": "Course Orientation and Data Structures",
+      "items": [
+        {
+          "text": "经典数据结构如平衡二叉搜索树和 Python 字典历经数十年仍有用；本课程会以不同方式扩展它们以适配特定问题。",
+          "textEn": "Classic data structures like balanced binary search trees and Python dictionaries still matter; we will augment them."
+        },
+        {
+          "text": "本课重在分析而非大量设计算法；若喜欢可继续修 6.046《算法设计与分析》。",
+          "textEn": "You will analyze more than design; take 6.046 for deeper algorithm design."
+        }
+      ]
+    },
+    {
+      "heading": "问题集形式",
+      "headingEn": "Problem Set Format",
+      "items": [
+        {
+          "text": "每个问题集都包含理论部分与 Python 编程实现；“有趣”指有挑战且值得，不是简单。",
+          "textEn": "Each problem set mixes theory and Python implementation; fun means challenging, not easy."
+        }
+      ]
+    },
+    {
+      "heading": "八大模块概览",
+      "headingEn": "Eight Modules Overview",
+      "items": [
+        {
+          "text": "课程共 8 个模块，每个模块大致对应一个 problem set。",
+          "textEn": "There are eight modules, each roughly tied to one problem set."
+        },
+        {
+          "text": "模块一为算法思维，今天讲 peak finding；发放的 Python 代码中有些含 bug，需要分析复杂度、判断正确与高效，并为其中一个写证明。",
+          "textEn": "Module 1: algorithmic thinking and peak finding; given Python code has bugs; analyze complexity, test efficiency/correctness, and write one proof."
+        },
+        {
+          "text": "模块二讲排序与树：若要对一万亿个数排序该用什么算法；用某种排序算法/数据结构模拟逻辑网络是第二个 problem set。",
+          "textEn": "Module 2: sorting and trees; trillion-number sorting; simulate a logic network using a sorting/data structure."
+        },
+        {
+          "text": "模块三讲哈希，应用于基因组比较：人类与老鼠基因组约 99% 相似；复杂度不够低时大输入程序跑不完。",
+          "textEn": "Module 3: hashing; genome comparison human vs rat were about 99% similar; low complexity is essential or large inputs won't finish."
+        }
+      ]
+    }
+  ]
+}

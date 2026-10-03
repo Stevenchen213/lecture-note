@@ -1,0 +1,68 @@
+{
+  "title": "线性方程组的行图像与列图像",
+  "titleEn": "Row Picture and Column Picture for Linear Systems",
+  "sections": [
+    {
+      "heading": "行图像：两条直线求交点",
+      "headingEn": "Row Picture: Intersection of Two Lines",
+      "items": [
+        {
+          "text": "每个方程看成 xy 平面的一条直线；解就是同时落在两条直线上的点。",
+          "textEn": "Row picture: each equation is a line in the xy-plane."
+        },
+        {
+          "text": "判断是否过原点很关键：第一个方程过原点，因为有 0/常数项为 0；第二个方程不过原点，因为 x=y=0 得不到 3。",
+          "textEn": "Check origin: eq1 passes (0,0); eq2 does not, since 0+0≠3."
+        },
+        {
+          "text": "第二条直线取点：令 y=0 得 x=−3；再取 x=−1，可得 y=1，于是有两点可连线。",
+          "textEn": "For 2x−y=3: y=0 gives x=−3; x=−1 gives y=1."
+        },
+        {
+          "text": "每条直线只需确定两点再连接；画得准确时，第二条线会被安排穿过交点。",
+          "textEn": "Draw each line through two points; intersection is the solution."
+        },
+        {
+          "text": "重点：交点为 (1,2)，它在两条线上，因此同时满足两个方程；老师强调要检查。",
+          "textEn": "Check (1,2): it lies on both lines and solves both equations."
+        }
+      ]
+    },
+    {
+      "heading": "列图像：列的线性组合",
+      "headingEn": "Column Picture: Linear Combination of Columns",
+      "items": [
+        {
+          "text": "列图像看矩阵 A 的列与右端 b：Ax 就是把 A 的各列按 x、y 加权后合成 b=(0,3)。",
+          "textEn": "Column picture: Ax combines columns of A to match b=(0,3)."
+        },
+        {
+          "text": "方程左侧本质是把 column one 乘一个数、column two 乘一个数，再相加；这叫线性组合。",
+          "textEn": "A linear combination multiplies columns by x,y and adds them."
+        },
+        {
+          "text": "老师强调：linear combination 是整门课最核心、最根本的运算。",
+          "textEn": "Strang: linear combination is the most fundamental operation in the course."
+        },
+        {
+          "text": "本例两列是 (2,−1) 与 (−1,2)；要找到‘正确数量’使它们合成右端 (0,3)。",
+          "textEn": "Columns are (2,−1) and (−1,2); right amounts give (0,3)."
+        }
+      ]
+    },
+    {
+      "heading": "几何意义与入门定位",
+      "headingEn": "Geometry and Where to Start",
+      "items": [
+        {
+          "text": "几何上把列向量从原点画出，先做缩放，再首尾相接相加，观察如何到达 b。",
+          "textEn": "Draw column vectors from origin; scale then add tip-to-tail."
+        },
+        {
+          "text": "老师说明：对 n=2、两个方程两个未知数，行图像是开始讲解的正确切入点。",
+          "textEn": "For n=2, row picture is the right place to start."
+        }
+      ]
+    }
+  ]
+}

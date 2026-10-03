@@ -1,0 +1,104 @@
+{
+  "title": "矩阵乘以向量：列组合的视角",
+  "titleEn": "Matrix Times Vector: The Column Combination Perspective",
+  "sections": [
+    {
+      "heading": "列相关时方程组可能无解",
+      "headingEn": "When Columns Are Dependent, Some b Cannot Be Reached",
+      "items": [
+        {
+          "text": "如果第 9 列与第 8 列完全相同，它就没有提供任何新的信息，那么必然存在某些右端项 b 是无法得到的（即方程组无解）。",
+          "textEn": "If the ninth column is the same as the eighth column, it contributes nothing new, and there would be right-hand sides b that couldn't be reached (i.e., no solution)."
+        },
+        {
+          "text": "老师强调这是线性代数的核心思想：把九个列向量放到九维空间中，考虑它们的所有线性组合——即使无法真正可视化，也要逐渐习惯这样思考。",
+          "textEn": "The professor emphasizes this is the central thought of linear algebra: think of nine columns in nine-dimensional space and take all their combinations — even though you can't visualize it, you sort of get used to it after a while."
+        },
+        {
+          "text": "如果九个列向量相互独立（各提供新信息），它们的组合很可能充满整个九维空间，此时任意 b 都能得到。",
+          "textEn": "If the nine columns are independent (each contributing something new), their combinations may very well fill out the whole nine-dimensional space, so every b can be reached."
+        },
+        {
+          "text": "如果第 9 列重复、没有新贡献，所有组合只会填满一个『八维平面』——即九维空间内的一个八维子空间。老师笑称『我犹豫要不要这么说』(I hesitate even to say this)。",
+          "textEn": "If the ninth column is a duplicate adding nothing new, the combinations would fill an 'eight-dimensional plane' — an 8-dimensional subspace inside 9-dimensional space. The professor jokes, 'I hesitate even to say this.'"
+        },
+        {
+          "text": "老师预告：『九维空间内的八维平面』正是我们最终要处理的对象；目前先讨论理想情形——矩阵正常运作、可以得到任意右端项 b，并且用列组合的方式实现。",
+          "textEn": "The professor previews: those 'eight-dimensional planes inside nine-dimensional space' are what we will eventually work with; for now, we stay with the nice case where the matrix works and we can get every right-hand side b using column combinations."
+        }
+      ]
+    },
+    {
+      "heading": "方程组的矩阵形式",
+      "headingEn": "The Matrix Form of the System",
+      "items": [
+        {
+          "text": "方程组的矩阵形式写作 A 乘以 x 等于 b（A times x equals b）：某个矩阵 A 乘某个向量 x 等于右端项 b。",
+          "textEn": "The matrix form of the system is A times x equals b: some matrix A times some vector x equals some right-hand side b."
+        },
+        {
+          "text": "老师说明此前他用语言描述的一步现在要写成符号形式，因为要回到方程的矩阵形式。",
+          "textEn": "The professor notes that one step he had been saying in words will now be written in letters, because he is returning to the matrix form of the equation."
+        },
+        {
+          "text": "核心问题：矩阵乘以向量如何进行？（How do you multiply a matrix by a vector?）",
+          "textEn": "Core question: How do you multiply a matrix by a vector?"
+        }
+      ]
+    },
+    {
+      "heading": "示例：2×2 矩阵乘向量",
+      "headingEn": "Example: A 2×2 Matrix Times a Vector",
+      "items": [
+        {
+          "text": "示例矩阵取 [[2, 5], [1, 3]]（第一列 2、1，第二列 5、3），向量 x 取 (1, 2)。",
+          "textEn": "Example matrix [[2, 5], [1, 3]] (first column 2, 1; second column 5, 3), with vector x = (1, 2)."
+        },
+        {
+          "text": "方法一（老师最喜欢的方式）——按列做：1 倍的第一列 + 2 倍的第二列，即列的线性组合。第一分量：2 + 10 = 12；第二分量：1 + 6 = 7。",
+          "textEn": "Method 1 (the professor's favorite) — column at a time: one of the first column plus two of the second column, i.e., a linear combination of columns. First component: 2 + 10 = 12; second component: 1 + 6 = 7."
+        },
+        {
+          "text": "方法二——按行做：每一行与 x 做点积（dot product）。第一行：2×1 + 5×2 = 12；第二行：1×1 + 3×2 = 7。结果同样为 (12, 7)。",
+          "textEn": "Method 2 — row at a time: each row dotted with x (the idea of a dot product). Row 1: 2×1 + 5×2 = 12; Row 2: 1×1 + 3×2 = 7. The result is again (12, 7)."
+        },
+        {
+          "text": "老师指出：行向量与 x 相乘的结果就是以后所说的点积（dot product），但这次课更希望大家用列的方式来理解。",
+          "textEn": "The professor points out: a row times x is what he'll later call a dot product, but for this lecture he prefers the column way of seeing it."
+        }
+      ]
+    },
+    {
+      "heading": "核心观点：Ax 是 A 的列的线性组合",
+      "headingEn": "Key Insight: Ax Is a Combination of the Columns of A",
+      "items": [
+        {
+          "text": "老师明确希望学生记住：A 乘以 x 就是 A 的各列的（线性）组合（A times x is a combination of the columns of A）。",
+          "textEn": "The professor's key message: A times x is a combination of the columns of A — this is how he hopes students will think of matrix-vector multiplication when needed."
+        },
+        {
+          "text": "现在处理小矩阵时可以用不同方法计算，但以后遇到大问题时要按列组合的方式思考。",
+          "textEn": "For now, with small matrices we can compute it in different ways, but later, for larger problems, think of it as a column combination."
+        }
+      ]
+    },
+    {
+      "heading": "小结与下节课预告",
+      "headingEn": "Summary and Preview of Next Lecture",
+      "items": [
+        {
+          "text": "回到 2×2 方程组：如果右端项 b 恰好是 (12, 7)，那么对应的正确解自然是 x = (1, 2)——与前面的乘法示例相呼应。",
+          "textEn": "Returning to the 2×2 system: if the right-hand side b happened to be (12, 7), then of course the correct solution would be x = (1, 2) — echoing the multiplication example."
+        },
+        {
+          "text": "下节课内容预告：用消元法（elimination）系统地求解任意规模方程组的解（如果解存在）。",
+          "textEn": "Preview: next time, a systematic way — using elimination — to find the solution, if there is one, to a system of any size."
+        },
+        {
+          "text": "同时要弄清楚：当消元失败（elimination fails）时，意味着什么——即方程组何时无解。",
+          "textEn": "Also to be determined: what it means when elimination fails — that is, when there isn't a solution."
+        }
+      ]
+    }
+  ]
+}

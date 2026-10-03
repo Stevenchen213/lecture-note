@@ -1,0 +1,94 @@
+{
+  "title": "一维与二维峰值查找算法：复杂度分析与 Greedy Ascent 算法",
+  "titleEn": "1D and 2D Peak Finding: Complexity Analysis and the Greedy Ascent Algorithm",
+  "sections": [
+    {
+      "heading": "一维二分峰值算法的递归方程",
+      "headingEn": "Recurrence Equation for the 1D Binary Search Peak Algorithm",
+      "items": [
+        {
+          "text": "定义 T(n) 为算法在输入规模为 n 时所做的工作量（work）。",
+          "textEn": "Define T(n) as the work the algorithm does on an input of size n."
+        },
+        {
+          "text": "递归方程中的 Θ(1) 项对应每次递归中查看左右两侧所做的（至多）两次比较；因为 2 是常数，所以记为 Θ(1)。",
+          "textEn": "The Θ(1) term in the recurrence corresponds to the (potentially) two comparisons made looking at the left-hand side and the right-hand side; since 2 is a constant, we write Θ(1)."
+        },
+        {
+          "text": "不断展开递归式，最终到达基准情形（base case）：T(1) = Θ(1)，因为单元素数组直接将该元素作为峰值返回。",
+          "textEn": "Expanding the recurrence repeatedly, you eventually reach the base case: T(1) = Θ(1), because a one-element array simply returns that element as the peak."
+        },
+        {
+          "text": "展开后可写成 T(n) = Θ(1) + Θ(1) + ...，共进行 log₂n 次这样的相加，因此总复杂度为 Θ(log₂n)。",
+          "textEn": "After full expansion, T(n) = Θ(1) + Θ(1) + ..., with the addition performed log₂(n) times, giving a total complexity of Θ(log₂ n)."
+        }
+      ]
+    },
+    {
+      "heading": "Θ(n) 与 Θ(log n) 的巨大差异",
+      "headingEn": "The Huge Difference Between Θ(n) and Θ(log n)",
+      "items": [
+        {
+          "text": "Θ(n) 算法与 Θ(log n) 算法之间存在指数级（exponential）差异。",
+          "textEn": "There is an exponential difference between the Θ(n) algorithm and the Θ(log n) algorithm."
+        },
+        {
+          "text": "老师用 Python 实现了两种一维算法：当 n 约为 1000 万（10 million）时，Θ(n) 算法耗时 13 秒，而 Θ(log n) 算法仅耗时 0.001 秒。",
+          "textEn": "The instructor coded both 1D algorithms in Python: with n around 10 million, the Θ(n) algorithm takes 13 seconds, while the Θ(log n) one takes 0.001 seconds."
+        },
+        {
+          "text": "Θ(n) 与 Θ(log n) 的差异本质上就是 2 的 n 次方与 n 之间的差异（复杂度每差一个级别，输入规模可容纳量级呈指数变化）。",
+          "textEn": "The difference between Θ(n) and Θ(log n) is literally the difference between 2 raised to n and n (each complexity level exponentially changes the feasible input size)."
+        },
+        {
+          "text": "结论：尽可能降低复杂度是有意义的，尤其是在处理大规模输入时；一维问题已无法做得更好（can't really do better for the 1D），更有趣的是二维版本。",
+          "textEn": "Conclusion: it makes sense to reduce complexity, especially for large inputs. You can't really do better for the 1D problem; things get more interesting with the 2D version."
+        }
+      ]
+    },
+    {
+      "heading": "二维峰值的形式化定义",
+      "headingEn": "Formal Definition of a 2D Peak",
+      "items": [
+        {
+          "text": "二维版本使用矩阵（matrix），即二维数组，设其有 n 行（rows）和 m 列（columns）。",
+          "textEn": "In the 2D version you have a matrix (two-dimensional array) with n rows and m columns."
+        },
+        {
+          "text": "定义：若元素 a 的上下左右邻居分别为 c、b、d、e，则 a 是二维峰值当且仅当 a ≥ b、a ≥ d、a ≥ c 且 a ≥ e（即 a 不小于其四个方向的邻居，像一座小山丘）。",
+          "textEn": "If element a has neighbors c (top), b, d, e around it, then a is a 2D peak if and only if a ≥ b, a ≥ d, a ≥ c, and a ≥ e — it's a little hill."
+        },
+        {
+          "text": "定义中同样使用 ≥（大于等于），与一维情形类似，这保证了在任何二维矩阵中总能找到一个峰值。",
+          "textEn": "The definition uses greater than or equal to (≥), similar to the 1D case, which guarantees that you will always find a peak in any 2D matrix."
+        }
+      ]
+    },
+    {
+      "heading": "Greedy Ascent 算法（贪心爬坡算法）",
+      "headingEn": "The Greedy Ascent Algorithm",
+      "items": [
+        {
+          "text": "Greedy Ascent 是最直接的二维峰值查找算法：选定一个方向，然后沿着该方向前进以寻找峰值。",
+          "textEn": "The Greedy Ascent algorithm is the straightforward approach: it picks a direction and tries to follow that direction in order to find a peak."
+        },
+        {
+          "text": "算法需要做出选择：从哪里开始（起始点），以及默认的遍历方向策略（例如先向左走、先向右走，若碰到边缘则向下走）。",
+          "textEn": "The algorithm has to make choices: where to start (starting point) and the default traversal strategy (e.g., work your way left first, keep going right, or go down if you hit an edge)."
+        },
+        {
+          "text": "示例矩阵：14, 13, 12, 15, 9, 11, 17。若从中间的 12 开始，先看左边：若左边更大则沿该方向走，否则走相反方向。",
+          "textEn": "Example matrix: 14, 13, 12, 15, 9, 11, 17. Starting at 12 in the middle, you look left first: if the left neighbor is greater, you follow that direction; otherwise you go the other way."
+        },
+        {
+          "text": "按此策略路径为：12 → 13 → 14 → 15 → 16 → 17 → 19 → 20，最终找到峰值 20。",
+          "textEn": "Following this strategy, the path is: 12 → 13 → 14 → 15 → 16 → 17 → 19 → 20, finding the peak at 20."
+        },
+        {
+          "text": "老师指出：尚未给出 Greedy Ascent 算法的具体实现细节，但应考虑最坏情形——对给定矩阵、任意起始点、以及任意方向选择策略（如先向左），其复杂度可能很差。",
+          "textEn": "The instructor notes that the specific details of the Greedy Ascent algorithm haven't been given yet, but one should consider the worst-case possibilities with respect to a given matrix, any starting point, and any strategy (e.g., choosing left first)."
+        }
+      ]
+    }
+  ]
+}

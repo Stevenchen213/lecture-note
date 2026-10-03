@@ -29,12 +29,15 @@ async function chat(messages, opts = {}) {
 
   console.log(`[DeepSeek #${reqId}] 发起请求… (已成功${reqId - failCount - 1}, 已失败${failCount})`);
 
-  const body = { model: model(), messages, max_tokens: maxTokens };
+  const customProvider = process.env.LLM_MODEL || process.env.LLM_BASE_URL;
+  // 推理型模型（如 kimi-for-coding）的 reasoning 会占用 max_tokens 配额，
+  // 自定义供应商时给 3 倍余量，避免 JSON 输出被思考过程挤占而截断
+  const effectiveMaxTokens = customProvider ? maxTokens * 3 : maxTokens;
+  const body = { model: model(), messages, max_tokens: effectiveMaxTokens };
   // json_object 模式强制模型输出合法 JSON，避免长输出漏括号/结构错乱
   if (jsonMode) body.response_format = { type: 'json_object' };
   // DeepSeek 接受任意 temperature；Kimi k2.6/k3 等新模型 temperature 被锁定，
   // 显式传参会直接报错——切换供应商时默认不传，需要时可用 LLM_TEMPERATURE 强制指定
-  const customProvider = process.env.LLM_MODEL || process.env.LLM_BASE_URL;
   if (!customProvider) body.temperature = temperature;
   else if (process.env.LLM_TEMPERATURE) body.temperature = Number(process.env.LLM_TEMPERATURE);
 

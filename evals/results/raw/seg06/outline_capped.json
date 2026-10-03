@@ -1,0 +1,78 @@
+{
+  "title": "市场、资本主义与不平等：导论",
+  "titleEn": "Markets, Capitalism, and Inequality: Introduction",
+  "sections": [
+    {
+      "heading": "市场机制与资源配置",
+      "headingEn": "Markets and Resource Allocation",
+      "items": [
+        {
+          "text": "市场是无数人共同做决策的机制；“看不见的手”引导生产并在人群中分配商品。",
+          "textEn": "Markets coordinate decentralized decisions through an “invisible hand.”"
+        },
+        {
+          "text": "指令经济按“最需要”分配，排除腐败时会给最需要的人；市场经济按支付意愿分配。",
+          "textEn": "Command economies allocate by need; markets allocate by willingness to pay."
+        },
+        {
+          "text": "老师举肾脏例子：市场经济会把肾给出价最高者，而非最接近死亡、最需要者。",
+          "textEn": "Kidneys go to bidders, not sickest patients, under market allocation."
+        }
+      ]
+    },
+    {
+      "heading": "资本主义的优势与代价",
+      "headingEn": "Capitalist Advantages and Costs",
+      "items": [
+        {
+          "text": "资本主义带来巨大优势：美国是世界最富国，几个世纪快速增长、非常成功。",
+          "textEn": "Capitalism is efficient and dynamic: America has grown rich for centuries."
+        },
+        {
+          "text": "但这是资本主义不可避免的结果：能付最多钱的人得到商品，因此产生严重不平等。",
+          "textEn": "Market allocation causes inequality: highest willingness to pay wins."
+        },
+        {
+          "text": "强调/数据：美国是主要国家中最不平等者；前1%控制25%的收入，至少比其他主要国家高5%。",
+          "textEn": "Inequality dwarfs peers: top 1% control 25% of US income, 5% above other majors."
+        }
+      ]
+    },
+    {
+      "heading": "政府干预、社会主义与欧洲模式",
+      "headingEn": "Government Intervention, Socialism, and Europe",
+      "items": [
+        {
+          "text": "经济学家共识：不要指令经济；真正争论是资本主义框架内政府应干预到何种程度。",
+          "textEn": "Consensus: command economies fail; debate is government’s role in capitalism."
+        },
+        {
+          "text": "关键取舍：更自由的市场经济更大但更不平等；约束更多的市场经济更不平等但更平等。",
+          "textEn": "Trade-off: freer markets grow faster but create more inequality."
+        },
+        {
+          "text": "欧洲常被称为“社会主义”，但实质是受限资本主义：税更高、干预更多，也更平等。",
+          "textEn": "Europe is “constrained capitalism”: higher taxes, intervention, and more equality."
+        },
+        {
+          "text": "老师定义社会主义：政府生产一切，但消费者仍决定买什么；介于资本主义与指令经济之间。",
+          "textEn": "Socialism = government production with consumer choice; halfway to command."
+        }
+      ]
+    },
+    {
+      "heading": "课程路线图",
+      "headingEn": "Course Roadmap",
+      "items": [
+        {
+          "text": "前半学期讲标准经济模型：先需求曲线，再供给曲线，再合起来解释均衡为何合理。",
+          "textEn": "First half: demand curve, supply curve, then equilibrium."
+        },
+        {
+          "text": "随后进入规范经济学：说明为什么市场均衡是最好结果；后半学期转向标准模型的局限。",
+          "textEn": "Then normative economics: why market equilibrium is optimal; later, model limits."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "title": "2D峰值查找算法：失败方案与正确递归方案",
+  "titleEn": "2D Peak Finding: A Failed Approach and the Correct Recursive Algorithm",
+  "sections": [
+    {
+      "heading": "先选列再找行的朴素思路（高效但不正确）",
+      "headingEn": "The Naive Column-Then-Row Approach (Efficient but Incorrect)",
+      "items": [
+        {
+          "text": "算法思路：先取中间列 j = m/2，在该列上运行二分查找（1D peak查找），找到该列的1D峰值 (i, j)；然后以行 i 为起点，再在该行上做一次1D peak查找。",
+          "textEn": "Algorithm idea: pick middle column j = m/2, run binary search (1D peak finding) on that column to find a 1D peak at (i, j); then use row i as the start and run 1D peak finding on that row."
+        },
+        {
+          "text": "复杂度看似很低：在列上找1D峰值是 log n（教授口误说成 θ(m)，经学生Eric纠正为 log n），在宽度为 m 的行上找1D峰值是 log m；若 n = m，则总共只有几步 log n 就完成了。",
+          "textEn": "Apparent complexity is low: finding a 1D peak on the column is log n (professor initially said θ(m), corrected by student Eric to log n), and finding a 1D peak on row i (width m) is log m; if n = m, only a couple of log n steps and you're done."
+        },
+        {
+          "text": "学生指出关键缺陷：第二步在行 i 上找峰值后，原来那一列上的峰值条件可能不再成立——列上的峰值可能已经不是峰值了。",
+          "textEn": "A student points out the key flaw: after the second step finds a peak on row i, the column peak condition from the first step may no longer hold — the column peak may not be a peak anymore."
+        },
+        {
+          "text": "教授确认：这个算法是高效的（只需 log n 时间），但不正确。教授强调：『这个算法不正确，它跑不通。你要的是正确性。不正确但高效肯定不如低效但正确。』",
+          "textEn": "The professor confirms: this algorithm is efficient (only log n time) but incorrect. He emphasizes: 'This algorithm is incorrect. It doesn't work. You want to be correct. Being incorrect and efficient is definitely worse than being correct and inefficient.'"
+        }
+      ]
+    },
+    {
+      "heading": "反例说明：为什么该算法失败",
+      "headingEn": "Counterexample: Why the Algorithm Fails",
+      "items": [
+        {
+          "text": "核心问题：行 i 上的1D峰值不一定是2D峰值（A 1D peak on row i may not be a 2D peak）。",
+          "textEn": "Core problem: a 1D peak on row i may not be a 2D peak."
+        },
+        {
+          "text": "具体反例：从中间某行开始，若上方是10，则12会被选为峰值（因为12相对10和11是峰值），即使19更大也不会被选。",
+          "textEn": "Specific counterexample: starting from a middle row, if the value above is 10, then 12 would be chosen as a peak (since 12 is a peak relative to 10 and 11), even though 19 is larger."
+        },
+        {
+          "text": "接着在该行上找峰值会得到14，14是这一行的1D峰值，但14不是2D峰值——算法会错误地返回14。",
+          "textEn": "Then finding a peak on that row would yield 14, which is a 1D peak on that row, but 14 is not a 2D peak — the algorithm would incorrectly return 14."
+        },
+        {
+          "text": "结论：这个方案看起来像高效算法，但实际上不工作（It's efficient, but incorrect）。",
+          "textEn": "Conclusion: this approach looks like an efficient algorithm, but it simply doesn't work (it's efficient, but incorrect)."
+        }
+      ]
+    },
+    {
+      "heading": "正确的递归算法（优于Greedy Ascent）",
+      "headingEn": "The Correct Recursive Algorithm (Better than Greedy Ascent)",
+      "items": [
+        {
+          "text": "教授预告：作业题中会出现四种不同的2D峰值算法，需要分析各自的复杂度，并判断哪些是高效的、哪些是正确的。",
+          "textEn": "The professor announces: four different 2D peak algorithms will appear in the problem set; you must analyze their complexity and decide which are efficient and which are correct."
+        },
+        {
+          "text": "新算法：这是一个递归版本，在复杂度上优于Greedy Ascent算法，而且是正确的。",
+          "textEn": "New algorithm: a recursive version that is better than the Greedy Ascent algorithm in terms of complexity, and this one works."
+        },
+        {
+          "text": "第一步：选取中间列 j = m/2，在该列上找到全局最大值（global maximum），位置记为 (i, j)。",
+          "textEn": "Step 1: pick the middle column j = m/2, and find the global maximum on column j, located at (i, j)."
+        },
+        {
+          "text": "第二步：比较 (i, j−1)、(i, j)、(i, j+1)，即只看找到的行最大值的左右两个邻居并比较。",
+          "textEn": "Step 2: compare (i, j−1), (i, j), and (i, j+1) — once the maximum in the row is found, only look left and right and compare."
+        },
+        {
+          "text": "递归方向：如果 (i, j−1) > (i, j)，则选择左半部分（左列）继续递归（右侧同理）。",
+          "textEn": "Recursion direction: if (i, j−1) > (i, j), pick the left half (left columns) to recurse on (similarly for the right side)."
+        }
+      ]
+    },
+    {
+      "heading": "算法的终止条件与正确性论证",
+      "headingEn": "Termination Condition and Correctness Argument",
+      "items": [
+        {
+          "text": "终止条件：如果左右两个条件都不触发，即 (i, j) ≥ (i, j−1) 且 (i, j) ≥ (i, j+1)，那么算法结束——这与1D版本的条件完全类似。",
+          "textEn": "Termination condition: if neither the left nor right condition fires, i.e., (i, j) ≥ (i, j−1) and (i, j) ≥ (i, j+1), then we're done — just like the 1D version."
+        },
+        {
+          "text": "正确性论证：若 (i, j) ≥ (i, j−1) 且 (i, j) ≥ (i, j+1)，则 (i, j) 是2D峰值。",
+          "textEn": "Correctness argument: if (i, j) ≥ (i, j−1) and (i, j) ≥ (i, j+1), then (i, j) is a 2D peak."
+        },
+        {
+          "text": "论证原因：因为 (i, j) 是该列的全局最大值，所以它已经与其上下所有相邻元素比较过且更大；再加上已确认左右邻居也不比它大，四个方向都满足峰值条件，因此它是2D峰值。",
+          "textEn": "Reason: since (i, j) is the maximum element in that column, it has already been compared with all adjacent elements above and below and is the largest; now having verified the left and right neighbors are no larger, all four directions satisfy the peak condition, so it is a 2D peak."
+        }
+      ]
+    }
+  ]
+}

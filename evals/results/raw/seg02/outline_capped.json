@@ -1,0 +1,64 @@
+{
+  "title": "线性代数：行图像与列图像（3×3 方程组）",
+  "titleEn": "Linear Algebra: Row vs. Column Picture (3x3 Systems)",
+  "sections": [
+    {
+      "heading": "行图像：三个平面相交于一点",
+      "headingEn": "Row Picture: Three Planes Meet at One Point",
+      "items": [
+        {
+          "text": "三阶方程组中每行代表三维空间中的一个平面（z 为自由变量，也是平面）。",
+          "textEn": "Each row of a 3x3 system gives a plane in 3D; z can be anything."
+        },
+        {
+          "text": "两个方程对应两个平面，相交于一条直线；第三个平面加入后，三个平面相交于一点，该点即为解。",
+          "textEn": "Two equations give a line (intersection of two planes); the third plane makes all three meet at one point—the solution."
+        },
+        {
+          "text": "三个平面不平行（非特殊情形）时必交于一点，线性代数能找到这个点。",
+          "textEn": "If the planes are not parallel, they meet at one point; linear algebra will find it."
+        },
+        {
+          "text": "老师强调：行图像在四维及更高维度难以直观理解，因此放弃行图像，转而偏好列图像。",
+          "textEn": "The row picture gets hard in higher dimensions, so the professor prefers the column picture."
+        }
+      ]
+    },
+    {
+      "heading": "列图像：三个列向量的线性组合",
+      "headingEn": "Column Picture: Linear Combination of Three Columns",
+      "items": [
+        {
+          "text": "左端是三个三维列向量的线性组合，目标是找到合适的系数（x, y, z）使其等于右端向量。",
+          "textEn": "The left side is a linear combination of three 3D column vectors equal to b."
+        },
+        {
+          "text": "各列分别为：(2, -1, 0)、(-1, 2, -3)、(0, -1, 4)。",
+          "textEn": "Columns: (2,-1,0), (-1,2,-3), (0,-1,4)."
+        },
+        {
+          "text": "本例右端 b = (0, -1, 4) 恰好等于第三列，因此解为 x=0, y=0, z=1。",
+          "textEn": "Since b = (0,-1,4) equals the third column, the solution is x=0, y=0, z=1."
+        },
+        {
+          "text": "该解 (0,0,1) 正是前面三个平面的交点（之前无法从行图像看出）。",
+          "textEn": "The solution (0,0,1) is exactly the point where the three planes meet."
+        }
+      ]
+    },
+    {
+      "heading": "预告：消元法与不同右端项",
+      "headingEn": "Preview: Elimination and Different Right Sides",
+      "items": [
+        {
+          "text": "下一讲讲消元法（elimination），是求解所有方程组的系统性方法，所有大型软件都基于此。",
+          "textEn": "Next lecture: elimination—the systematic method used by all large-scale software."
+        },
+        {
+          "text": "老师提出「大图像」问题：保持左端矩阵不变，换不同的右端项 b，如何求解。",
+          "textEn": "Big picture: keep the same matrix but change the right-hand side b."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "title": "二维峰值寻找：错误高效算法与递归正确算法",
+  "titleEn": "2D Peak Finding: Incorrect Efficient Algorithm and Recursive Correct Algorithm",
+  "sections": [
+    {
+      "heading": "课堂主题",
+      "headingEn": "Lecture Topic",
+      "items": [
+        {
+          "text": "主题是在二维数组中寻找 2D peak； professor 先展示一个看似 log n/log m 的高效算法，再证明它错误，最后给出递归正确算法。",
+          "textEn": "2D peak finding: an efficient-looking log n/log m algorithm fails, then a recursive correct version is given."
+        }
+      ]
+    },
+    {
+      "heading": "错误的高效算法",
+      "headingEn": "Incorrect Efficient Algorithm",
+      "items": [
+        {
+          "text": "取中列 j=m/2，用二分找该列一维峰值，复杂度 log n；再在第 i 行二分找一维峰值，行宽 m 则 log m。",
+          "textEn": "Pick middle column j=m/2; binary-search a 1D column peak (log n), then binary-search row i for a 1D peak (log m)."
+        },
+        {
+          "text": "不能停：第二步在行 i 找峰值可能破坏原来的列峰值；二维峰值不一定落在行 i 上。",
+          "textEn": "Not done: the row-peak step may destroy the column peak; a 2D peak may not lie on row i."
+        },
+        {
+          "text": "反例：中列若上方是 10、11，会选 12 为列峰值，尽管 19 更大；随后该行返回 14，但 14 不是 2D peak。",
+          "textEn": "Example: column peak 12 beats 10,11 though 19 is bigger; row peak 14 is returned but is not a 2D peak."
+        },
+        {
+          "text": "老师强调：高效但错误不可接受；正确比单纯快更重要。",
+          "textEn": "Efficient but incorrect is unacceptable; correct beats merely fast."
+        }
+      ]
+    },
+    {
+      "heading": "递归正确算法",
+      "headingEn": "Recursive Correct Algorithm",
+      "items": [
+        {
+          "text": "选中列 j=m/2，找该列全局最大 (i,j)，再比较左、中、右三点 (i,j-1)、(i,j)、(i,j+1)。",
+          "textEn": "Recursive fix: pick j=m/2, find global column maximum (i,j), compare (i,j-1),(i,j),(i,j+1)."
+        },
+        {
+          "text": "若左侧或右侧邻居更大，则递归进入对应半边；否则停止。",
+          "textEn": "If left/right neighbor is larger, recurse into that half; otherwise stop."
+        },
+        {
+          "text": "终止条件：列最大值又不小于左右邻居，因列内上下已比较，故可断定是 2D peak。",
+          "textEn": "Base case: (i,j) is column max and exceeds both side neighbors, hence a 2D peak."
+        },
+        {
+          "text": "作业会给出四个算法，需要分析复杂度并判断是否高效、正确。",
+          "textEn": "Pset: analyze four algorithms for efficiency and correctness."
+        }
+      ]
+    }
+  ]
+}

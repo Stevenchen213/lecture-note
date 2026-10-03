@@ -45,12 +45,14 @@ Metrics:
 
 ## Judging method
 
-Judgments are made by an LLM (`deepseek-chat`, temperature 0) with strict prompts:
-a key point is covered only if the specific fact/number/definition is present,
-in any wording or language. All raw judge inputs/outputs are reproducible by
-re-running the script. We treat LLM-as-judge as a scaling tool, not ground truth:
-the labeled key points are atomic facts, and spot-checking judge decisions on
-2 segments showed no disagreement with human judgment.
+Judgments are made by an LLM judge with strict prompts: a key point is covered only
+if the specific fact/number/definition is present, in any wording or language.
+The reported run used Kimi (`kimi-for-coding`, via the OpenAI-compatible switch in
+`server/.env`) for both outline generation and judging, with no explicit temperature
+(Kimi's current models lock that parameter). All raw judge inputs/outputs are
+reproducible by re-running the script. We treat LLM-as-judge as a scaling tool, not
+ground truth: the labeled key points are atomic facts, and spot-checking judge
+decisions on 2 segments showed no disagreement with human judgment.
 
 ## Why this design answers the feedback
 

@@ -1,0 +1,172 @@
+{
+  "title": "肾脏拍卖与器官市场：实证问题、规范问题与市场失灵",
+  "titleEn": "Kidney Auctions and Organ Markets: Positive vs. Normative Questions and Market Failures",
+  "sections": [
+    {
+      "heading": "案例引入：eBay 肾脏拍卖事件",
+      "headingEn": "Introductory Case: The eBay Kidney Auction",
+      "items": [
+        {
+          "text": "有人把自己的肾脏放到 eBay 上拍卖，并称“我可以用我的肾脏换钱，竞价从 25,000 美元开始”。",
+          "textEn": "Someone put their kidney up for auction on eBay, saying they would give their kidney in exchange for money, with bidding starting at $25,000."
+        },
+        {
+          "text": "竞价一路上涨到 500 万美元，随后 eBay 关闭拍卖并规定：不允许在 eBay 上拍卖人体器官。",
+          "textEn": "Bidding rose to $5 million before eBay shut it down and said no auctioning human body parts on eBay."
+        },
+        {
+          "text": "教师半开玩笑地指出：不清楚为什么 eBay 在 500 万美元时叫停，但无论如何，这个案例可以用来同时提出实证问题和规范问题。",
+          "textEn": "The instructor joked that he did not know why they stopped at $5 million, but the example can be used to ask both a positive and a normative question."
+        }
+      ]
+    },
+    {
+      "heading": "实证问题：为什么价格会这么高",
+      "headingEn": "Positive Question: Why Did the Price Get So High?",
+      "items": [
+        {
+          "text": "实证问题只问“为什么会发生”，此处只需要用供求模型解释价格飙升。",
+          "textEn": "The positive question asks only “why did it happen,” and here we only need to appeal to the supply and demand model."
+        },
+        {
+          "text": "肾脏需求极高：如果一个人需要肾脏才能活下去，他/她大概愿意付出自己拥有的一切去得到它。",
+          "textEn": "Demand for a kidney is very high: if you need a kidney to live, you will pay approximately everything you have to get it."
+        },
+        {
+          "text": "自由市场上肾脏供给极低：据教师所知，当时 eBay 上可能只有那一个肾脏。",
+          "textEn": "Supply of kidneys on the free market is very low; as far as the instructor knew, that may have been the only one."
+        },
+        {
+          "text": "结论：非常高的需求加上非常低的供给，会产生非常高的价格；因此价格上升并不奇怪，如果 eBay 不关闭，价格可能还会继续上涨。",
+          "textEn": "Conclusion: very high demand plus very low supply produces a very high price; it is not surprising the price rose, and it probably would have risen further if eBay had not shut it down."
+        }
+      ]
+    },
+    {
+      "heading": "规范问题：我们是否应该被允许出售人体器官",
+      "headingEn": "Normative Question: Should We Be Allowed to Sell Our Bodily Organs?",
+      "items": [
+        {
+          "text": "更有意思也更难的问题是规范问题：我们应不应该被允许在 eBay 上出售自己的身体器官？",
+          "textEn": "The more interesting and harder question is normative: should we be allowed to sell our bodily organs on eBay?"
+        },
+        {
+          "text": "教师强调这看似是哲学课问题，但根本上是经济学问题，因为它涉及稀缺资源配置、激励、市场与政策边界。",
+          "textEn": "The instructor stressed that this may seem like a philosophy-class question, but fundamentally it is an economics question because it concerns scarce resource allocation, incentives, markets, and the boundaries of policy."
+        },
+        {
+          "text": "美国存在器官短缺：每年都有许多人因器官衰竭却没有足够器官而死亡。",
+          "textEn": "The U.S. faces an organ shortage: many people die every year because there are not enough organs for those with organ failure."
+        },
+        {
+          "text": "教师建议大家都成为器官捐献者：驾照上登记捐献不花任何成本，人去世后本来也用不到，却可能拯救生命；但很多人不登记。",
+          "textEn": "The instructor encouraged everyone to be an organ donor: marking it on your driver’s license costs nothing, you are gone anyway, and it can save a life; but many people do not do it."
+        },
+        {
+          "text": "即使更多人登记捐献，器官需求仍高于可供给数量；在现有制度下，需求无法被完全满足。",
+          "textEn": "Even if more people registered as donors, demand for organs would still exceed the available supply; under the current system, demand cannot be fully met."
+        },
+        {
+          "text": "支持放开交易的一方会认为：想要器官的人富有且愿意支付；提供者有 two kidneys，人用一个肾也能正常生活，肾衰竭概率很低。",
+          "textEn": "Those in favor of allowing trade would argue: the person wanting an organ is wealthy and willing to pay, and the provider has two kidneys; a person can function just fine with one kidney, and the odds of kidney failure are very low."
+        },
+        {
+          "text": "出售者可能处于绝境：无法养活家人、无法提供住房；卖掉一个肾后仍能正常生活，却能彻底改变人生，例如让孩子受教育、建房子、完成必要目标。",
+          "textEn": "The seller may be in desperate straits: unable to feed or house their family; selling one kidney while still functioning fine could change their life forever, such as educating children, building a house, or doing what they need to do."
+        },
+        {
+          "text": "核心反问是：为什么不允许这种双方自愿、看似双赢的交易发生？",
+          "textEn": "The core question is: why shouldn’t we let that happen if it appears voluntary and mutually beneficial?"
+        }
+      ]
+    },
+    {
+      "heading": "标准经济学答案与反对理由",
+      "headingEn": "Standard Economic Answer and Reasons for Objection",
+      "items": [
+        {
+          "text": "标准经济学倾向于说：很好，让他们拍卖身体器官吧；只要交易自愿且市场运行正常，不应干预。",
+          "textEn": "Standard economics would tend to say: great, let them auction their body parts; as long as trade is voluntary and the market works properly, there should be no interference."
+        },
+        {
+          "text": "但教师指出，事实上存在许多理由说明这种结果未必是好的，不能简单说“Sure, let her rip”。",
+          "textEn": "However, the instructor noted there are many reasons why that may not be a good outcome, so we should not simply say, “Sure, let her rip.”"
+        },
+        {
+          "text": "教师课上互动追问：我们不想放任器官市场自由发展的原因有哪些？这引出市场失灵与伦理约束。",
+          "textEn": "The instructor asked the class: what are some reasons we might not want to just let it rip? This leads into market failures and ethical constraints."
+        }
+      ]
+    },
+    {
+      "heading": "教师强调：经济学基本立场与前 11 讲边界",
+      "headingEn": "Instructor Emphasis: Baseline Economic Stance and the First 11 Lectures",
+      "items": [
+        {
+          "text": "教师明确要求听清楚：市场失灵这类内容前 11 讲不会覆盖；在前 11 讲中，自由市场将是“王”。",
+          "textEn": "The instructor asked to be very clear: market failures will not be covered for about the first 11 lectures; for the first 11 lectures, the free market is going to be king."
+        },
+        {
+          "text": "教师原话强调：“Economics is fundamentally a right-wing science.” 同时又自嘲说自己本学期会显现出偏左立场，但经济学本身相当偏右。",
+          "textEn": "The instructor’s emphasized quote: “Economics is fundamentally a right-wing science.” He added that although he is kind of a left-wing guy, economics as a field is pretty much right-wing."
+        },
+        {
+          "text": "基本经济学立场：市场最懂；只有两类理由可以干预市场。录音中只完整给出第一类：市场因某种原因没有正常运转。",
+          "textEn": "Basic economics says the market knows best; there are only two reasons to ever interfere with the market. In the recording, only the first is fully stated: the market is not working properly for some reason."
+        },
+        {
+          "text": "器官市场可作为“市场没有正常运转”的例子：理想情况下，一个人知情、自愿地进入交易没有问题；但现实可能存在胁迫、误解和风险。",
+          "textEn": "The organ market can serve as an example where the market is not working properly: ideally it would be fine if I entered the transaction knowledgeably and voluntarily, but in reality there may be coercion, misunderstanding, and risk."
+        }
+      ]
+    },
+    {
+      "heading": "器官市场可能失灵的原因",
+      "headingEn": "Why the Organ Market Might Fail",
+      "items": [
+        {
+          "text": "胁迫与犯罪风险：如果器官可以合法出售，可能有人强迫子女放弃肾脏，或违背当事人意愿强制交易，或引发其他犯罪活动。",
+          "textEn": "Coercion and criminal risk: if organs can be legally sold, people might force their children to give up a kidney, act against others’ will, or engage in other criminal activities."
+        },
+        {
+          "text": "信息不对称与认知不足：出售者可能没有真正理解捐肾的风险和后果，未必是充分知情的自愿选择。",
+          "textEn": "Asymmetric information and limited understanding: sellers may not really understand how dangerous it is to give up a kidney, so the choice may not be fully informed and voluntary."
+        },
+        {
+          "text": "健康风险例子：丙型肝炎可导致肾衰竭，且病毒可潜伏多年，患病者可能并不知道自己已感染。",
+          "textEn": "Health-risk example: Hepatitis C can cause kidney failure and can live dormant in the body for years before you know you have it."
+        },
+        {
+          "text": "录音提到美国每年约有 50,000 人（句子未完整）以及目前约 100,000 名美国人携带/患有丙型肝炎；若某人已经捐出一个肾，之后才发现感染丙肝，可能面临致命风险。",
+          "textEn": "The transcript mentions about 50,000 Americans every year (the sentence is incomplete) and currently about 100,000 Americans living with hepatitis C; if someone has already given up a kidney and later finds out they have hepatitis C, they could be in mortal danger."
+        },
+        {
+          "text": "关键风险情形：一个人卖掉一个肾后，若干年后发现自己患上会导致肾衰竭的疾病，而此时只剩一个肾，可能因此死亡。",
+          "textEn": "Key risky scenario: a person sells one kidney and years later discovers a disease that causes kidney failure; with only one kidney left, they could die."
+        },
+        {
+          "text": "因此，教师认为现实中的器官市场可能并不像标准经济学所说的那样运转良好：人们可能被误导，也可能被迫交易。",
+          "textEn": "Therefore, the instructor argued the actual organ market may not work quite as well as economists claim: people might be misinformed or forced into the transaction."
+        }
+      ]
+    },
+    {
+      "heading": "黑市为何不一定是反对理由",
+      "headingEn": "Why the Black Market Is Not Necessarily an Objection",
+      "items": [
+        {
+          "text": "教师特意指出：黑市本身不一定是反对器官交易的理由。",
+          "textEn": "The instructor specifically noted that the black market is not necessarily one of the reasons against organ sales."
+        },
+        {
+          "text": "经济学家的看法是：黑市也是一种市场；如果 eBay 不允许卖肾，人们转去黑市交易，只要不存在其他市场失灵，这在经济分析中仍可能被看作可行。",
+          "textEn": "Economists would say the black market is just a market; if eBay does not allow kidney sales and people go to the black market instead, that can still be treated as okay if there are no other market failures."
+        },
+        {
+          "text": "换句话说，真正的问题不是“合法市场会不会变成黑市”，而是交易本身是否存在信息、胁迫、健康风险和外部性等失灵；录音到此中断。",
+          "textEn": "In other words, the real issue is not whether a legal market becomes a black market, but whether the transaction itself involves failures such as information problems, coercion, health risk, and externalities; the recording cuts off here."
+        }
+      ]
+    }
+  ]
+}

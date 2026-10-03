@@ -12,7 +12,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chatRetry } from './lib/deepseek.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -23,7 +23,7 @@ const RES_DIR = path.join(ROOT, 'evals', 'results');
 const RAW_DIR = path.join(RES_DIR, 'raw');
 
 // 先加载 env，再动态 import 产品代码（产品代码在 import 时读 process.env）
-const { generateOutline } = await import(path.join(ROOT, 'server', 'deepseek.js'));
+const { generateOutline } = await import(pathToFileURL(path.join(ROOT, 'server', 'deepseek.js')).href);
 
 const LENGTH_CAP_RATIO = 0.15; // 限长组：大纲词数 ≤ 转写词数 15%
 
@@ -188,6 +188,8 @@ async function evalSegment(segId) {
     capped_precision: +((capPrec.matched.size / Math.max(capPrec.total, 1)) * 100).toFixed(1),
   };
   console.log(`  结果: 基线 ${row.baseline_coverage}% | 不限长 ${row.uncapped_coverage}%/${row.uncapped_precision}% (${(row.uncapped_ratio * 100).toFixed(0)}%长) | 限长 ${row.capped_coverage}%/${row.capped_precision}% (${(row.capped_ratio * 100).toFixed(0)}%长)`);
+  // 每段立即落盘，支持中断后断点续跑
+  fs.writeFileSync(path.join(outDir, 'row.json'), JSON.stringify(row, null, 2));
   return row;
 }
 
@@ -196,11 +198,23 @@ console.log(`评估 ${segIds.length} 个段落: ${segIds.join(', ')}`);
 
 const rows = [];
 for (const id of segIds) {
+  // 断点续跑：已有 row.json 的段落直接读盘，不重复调用 API
+  const rowPath = path.join(RAW_DIR, id, 'row.json');
+  if (fs.existsSync(rowPath)) {
+    console.log(`${id}: 已有结果，跳过（续跑模式）`);
+    rows.push(JSON.parse(fs.readFileSync(rowPath, 'utf-8')));
+    continue;
+  }
   try {
     rows.push(await evalSegment(id));
   } catch (err) {
     console.error(`${id} 失败: ${err.message}`);
   }
+}
+
+if (rows.length === 0) {
+  console.error('没有任何段落成功，不写汇总');
+  process.exit(1);
 }
 
 // CSV
