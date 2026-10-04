@@ -8,13 +8,15 @@ import { useAudioRecorder } from './hooks/useAudioRecorder';
 import { useWebSocket } from './hooks/useWebSocket';
 import { mergeOutline } from './utils/outlineMerge';
 import { saveSession, getSession } from './utils/sessionStore';
+import { I18nProvider, useI18n, LangToggle } from './i18n';
 
 let subtitleId = 0;
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
 const HTTP_URL = WS_URL.replace(/^wss?:\/\//, 'https://').replace(/^ws:\/\//, 'http://');
 
-export default function App() {
+function AppInner() {
+  const { t } = useI18n();
   const [screen, setScreen] = useState('home');
   const [replayId, setReplayId] = useState(null);
   const [subtitles, setSubtitles] = useState([]);
@@ -327,8 +329,9 @@ export default function App() {
         <div className="flex items-center gap-3 text-[11px] text-slate-400">
           <span className={`flex items-center gap-1.5 ${isPaused ? 'text-amber-500' : isActive ? 'text-emerald-500' : 'text-slate-300'}`}>
             <span className={`w-1.5 h-1.5 rounded-full ${isPaused ? 'bg-amber-400' : isActive ? 'bg-emerald-400' : 'bg-slate-300'}`} />
-            {isPaused ? '已暂停' : isActive ? '录制中' : '待开始'}
+            {isPaused ? t('paused') : isActive ? t('recording') : t('idle')}
           </span>
+          <LangToggle />
         </div>
       </header>
 
@@ -355,5 +358,13 @@ export default function App() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <I18nProvider>
+      <AppInner />
+    </I18nProvider>
   );
 }

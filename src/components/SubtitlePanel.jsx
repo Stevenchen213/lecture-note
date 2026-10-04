@@ -1,6 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { useI18n } from '../i18n';
 
 export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPause, onResume, onStop, serverError, isStopping }) {
+  const { t } = useI18n();
   const scrollRef = useRef(null);
   const userScrolledUp = useRef(false);
 
@@ -42,10 +44,10 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
 
           <div>
             <h2 className="text-sm font-semibold text-slate-700">
-              {isIdle ? '准备就绪' : isPaused ? '⏸️ 已暂停' : '实时字幕'}
+              {isIdle ? t('readyTitle') : isPaused ? t('paused') : t('realtimeSubtitles')}
             </h2>
             <p className="text-[11px] text-slate-400">
-              {isIdle ? '点击开始启动识别' : isPaused ? '点击继续恢复识别' : 'AI 同传翻译中'}
+              {isIdle ? t('readyDesc') : isPaused ? t('readyDesc') : t('aiTranslating')}
             </p>
           </div>
         </div>
@@ -57,18 +59,18 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
               <button
                 onClick={onStop}
                 className="px-3 py-2 text-slate-400 text-sm rounded-xl hover:bg-slate-100 transition-all duration-200"
-                aria-label="返回首页"
+                aria-label="back to home"
               >
-                ← 返回
+                {t('backHome')}
               </button>
               <button
                 onClick={onStart}
                 className="px-5 py-2 bg-emerald-50 text-emerald-700 text-sm font-semibold rounded-xl
                            hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200
                            shadow-sm shadow-emerald-100"
-                aria-label="开始录音"
+                aria-label="start recording"
               >
-                ▶️ 开始
+                {t('startRecording')}
               </button>
             </>
           )}
@@ -77,11 +79,11 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {isActive && (
             <button
               onClick={onPause}
-              aria-label="暂停录音"
+              aria-label="pause recording"
               className="px-4 py-2 bg-amber-50 text-amber-700 text-sm font-medium rounded-xl
                          hover:bg-amber-100 border border-amber-200/50 transition-all duration-200"
             >
-              ⏸️ 暂停
+              {t('pause')}
             </button>
           )}
 
@@ -89,11 +91,11 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {isPaused && (
             <button
               onClick={onResume}
-              aria-label="继续录音"
+              aria-label="resume recording"
               className="px-4 py-2 bg-emerald-50 text-emerald-700 text-sm font-medium rounded-xl
                          hover:bg-emerald-100 border border-emerald-200/50 transition-all duration-200"
             >
-              ▶️ 继续
+              {t('resume')}
             </button>
           )}
 
@@ -101,11 +103,11 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
           {!isIdle && (
             <button
               onClick={onStop}
-              aria-label="结束课程"
+              aria-label="end session"
               className="px-4 py-2 bg-rose-50 text-rose-600 text-sm font-medium rounded-xl
                          hover:bg-rose-100 border border-rose-200/50 transition-all duration-200"
             >
-              结束
+              {t('stop')}
             </button>
           )}
         </div>
@@ -115,7 +117,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
       {isPaused && (
         <div className="mx-4 mt-3 px-4 py-3 bg-amber-50/80 border border-amber-200/80 rounded-xl text-amber-700 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
           <span className="text-base">⏸️</span>
-          <span>录音已暂停 — 点击「继续」恢复识别</span>
+          <span>{t('pausedBanner')}</span>
         </div>
       )}
 
@@ -131,7 +133,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
       {isStopping && (
         <div className="mx-4 mt-3 px-4 py-3 bg-indigo-50/80 border border-indigo-200/80 rounded-xl text-indigo-700 text-sm flex items-center gap-2 animate-fade-in backdrop-blur-sm">
           <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-          <span>正在生成大纲和练习题…</span>
+          <span>{t('stoppingBanner')}</span>
         </div>
       )}
 
@@ -144,10 +146,10 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
                 <span className="text-3xl">{isIdle ? '🎤' : isPaused ? '⏸️' : '🎤'}</span>
               </div>
               <p className="text-sm font-medium text-slate-400">
-                {isIdle ? '点击「开始」启动识别' : isPaused ? '录音已暂停' : '正在收听中...'}
+                {isIdle ? t('clickStart') : isPaused ? t('paused') : t('listening')}
               </p>
               <p className="text-xs text-slate-300 mt-1">
-                {isIdle ? '' : isPaused ? '' : '开始讲话即可看到实时字幕'}
+                {isIdle ? '' : isPaused ? '' : t('aiTranslating')}
               </p>
             </div>
           </div>
@@ -177,7 +179,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
               {sub.translated === '...' ? (
                 <span className="inline-flex items-center gap-1.5">
                   <span className="w-3.5 h-3.5 border-2 border-slate-300 border-t-indigo-400 rounded-full animate-spin" />
-                  翻译中…
+                  {t('translating')}
                 </span>
               ) : (
                 sub.translated
@@ -193,7 +195,7 @@ export default function SubtitlePanel({ subtitles, recordingPhase, onStart, onPa
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500" />
             </span>
-            <span className="text-xs text-indigo-400 font-medium">识别中…</span>
+            <span className="text-xs text-indigo-400 font-medium">{t('recognizing')}</span>
           </div>
         )}
       </div>

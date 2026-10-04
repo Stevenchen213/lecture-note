@@ -1,22 +1,25 @@
 import { useCallback } from 'react';
 import RichTextEditor from './RichTextEditor';
+import { useI18n } from '../i18n';
 
 function SourceTag({ source }) {
+  const { t } = useI18n();
   if (source === 'user') {
     return (
-      <span className="text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-600 rounded-full font-medium ml-1.5 align-middle border border-amber-200/50" title="手动添加">
+      <span className="text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-600 rounded-full font-medium ml-1.5 align-middle border border-amber-200/50" title={t('manualTag')}>
         👤
       </span>
     );
   }
   return (
-    <span className="text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-500 rounded-full font-medium ml-1.5 align-middle border border-indigo-200/50" title="AI 生成">
+    <span className="text-[10px] px-1.5 py-0.5 bg-indigo-50 text-indigo-500 rounded-full font-medium ml-1.5 align-middle border border-indigo-200/50" title={t('aiTag')}>
       AI
     </span>
   );
 }
 
 export default function OutlinePanel({ outline, setOutline, subtitles = [], questions = null }) {
+  const { t } = useI18n();
   const hasContent = outline && (outline.title || (outline.sections && outline.sections.length > 0));
 
   const updateTitle = useCallback(
@@ -95,12 +98,12 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
             <span className="text-sm">📝</span>
           </div>
           <div>
-            <h2 className="text-sm font-semibold text-slate-700">课程大纲</h2>
-            <p className="text-[11px] text-slate-400">AI 自动生成 · 可手动编辑</p>
+            <h2 className="text-sm font-semibold text-slate-700">{t('courseOutline')}</h2>
+            <p className="text-[11px] text-slate-400">{t('aiAutoEdit')}</p>
           </div>
         </div>
         <span className="text-[11px] text-slate-300 bg-slate-50 px-2 py-1 rounded-lg">
-          选中文字弹出工具栏
+          {t('selectTextTip')}
         </span>
       </div>
 
@@ -112,8 +115,8 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-indigo-50 flex items-center justify-center">
                 <span className="text-2xl">📝</span>
               </div>
-              <p className="text-sm font-medium text-slate-400">大纲生成中…</p>
-              <p className="text-xs text-slate-300 mt-1">开始讲话后约 30 秒自动出现</p>
+              <p className="text-sm font-medium text-slate-400">{t('outlineGenerating')}</p>
+              <p className="text-xs text-slate-300 mt-1">{t('outlineHint')}</p>
 
               {/* 骨架屏 */}
               <div className="mt-5 space-y-3 w-64 mx-auto">
@@ -134,7 +137,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                 <RichTextEditor
                   value={outline.title}
                   onChange={updateTitle}
-                  placeholder="课程名称"
+                  placeholder={t('courseName')}
                   className="font-bold text-slate-800"
                 />
               </h2>
@@ -151,7 +154,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                     <RichTextEditor
                       value={sec.heading}
                       onChange={(h) => updateHeading(sec.id, h)}
-                      placeholder="新章节"
+                      placeholder={t('newSection')}
                       className="font-semibold text-slate-700"
                     />
                   </h3>
@@ -159,7 +162,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                   <button
                     onClick={() => deleteSection(sec.id)}
                     className="text-slate-300 hover:text-rose-500 text-xs opacity-0 group-hover:opacity-100 transition-all ml-1 p-1 hover:bg-rose-50 rounded"
-                    title="删除章节"
+                    title={t('deleteSection')}
                   >
                     ✕
                   </button>
@@ -174,7 +177,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                         <RichTextEditor
                           value={item.text}
                           onChange={(h) => updateItemText(sec.id, item.id, h)}
-                          placeholder="知识点"
+                          placeholder={t('knowledgePoint')}
                           className="text-slate-600"
                         />
                       </span>
@@ -182,7 +185,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                       <button
                         onClick={() => deleteItem(sec.id, item.id)}
                         className="text-slate-300 hover:text-rose-500 text-xs opacity-0 group-hover:opacity-100 transition-all p-1 hover:bg-rose-50 rounded flex-shrink-0"
-                        title="删除"
+                        title={t('delete')}
                       >
                         ✕
                       </button>
@@ -195,7 +198,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                   onClick={() => addItem(sec.id)}
                   className="ml-5 mt-1.5 text-xs text-indigo-400 hover:text-indigo-600 transition-colors flex items-center gap-1 font-medium"
                 >
-                  <span>+</span> 添加知识点
+                  <span>+</span> {t('addKnowledge')}
                 </button>
               </div>
             ))}
@@ -205,7 +208,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
               onClick={addSection}
               className="w-full py-2.5 text-sm text-indigo-400 hover:text-indigo-600 hover:bg-indigo-50/50 rounded-xl border-2 border-dashed border-slate-200 hover:border-indigo-300 transition-all duration-200 font-medium"
             >
-              + 添加新章节
+              {t('addSection')}
             </button>
           </div>
         )}
@@ -217,8 +220,8 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
               <div className="w-7 h-7 rounded-lg bg-amber-50 border border-amber-100 flex items-center justify-center">
                 <span className="text-sm">✏️</span>
               </div>
-              <h3 className="text-sm font-semibold text-slate-700">课后练习题</h3>
-              <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">AI 生成</span>
+              <h3 className="text-sm font-semibold text-slate-700">{t('practiceQuestions')}</h3>
+              <span className="text-[10px] text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">{t('aiGenerated')}</span>
             </div>
             <div className="space-y-3">
               {questions.map((q, i) => (
@@ -227,7 +230,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                     <span className="text-xs font-bold text-amber-500 bg-amber-100 px-1.5 py-0.5 rounded">
                       {q.type}
                     </span>
-                    <span className="text-[10px] text-slate-400">第 {i + 1} 题</span>
+                    <span className="text-[10px] text-slate-400">{t('questionN')}{i + 1}{t('questionNUnit')}</span>
                   </div>
                   <p className="text-sm font-semibold text-slate-800 mb-1">{q.question}</p>
                   {q.questionEn && (
@@ -241,7 +244,7 @@ export default function OutlinePanel({ outline, setOutline, subtitles = [], ques
                     </div>
                   )}
                   <details className="mt-2">
-                    <summary className="text-xs text-amber-700 cursor-pointer hover:text-amber-800 font-medium">查看答案</summary>
+                    <summary className="text-xs text-amber-700 cursor-pointer hover:text-amber-800 font-medium">{t('showAnswer')}</summary>
                     <p className="text-sm text-amber-900 mt-1.5 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100">
                       {q.answer}
                     </p>

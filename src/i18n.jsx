@@ -1,0 +1,215 @@
+import { useState, useCallback, useContext, createContext } from 'react';
+
+const translations = {
+  en: {
+    // header
+    recording: 'Recording',
+    paused: 'Paused',
+    idle: 'Ready',
+    // SubtitlePanel
+    readyTitle: 'Ready',
+    readyDesc: 'Click Start to begin recognition',
+    realtimeSubtitles: 'Live Subtitles',
+    aiTranslating: 'AI live translation',
+    backHome: '← Back',
+    startRecording: '▶️ Start',
+    pause: '⏸️ Pause',
+    resume: '▶️ Resume',
+    stop: 'Stop',
+    pausedBanner: '⏸️ Recording paused — click Resume to continue',
+    errorBanner: '⚠️',
+    stoppingBanner: 'Generating outline and practice questions…',
+    listening: 'Listening…',
+    clickStart: 'Click Start to begin',
+    translating: 'Translating…',
+    translationFailed: '⚠️ Translation failed',
+    recognizing: 'Recognizing…',
+    // OutlinePanel
+    courseOutline: 'Course Outline',
+    aiAutoEdit: 'AI generated · editable',
+    selectTextTip: 'Select text for toolbar',
+    outlineGenerating: 'Generating outline…',
+    outlineHint: 'Appears ~30s after speech starts',
+    courseName: 'Course title',
+    newSection: 'New section',
+    knowledgePoint: 'Knowledge point',
+    addKnowledge: 'Add point',
+    addSection: '+ Add section',
+    practiceQuestions: 'Practice Questions',
+    aiGenerated: 'AI',
+    questionN: 'Q',
+    showAnswer: 'Show answer',
+    deleteSection: 'Delete section',
+    delete: 'Delete',
+    manualTag: 'Manual',
+    aiTag: 'AI',
+    // HistoryPanel
+    historyTitle: 'History',
+    historySub: 'Saved lecture records',
+    backToHome: '← Home',
+    noHistory: 'No records yet',
+    noHistorySub: 'Saved automatically after each session',
+    unnamedCourse: 'Untitled Course',
+    minAgo: 'min ago',
+    hourAgo: 'h ago',
+    dayAgo: 'd ago',
+    justNow: 'Just now',
+    noContent: 'No content',
+    subtitleCount: 'subtitles',
+    sectionsCount: 'sections',
+    resumeBtn: '▶️ Resume',
+    deleteBtn: '🗑️',
+    deleteConfirm: 'Delete this record?',
+    // StartScreen
+    tagline1: 'Live Lecture Copilot · Bilingual Notes',
+    tagline2: 'Indian-English optimized · AI translation · Auto outline',
+    uploadHint: 'Upload slides to boost outline (.pptx / .pdf, optional)',
+    parsing: 'Parsing slides…',
+    charsExtracted: 'chars extracted',
+    onlyPptxPdf: 'Only .pptx / .pdf supported',
+    uploadFailed: 'Upload failed',
+    feat1Label: 'Real-time ASR',
+    feat1Desc: 'Indian-English tuned',
+    feat2Label: 'Live Translation',
+    feat2Desc: 'EN → ZH instantly',
+    feat3Label: 'Smart Outline',
+    feat3Desc: 'Structured notes',
+    wakingUp: 'Waking server… ~30s',
+    wakingServer: 'Waking server…',
+    startBtn: 'Start Lecture',
+    historyBtn: 'History',
+    micNeeded: 'Microphone permission required · Data stays local',
+    // ReplayView
+    loading: 'Loading…',
+    back: 'Back',
+    outlineTab: '📝 Outline',
+    subtitlesTab: '💬 Bilingual Subtitles',
+    questionsTab: '✏️ Questions',
+    noOutline: 'No outline content',
+    noSections: 'No sections',
+    noSubtitles: 'No subtitles',
+    untranslated: '(untranslated)',
+    noQuestions: 'No questions',
+    showAnswer2: 'Show answer',
+    unnamed: 'Untitled Course',
+    // misc
+    saveFailed: 'Save failed (storage may be full)',
+  },
+  zh: {
+    recording: '录制中',
+    paused: '已暂停',
+    idle: '待开始',
+    readyTitle: '准备就绪',
+    readyDesc: '点击开始启动识别',
+    realtimeSubtitles: '实时字幕',
+    aiTranslating: 'AI 同传翻译中',
+    backHome: '← 返回',
+    startRecording: '▶️ 开始',
+    pause: '⏸️ 暂停',
+    resume: '▶️ 继续',
+    stop: '结束',
+    pausedBanner: '⏸️ 录音已暂停 — 点击「继续」恢复识别',
+    errorBanner: '⚠️',
+    stoppingBanner: '正在生成大纲和练习题…',
+    listening: '正在收听中…',
+    clickStart: '点击「开始」启动识别',
+    translating: '翻译中…',
+    translationFailed: '⚠️ 翻译失败',
+    recognizing: '识别中…',
+    courseOutline: '课程大纲',
+    aiAutoEdit: 'AI 自动生成 · 可手动编辑',
+    selectTextTip: '选中文字弹出工具栏',
+    outlineGenerating: '大纲生成中…',
+    outlineHint: '开始讲话后约 30 秒自动出现',
+    courseName: '课程名称',
+    newSection: '新章节',
+    knowledgePoint: '知识点',
+    addKnowledge: '添加知识点',
+    addSection: '+ 添加新章节',
+    practiceQuestions: '课后练习题',
+    aiGenerated: 'AI 生成',
+    questionN: '第',
+    questionNUnit: '题',
+    showAnswer: '查看答案',
+    deleteSection: '删除章节',
+    delete: '删除',
+    manualTag: '手动',
+    aiTag: 'AI 生成',
+    historyTitle: '历史课程',
+    historySub: '已保存的听课记录',
+    backToHome: '← 返回首页',
+    noHistory: '暂无历史记录',
+    noHistorySub: '结束听课后会自动保存',
+    unnamedCourse: '未命名课程',
+    minAgo: ' 分钟前',
+    hourAgo: ' 小时前',
+    dayAgo: ' 天前',
+    justNow: '刚刚',
+    noContent: '无内容',
+    subtitleCount: '句字幕',
+    sectionsCount: '章节',
+    resumeBtn: '▶️ 继续',
+    deleteBtn: '🗑️',
+    deleteConfirm: '确定要删除这条记录吗？',
+    tagline1: '课堂实时同传 · 双语笔记助手',
+    tagline2: '支持印度英语 · AI 实时翻译 · 自动生成结构化大纲',
+    uploadHint: '上传课件辅助生成大纲（.pptx / .pdf，可选）',
+    parsing: '正在解析课件…',
+    charsExtracted: '字符已提取',
+    onlyPptxPdf: '只支持 .pptx / .pdf 格式',
+    uploadFailed: '上传失败',
+    feat1Label: '实时识别',
+    feat1Desc: '印度英语优化',
+    feat2Label: '同传翻译',
+    feat2Desc: '英→中即时',
+    feat3Label: '智能大纲',
+    feat3Desc: '结构化笔记',
+    wakingUp: '服务器休眠中，正在唤醒… 约需 30 秒',
+    wakingServer: '正在唤醒服务器…',
+    startBtn: '🎙️ 开始听课',
+    historyBtn: '历史课程',
+    micNeeded: '需要麦克风权限 · 数据安全加密',
+    loading: '加载中…',
+    back: '返回',
+    outlineTab: '📝 课程大纲',
+    subtitlesTab: '💬 双语字幕',
+    questionsTab: '✏️ 练习题',
+    noOutline: '暂无大纲内容',
+    noSections: '暂无章节内容',
+    noSubtitles: '暂无字幕内容',
+    untranslated: '（未翻译）',
+    noQuestions: '暂无练习题',
+    showAnswer2: '查看答案',
+    unnamed: '未命名课程',
+    saveFailed: '保存失败（可能是存储空间不足）',
+  },
+};
+
+const I18nContext = createContext({ lang: 'en', t: (k) => k, setLang: () => {} });
+
+export function I18nProvider({ children }) {
+  const [lang, setLangState] = useState(() => localStorage.getItem('ln-lang') || 'en');
+  const setLang = useCallback((l) => {
+    setLangState(l);
+    localStorage.setItem('ln-lang', l);
+  }, []);
+  const t = useCallback((key) => translations[lang][key] ?? translations.en[key] ?? key, [lang]);
+  return <I18nContext.Provider value={{ lang, t, setLang }}>{children}</I18nContext.Provider>;
+}
+
+export function useI18n() {
+  return useContext(I18nContext);
+}
+
+export function LangToggle() {
+  const { lang, setLang } = useI18n();
+  return (
+    <button
+      onClick={() => setLang(lang === 'en' ? 'zh' : 'en')}
+      className="px-2 py-1 text-[11px] font-medium rounded-lg border border-slate-200 bg-white text-slate-500 hover:bg-slate-50 transition-colors"
+      title="Switch language / 切换语言"
+    >
+      {lang === 'en' ? '中文' : 'EN'}
+    </button>
+  );
+}

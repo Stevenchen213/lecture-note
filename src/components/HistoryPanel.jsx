@@ -1,20 +1,23 @@
 import { useState, useEffect } from 'react';
 import { loadSessions, deleteSession } from '../utils/sessionStore';
+import { useI18n } from '../i18n';
 
-function formatDate(iso) {
+function formatDate(iso, lang) {
   const d = new Date(iso);
   const now = new Date();
   const diff = now - d;
   const mins = Math.floor(diff / 60000);
   const hours = Math.floor(diff / 3600000);
   const days = Math.floor(diff / 86400000);
+  const loc = lang === 'zh' ? 'zh-CN' : 'en-SG';
+  const rtf = new Intl.RelativeTimeFormat(loc, { numeric: 'auto' });
 
-  if (mins < 1) return '刚刚';
-  if (mins < 60) return `${mins} 分钟前`;
-  if (hours < 24) return `${hours} 小时前`;
-  if (days < 7) return `${days} 天前`;
+  if (mins < 1) return rtf.format(0, 'minute');
+  if (mins < 60) return rtf.format(-mins, 'minute');
+  if (hours < 24) return rtf.format(-hours, 'hour');
+  if (days < 7) return rtf.format(-days, 'day');
 
-  return d.toLocaleDateString('zh-CN', {
+  return d.toLocaleDateString(loc, {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
@@ -22,15 +25,14 @@ function formatDate(iso) {
   });
 }
 
-function formatDuration(subtitles) {
-  if (!subtitles || subtitles.length === 0) return '无内容';
+function formatDuration(subtitles, t) {
+  if (!subtitles || subtitles.length === 0) return t('noContent');
   const count = subtitles.length;
-  if (count < 5) return `${count} 句字幕`;
-  if (count < 20) return `${count} 句字幕`;
-  return `${count} 句字幕`;
+  return `${count} ${t('subtitleCount')}`;
 }
 
 export default function HistoryPanel({ onViewSession, onResume, onBack }) {
+  const { t, lang } = useI18n();
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
@@ -39,7 +41,7 @@ export default function HistoryPanel({ onViewSession, onResume, onBack }) {
 
   const handleDelete = (id, e) => {
     e.stopPropagation();
-    if (!confirm('确定要删除这条记录吗？')) return;
+    if (!confirm(t('deleteConfirm'))) return;
     deleteSession(id);
     setSessions((prev) => prev.filter((s) => s.id !== id));
   };
@@ -61,14 +63,14 @@ export default function HistoryPanel({ onViewSession, onResume, onBack }) {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-white mb-1">📚 历史课程</h1>
-            <p className="text-sm text-slate-400">已保存的听课记录</p>
+            <h1 className="text-2xl font-bold text-white mb-1">{t('historyTitle')}</h1>
+            <p className="text-sm text-slate-400">{t('historySub')}</p>
           </div>
           <button
             onClick={onBack}
             className="px-4 py-2 bg-white/5 border border-white/10 text-white text-sm font-medium rounded-xl hover:bg-white/10 hover:border-white/20 transition-all"
           >
-            ← 返回首页
+            {t('backToHome')}
           </button>
         </div>
 
@@ -78,8 +80,8 @@ export default function HistoryPanel({ onViewSession, onResume, onBack }) {
             <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/5 flex items-center justify-center">
               <span className="text-3xl">📭</span>
             </div>
-            <p className="text-slate-400 font-medium">暂无历史记录</p>
-            <p className="text-sm text-slate-500 mt-1">结束听课后会自动保存</p>
+            <p className="text-slate-400 font-medium">{t('noHistory')}</p>
+            <p className="text-sm text-slate-500 mt-1">{t('noHistorySub')}</p>
           </div>
         ) : (
           <div className="space-y-3">
@@ -95,16 +97,16 @@ export default function HistoryPanel({ onViewSession, onResume, onBack }) {
                 <div className="flex items-start justify-between">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-white font-semibold text-lg truncate mb-1">
-                      {s.title || '未命名课程'}
+                      {s.title || t('unnamedCourse')}
                     </h3>
                     {s.titleEn && s.titleEn !== s.title && (
                       <p className="text-slate-400 text-sm truncate mb-2">{s.titleEn}</p>
                     )}
                     <div className="flex items-center gap-3 text-xs text-slate-500">
-                      <span className="flex items-center gap-1">🕐 {formatDate(s.date)}</span>
-                      <span className="flex items-center gap-1">💬 {formatDuration(s.subtitles)}</span>
+                      <span className="flex items-center gap-1">🕐 {formatDate(s.date, lang)}</span>
+                      <span className="flex items-center gap-1">💬 {formatDuration(s.subtitles, t)}</span>
                       {s.outline?.sections && (
-                        <span className="flex items-center gap-1">📝 {s.outline.sections.length} 章节</span>
+                        <span className="flex items-center gap-1">📝 {s.outline.sections.length} {t('sectionsCount')}</span>
                       )}
                     </div>
                   </div>
@@ -113,16 +115,16 @@ export default function HistoryPanel({ onViewSession, onResume, onBack }) {
                     <button
                       onClick={(e) => handleResume(s.id, e)}
                       className="px-3 py-1.5 text-xs font-medium text-indigo-200 bg-indigo-500/15 border border-indigo-400/30 rounded-lg hover:bg-indigo-500/25 hover:text-white transition-all"
-                      title="继续上课"
+                      title={t('resumeBtn')}
                     >
-                      ▶️ 继续
+                      {t('resumeBtn')}
                     </button>
                     <button
                       onClick={(e) => handleDelete(s.id, e)}
                       className="p-2 text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
-                      title="删除"
+                      title={t('deleteBtn')}
                     >
-                      🗑️
+                      {t('deleteBtn')}
                     </button>
                     <span className="text-slate-400 text-lg">→</span>
                   </div>

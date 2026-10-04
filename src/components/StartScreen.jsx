@@ -1,9 +1,11 @@
 import { useState, useRef } from 'react';
+import { useI18n } from '../i18n';
 
 const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8080';
 const HTTP_URL = WS_URL.replace(/^wss?:\/\//, 'https://').replace(/^ws:\/\//, 'http://');
 
 export default function StartScreen({ onStart, onViewHistory, error, wakingUp }) {
+  const { t } = useI18n();
   const [coursewareText, setCoursewareText] = useState('');
   const [coursewareName, setCoursewareName] = useState('');
   const [coursewareUploading, setCoursewareUploading] = useState(false);
@@ -19,7 +21,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
     const isPdf = name.endsWith('.pdf');
 
     if (!isPptx && !isPdf) {
-      setCoursewareError('只支持 .pptx / .pdf 格式');
+      setCoursewareError(t('onlyPptxPdf'));
       return;
     }
 
@@ -38,7 +40,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || '上传失败');
+      if (!res.ok) throw new Error(data.error || t('uploadFailed'));
 
       setCoursewareText(data.text);
     } catch (err) {
@@ -72,10 +74,10 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
           Lecture<span className="text-indigo-400">Note</span>
         </h1>
         <p className="text-lg text-indigo-200/80 mb-1 font-medium animate-fade-up">
-          课堂实时同传 · 双语笔记助手
+          {t('tagline1')}
         </p>
         <p className="text-sm text-slate-300 mb-6 animate-fade-up">
-          支持印度英语 · AI 实时翻译 · 自动生成结构化大纲
+          {t('tagline2')}
         </p>
 
         {/* 课件上传（PPT / PDF） */}
@@ -85,12 +87,12 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
               {coursewareUploading ? (
                 <>
                   <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-slate-300">正在解析课件…</span>
+                  <span className="text-sm text-slate-300">{t('parsing')}</span>
                 </>
               ) : (
                 <>
                   <span className="text-lg">📎</span>
-                  <span className="text-sm text-slate-300">上传课件辅助生成大纲（.pptx / .pdf，可选）</span>
+                  <span className="text-sm text-slate-300">{t('uploadHint')}</span>
                 </>
               )}
               <input
@@ -107,7 +109,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
                 <span className="text-lg flex-shrink-0">{coursewareName.toLowerCase().endsWith('.pdf') ? '📕' : '📄'}</span>
                 <div className="min-w-0">
                   <p className="text-sm text-emerald-300 font-medium truncate">{coursewareName}</p>
-                  <p className="text-[11px] text-emerald-400/70">已提取 {coursewareText.length} 字符</p>
+                  <p className="text-[11px] text-emerald-400/70">{coursewareText.length} {t('charsExtracted')}</p>
                 </div>
               </div>
               <button
@@ -127,9 +129,9 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
         {/* 特性卡片 */}
         <div className="grid grid-cols-3 gap-3 mb-6 animate-fade-up">
           {[
-            { icon: '🎙️', label: '实时识别', desc: '印度英语优化', color: 'indigo' },
-            { icon: '🌐', label: '同传翻译', desc: '英→中即时', color: 'violet' },
-            { icon: '📝', label: '智能大纲', desc: '结构化笔记', color: 'purple' },
+            { icon: '🎙️', label: t('feat1Label'), desc: t('feat1Desc'), color: 'indigo' },
+            { icon: '🌐', label: t('feat2Label'), desc: t('feat2Desc'), color: 'violet' },
+            { icon: '📝', label: t('feat3Label'), desc: t('feat3Desc'), color: 'purple' },
           ].map((f) => (
             <div
               key={f.label}
@@ -166,7 +168,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
         {wakingUp && (
           <div className="mb-4 px-4 py-3 bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-sm rounded-xl animate-fade-in flex items-center justify-center gap-2">
             <span className="w-4 h-4 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" />
-            服务器休眠中，正在唤醒… 约需 30 秒
+            {t('wakingUp')}
           </div>
         )}
 
@@ -183,12 +185,12 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
             {wakingUp ? (
               <>
                 <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                正在唤醒服务器…
+                {t('wakingServer')}
               </>
             ) : (
               <>
                 <span className="group-hover:scale-110 transition-transform duration-300">🎙️</span>
-                开始听课
+                {t('startBtn').replace('🎙️ ', '')}
               </>
             )}
           </span>
@@ -202,7 +204,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
                      hover:text-white hover:bg-white/10 hover:border-white/20
                      transition-all duration-200 animate-fade-up"
         >
-          📚 历史课程
+          {t('historyBtn')}
         </button>
 
         {error && (
@@ -211,7 +213,7 @@ export default function StartScreen({ onStart, onViewHistory, error, wakingUp })
           </div>
         )}
 
-        <p className="text-xs text-slate-500 mt-6">需要麦克风权限 · 数据安全加密</p>
+        <p className="text-xs text-slate-500 mt-6">{t('micNeeded')}</p>
       </div>
     </div>
   );

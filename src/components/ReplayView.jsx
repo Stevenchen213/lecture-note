@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { getSession } from '../utils/sessionStore';
 import { downloadWord, downloadPDF } from '../utils/export';
+import { useI18n } from '../i18n';
 
 export default function ReplayView({ sessionId, onBack }) {
+  const { t, lang } = useI18n();
   const [session, setSession] = useState(null);
   const [activeTab, setActiveTab] = useState('outline'); // outline | subtitles
 
@@ -15,13 +17,13 @@ export default function ReplayView({ sessionId, onBack }) {
       <div className="flex items-center justify-center min-h-screen bg-slate-100">
         <div className="text-center">
           <div className="animate-spin w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-slate-500">加载中…</p>
+          <p className="text-slate-500">{t('loading')}</p>
         </div>
       </div>
     );
   }
 
-  const dateStr = new Date(session.date).toLocaleDateString('zh-CN', {
+  const dateStr = new Date(session.date).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-SG', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -37,13 +39,13 @@ export default function ReplayView({ sessionId, onBack }) {
           <button
             onClick={onBack}
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
-            title="返回"
+            title={t('back')}
           >
             ←
           </button>
           <div className="min-w-0">
             <h1 className="text-sm font-semibold text-slate-700 truncate">
-              {session.title || '未命名课程'}
+              {session.title || t('unnamed')}
             </h1>
             <p className="text-[11px] text-slate-400">{dateStr}</p>
           </div>
@@ -68,9 +70,9 @@ export default function ReplayView({ sessionId, onBack }) {
       {/* 标签切换 */}
       <div className="flex border-b border-slate-100 bg-white px-5 flex-shrink-0">
         {[
-          { key: 'outline', label: '📝 课程大纲' },
-          { key: 'subtitles', label: '💬 双语字幕' },
-          { key: 'questions', label: '✏️ 练习题' },
+          { key: 'outline', label: t('outlineTab') },
+          { key: 'subtitles', label: t('subtitlesTab') },
+          { key: 'questions', label: t('questionsTab') },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -89,26 +91,26 @@ export default function ReplayView({ sessionId, onBack }) {
       {/* 内容区域 */}
       <div className="flex-1 overflow-y-auto">
         {activeTab === 'outline' && (
-          <OutlineContent outline={session.outline} subtitles={session.subtitles} />
+          <OutlineContent outline={session.outline} subtitles={session.subtitles} t={t} />
         )}
         {activeTab === 'subtitles' && (
-          <SubtitlesContent subtitles={session.subtitles} />
+          <SubtitlesContent subtitles={session.subtitles} t={t} />
         )}
         {activeTab === 'questions' && (
-          <QuestionsContent questions={session.questions} />
+          <QuestionsContent questions={session.questions} t={t} />
         )}
       </div>
     </div>
   );
 }
 
-function OutlineContent({ outline, subtitles }) {
+function OutlineContent({ outline, subtitles, t }) {
   if (!outline || !outline.title) {
     return (
       <div className="flex items-center justify-center h-full text-slate-400">
         <div className="text-center">
           <span className="text-3xl block mb-2">📝</span>
-          <p className="text-sm">暂无大纲内容</p>
+          <p className="text-sm">{t('noOutline')}</p>
         </div>
       </div>
     );
@@ -146,19 +148,19 @@ function OutlineContent({ outline, subtitles }) {
       ))}
 
       {(!outline.sections || outline.sections.length === 0) && (
-        <p className="text-sm text-slate-400 text-center py-10">暂无章节内容</p>
+        <p className="text-sm text-slate-400 text-center py-10">{t('noSections')}</p>
       )}
     </div>
   );
 }
 
-function SubtitlesContent({ subtitles }) {
+function SubtitlesContent({ subtitles, t }) {
   if (!subtitles || subtitles.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-slate-400">
         <div className="text-center">
           <span className="text-3xl block mb-2">💬</span>
-          <p className="text-sm">暂无字幕内容</p>
+          <p className="text-sm">{t('noSubtitles')}</p>
         </div>
       </div>
     );
@@ -170,7 +172,7 @@ function SubtitlesContent({ subtitles }) {
         <div key={i} className="px-4 py-3 bg-white rounded-xl border border-slate-100 shadow-sm animate-fade-up" style={{ animationDelay: `${Math.min(i * 15, 500)}ms` }}>
           <p className="text-sm text-slate-500 leading-relaxed mb-1.5">{sub.original}</p>
           <p className="text-sm text-slate-800 leading-relaxed font-medium">
-            {sub.translated || '（未翻译）'}
+            {sub.translated || t('untranslated')}
           </p>
         </div>
       ))}
@@ -178,13 +180,13 @@ function SubtitlesContent({ subtitles }) {
   );
 }
 
-function QuestionsContent({ questions }) {
+function QuestionsContent({ questions, t }) {
   if (!questions || questions.length === 0) {
     return (
       <div className="flex items-center justify-center h-full text-slate-400">
         <div className="text-center">
           <span className="text-3xl block mb-2">✏️</span>
-          <p className="text-sm">暂无练习题</p>
+          <p className="text-sm">{t('noQuestions')}</p>
         </div>
       </div>
     );
@@ -196,7 +198,7 @@ function QuestionsContent({ questions }) {
         <div key={i} className="px-4 py-3 bg-white rounded-xl border border-slate-100 shadow-sm animate-fade-up" style={{ animationDelay: `${i * 60}ms` }}>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="text-xs font-bold text-amber-500 bg-amber-100 px-1.5 py-0.5 rounded">{q.type}</span>
-            <span className="text-[10px] text-slate-400">第 {i + 1} 题</span>
+            <span className="text-[10px] text-slate-400">{t('questionN')}{i + 1}{t('questionNUnit')}</span>
           </div>
           <p className="text-sm font-semibold text-slate-800 mb-1">{q.question}</p>
           {q.questionEn && <p className="text-xs text-slate-400 mb-2">{q.questionEn}</p>}
@@ -208,7 +210,7 @@ function QuestionsContent({ questions }) {
             </div>
           )}
           <details className="mt-2">
-            <summary className="text-xs text-amber-700 cursor-pointer hover:text-amber-800 font-medium">查看答案</summary>
+            <summary className="text-xs text-amber-700 cursor-pointer hover:text-amber-800 font-medium">{t('showAnswer2')}</summary>
             <p className="text-sm text-amber-900 mt-1.5 px-3 py-2 bg-amber-50 rounded-xl border border-amber-100">
               {q.answer}
             </p>
