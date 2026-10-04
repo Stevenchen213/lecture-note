@@ -1,6 +1,6 @@
-# LectureNote 评估结果（10 段）
+# LectureNote Evaluation Results (10 segments)
 
-| 段落 | 转写词数 | 关键点 | 基线覆盖 | 不限长 覆盖/精确 (长度比) | 限长≤15% 覆盖/精确 (长度比) |
+| Segment | Transcript words | Key points | Baseline coverage | Uncapped cov/prec (len) | Capped ≤15% cov/prec (len) |
 |---|---|---|---|---|---|
 | seg01 | 804 | 11 | 100% | 100% / 85.2% (87%) | 90.9% / 81.8% (13%) |
 | seg02 | 803 | 9 | 100% | 100% / 78.3% (49%) | 88.9% / 80% (17%) |
@@ -13,10 +13,10 @@
 | seg09 | 802 | 10 | 100% | 100% / 61.9% (60%) | 80% / 90% (15%) |
 | seg10 | 801 | 12 | 100% | 100% / 80.6% (112%) | 75% / 100% (17%) |
 
-## 平均
+## Averages
 
-| 方案 | Coverage | Precision | 长度比 |
+| Candidate | Coverage | Precision | Length ratio |
 |---|---|---|---|
-| 纯转写（基线） | 99.1% | — | 100% |
-| 不限长大纲 | 100% | 75.9% | 74% |
-| 限长大纲（≤15%） | 91.3% | 93.6% | 15% |
+| Raw transcript (baseline) | 99.1% | — | 100% |
+| Uncapped outline | 100% | 75.9% | 74% |
+| Capped outline (≤15%) | 91.3% | 93.6% | 15% |

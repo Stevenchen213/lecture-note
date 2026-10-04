@@ -1,6 +1,6 @@
 # 🎓 LectureNote Agent
 
-> 课堂实时同声传译 + 中英双语结构化大纲笔记 — Eazo Global Youth AI Agent Hackathon (Singapore)
+> Live lecture simultaneous interpretation + bilingual structured notes — Eazo Global Youth AI Agent Hackathon (Singapore)
 
 **Frontend**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)  
 **Backend**: `wss://lecture-note-2we1.onrender.com`  
@@ -31,19 +31,20 @@ Tabbed view: outline, subtitles, practice questions — with Word/PDF export.
 | Feature | Description |
 |---------|-------------|
 | 🎙️ **Real-time ASR** | Azure Speech Services, `en-IN` model optimized for Indian English |
-| 🌐 **Simultaneous Translation** | DeepSeek API: real-time English → Chinese, partial-text streaming for low-latency同传 |
+| 🌐 **Simultaneous Translation** | DeepSeek API: real-time English → Chinese, partial-text streaming for low-latency interpretation |
 | 🧹 **Filler Word Filtering** | Automatically filters hesitation words (yeah, OK, um…) from the subtitle feed |
 | 📝 **AI Outline** | Auto-generated bilingual structured outline every 30 seconds, merges with manual edits |
 | 📎 **Courseware Upload** | Upload `.pptx` / `.pdf` files to provide lecture context; image-based PDFs auto-OCR |
 | ✏️ **15 Exam Questions** | End-of-class: 15 core quiz questions prioritized by exam hints (MCQ / short answer / true-false) |
 | ⏯️ **Pause / Resume** | Adapt to lecture breaks and discussions |
-| 🎨 **Rich Text Editing** | 4-color highlighting (重点/理解/考点/公式), H1/H2/H3 headings, Bold/Italic/Underline |
+| 🎨 **Rich Text Editing** | 4-color highlighting (key point / understanding / exam point / formula), H1/H2/H3 headings, Bold/Italic/Underline |
 | 🔍 **Smart Auto-Scroll** | Auto-follows new subtitles; pauses when user scrolls up to review past content |
 | 📥 **Export** | Word document (`.doc`), PDF print, copy to clipboard |
 | 📚 **Session History** | Auto-save lectures to localStorage (max 20), browse and replay past sessions |
 | 🇬🇧 **English-Only Filter** | Automatically skips Chinese speech / pinyin to avoid noise |
 | 🛡️ **Auto Wake-Up** | Pings Render backend on page load to wake from free-tier sleep |
 | 🔌 **MCP Server** | Self-hosted Model Context Protocol server with Streamable HTTP — 4 AI tools (translate, outline, questions, health) |
+| 🌍 **Bilingual UI** | English/Chinese interface toggle (EN default), persisted in localStorage |
 
 ---
 
@@ -133,7 +134,7 @@ VITE_WS_URL=wss://your-render-backend.onrender.com
 | Frontend | React 18, Vite 5, TailwindCSS 3 |
 | Backend | Node.js 20, WebSocket (`ws`) |
 | ASR | Azure Speech Services (en-IN, continuous recognition) |
-| LLM | DeepSeek API（默认）或任意 OpenAI 兼容服务（如 Kimi/Moonshot），经 `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY` 切换 |
+| LLM | DeepSeek API (default), or any OpenAI-compatible provider (e.g. Kimi/Moonshot) via `LLM_BASE_URL` / `LLM_MODEL` / `LLM_API_KEY` |
 | PPT Parsing | `adm-zip` (PPTX = ZIP of XML) |
 | PDF Parsing | `pdfjs-dist` + `canvas` (text extraction + render) |
 | OCR | `tesseract.js` (image-based PDF fallback) |
@@ -179,7 +180,7 @@ lecture-note/
 │   ├── index.js                  # Standalone MCP server (Streamable HTTP)
 │   ├── package.json              # MCP server dependencies
 │   └── .gitignore                # Node modules + .env
-├── docs/                         # PE6201: report, cost analysis, video script
+├── docs/                         # PE6201: report, cost analysis, recording guide
 ├── data/                         # PE6201: evaluation dataset (segments + key points)
 ├── evals/                        # PE6201: evaluation harness (run_evals.mjs)
 └── .env.example                  # Environment variables template
@@ -195,7 +196,7 @@ End-of-course project materials for PE6201 Emerging AI Technologies:
 |---|---|
 | Final report (~1,200 words) | [docs/REPORT.md](docs/REPORT.md) |
 | Cost analysis (rubric 5) | [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md) |
-| Demo video script | [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md) |
+| Demo video script / recording guide | [docs/DEMO_VIDEO_SCRIPT.md](docs/DEMO_VIDEO_SCRIPT.md) · [docs/RECORDING_GUIDE.md](docs/RECORDING_GUIDE.md) |
 | Product documentation (persona / I/O / architecture) | [PRODUCT_OVERVIEW.md](PRODUCT_OVERVIEW.md) |
 | Evaluation data + explainer | [data/](data/README.md) |
 | Evaluation harness + explainer | [evals/](evals/README.md) |

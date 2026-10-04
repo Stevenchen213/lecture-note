@@ -1,164 +1,171 @@
-# 🎓 LectureNote Agent — 产品说明文档
+# 🎓 LectureNote Agent — Product Documentation
 
-> **一句话概括**：课堂实时同声传译 + 中英双语结构化大纲笔记 Agent。浏览器打开即用，实时收音翻译，自动生成笔记大纲，下课一键导出。
+> **One-liner**: a real-time lecture copilot — live English-to-Chinese interpretation plus bilingual structured notes. Open in a browser, record the lecture, get notes and exam questions at the end.
 
-**公开访问**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)
-
----
-
-## 🎯 解决的问题
-
-| 痛点 | 现状 | 我们怎么做 |
-|------|------|-----------|
-| 印度裔教授口音重听不懂 | 用同声传译辅助 | ✅ 浏览器实时收音，Azure 专门优化印度英语 |
-| 同传文字琐碎难整理 | 课后对着碎片文字手动整理 | ✅ AI 自动识别课程结构，生成层级化大纲 |
-| 课后整理浪费大量时间 | 2小时课需要3-4小时整理 | ✅ 下课直接导出 Word/PDF，即用即走 |
-| 只有翻译没有"理解" | 现有方案只是词对词翻译 | ✅ LLM 理解课程内容，提取重点和逻辑结构 |
-| 课后复习缺少练习 | 自己找题或不做题 | ✅ AI 自动生成练习题（选择/简答/判断） |
+**Live app**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)
 
 ---
 
-## 🖥️ 产品形态
+## 🎯 Persona & Problem
 
-**Web 网页应用** — 浏览器打开链接即用，无需下载安装。
+**Persona**: a non-native-English-speaking university student (primarily Chinese-speaking) attending English-medium lectures in Singapore.
 
-### 使用流程
+| Pain point | Status quo | Our approach |
+|---|---|---|
+| Heavy-accent professors hard to follow (e.g. Indian English) | Rely on interpretation or guess | ✅ Browser-based live capture, Azure ASR tuned for `en-IN` |
+| Raw interpretation is fragmentary | Manually reorganize after class | ✅ LLM identifies lecture structure and builds a hierarchical outline |
+| Post-class cleanup takes hours | 2-hour lecture → 3–4 hours of notes | ✅ One-click Word/PDF export at session end |
+| Translation without understanding | Existing tools translate word-for-word | ✅ LLM understands content, extracts key points and logic |
+| No exam-oriented review material | Find questions yourself, or skip | ✅ Auto-generated practice questions (MCQ / short answer / true-false) |
+
+---
+
+## 🖥️ Product Form
+
+**Web app** — no install; open the URL in a browser. UI is bilingual (English default, 中文 toggle top-right).
+
+### User flow
 
 ```
-首页（深色主题）
-  ├── 📎 上传课件（.pptx / .pdf，可选）
-  ├── 🎙️ 开始听课 → 进入课堂
-  └── 📚 历史课程 → 查看回放
+Home (dark theme)
+  ├── 📎 Upload courseware (.pptx / .pdf, optional)
+  ├── 🎙️ Start Lecture → enter the room
+  └── 📚 History → replay past sessions
 
-课堂页面（双栏布局）
-  ├── 准备就绪 → 点「开始」→ 收音翻译
-  ├── ⏸️ 暂停 → 课间休息
-  └── 结束 → 自动保存 + 生成练习题
+Room page (dual panel)
+  ├── Ready → click Start → live capture + translation
+  ├── ⏸️ Pause for breaks
+  └── Stop → auto-save + generate practice questions
 
-回放页面
-  ├── 📝 课程大纲（只读）
-  ├── 💬 双语字幕（只读）
-  └── ✏️ 练习题（含答案）
+Replay page
+  ├── 📝 Outline (read-only)
+  ├── 💬 Bilingual subtitles (read-only)
+  └── ✏️ Practice questions (with answers)
 ```
 
-### 双栏布局
+### Dual-panel layout
 
 ```
 ┌─────────────────┬──────────────────────────────┐
-│  🎙️ 实时字幕    │  📝 课程大纲（自动生成）      │
+│  🎙️ Live        │  📝 Outline (auto-generated)  │
+│  Subtitles      │                              │
+│                 │  Ch5: Neural Networks      AI │
+│  EN: Today      │  Ch5: Neural Networks        │
+│  we'll discuss  │                              │
+│  neural nets    │  5.1 Activation Functions  AI │
+│                 │   • Sigmoid — maps to (0,1)  │
+│  ZH: 今天我们讨 │   • ReLU — common activation │
+│  论神经网络…    │                              │
+│                 │  5.2 Backpropagation       AI │
+│  ● Recognizing… │   • Gradient & chain rule    │
 │                 │                              │
-│  EN: Today      │  第五章：神经网络        🤖AI│
-│  we'll discuss  │  Ch5: Neural Networks        │
-│  neural nets    │                              │
-│                 │  5.1 激活函数           🤖AI  │
-│  ZH: 今天我们讨 │   • Sigmoid — 映射到(0,1)     │
-│  论神经网络…    │   • ReLU — 常用激活函数       │
-│                 │                              │
-│  ● 识别中...    │  5.2 反向传播           🤖AI  │
-│                 │   • 梯度计算与链式法则         │
-│                 │                              │
-│                 │  ✏️ 课后练习题          🤖AI  │
-│                 │  选择题 1/5                  │
-│                 │  Sigmoid函数的值域是？         │
-│                 │  A. (-1,1)  B. (0,1)  C. R  │
-│                 │  [查看答案] → B. (0,1)        │
+│                 │  ✏️ Practice Questions     AI │
+│                 │  MCQ 1/5                     │
+│                 │  Range of Sigmoid?           │
+│                 │  A. (-1,1) B. (0,1) C. ℝ    │
+│                 │  [Show answer] → B. (0,1)    │
 └─────────────────┴──────────────────────────────┘
 ```
 
 ---
 
-## ✅ 功能清单
+## ✅ Feature List
 
-| # | 功能 | 说明 | 状态 |
-|---|------|------|:--:|
-| 1 | **实时语音识别** | 浏览器麦克风收音，Azure Speech en-IN，印度口音优化 | ✅ |
-| 2 | **实时同传翻译** | DeepSeek API 流式翻译，半句即翻不等待，同传延迟感更低 | ✅ |
-| 3 | **智能大纲生成** | LLM 理解课程内容，30 秒更新，自动分层级 | ✅ |
-| 4 | **课件上传辅助大纲** | 上传 .pptx / .pdf 课件，AI 参考课件内容生成更准确大纲；图片型 PDF 自动 OCR | ✅ |
-| 5 | **课后15道核心题** | 筛选全课最核心考点出题，老师暗示必考内容优先（选择/简答/判断）含答案 | ✅ |
-| 6 | **暂停 / 继续** | 课间休息、讨论时暂停，回来继续 | ✅ |
-| 7 | **富文本编辑** | 四色高亮（重点/理解/考点/公式）+ H1/H2/H3 + 加粗斜体下划线 | ✅ |
-| 8 | **编辑保护** | 用户修改过的内容不被 AI 覆盖，AI/用户 来源标签区分 | ✅ |
-| 9 | **导出 Word** | 保留格式，.doc 格式下载 | ✅ |
-| 10 | **导出 PDF** | 浏览器打印，排版美观 | ✅ |
-| 11 | **课程历史回放** | 每节课自动保存，随时回看大纲+字幕+练习题 | ✅ |
-| 12 | **中文语音过滤** | 自动跳过中文/拼音，只处理英文 | ✅ |
-| 13 | **填充词过滤** | 自动过滤犹豫词（yeah/OK/um…），不单独成段干扰字幕 | ✅ |
-| 14 | **智能滚动** | 新字幕自动跟随；用户往上翻阅历史时暂停跳转，看完滚回底部恢复 | ✅ |
-| 15 | **自动唤醒** | Render 免费版休眠后自动唤醒 | ✅ |
-| 16 | **MCP 自建服务** | 自建 MCP Server (Streamable HTTP)，提供4个AI工具：翻译/大纲/出题/健康检查，可被兼容客户端调用 | ✅ |
+| # | Feature | Notes | Status |
+|---|---------|-------|:--:|
+| 1 | **Real-time ASR** | Browser mic → Azure Speech `en-IN`, accent-optimized | ✅ |
+| 2 | **Simultaneous translation** | LLM streaming translation, translates partial text for lower perceived latency | ✅ |
+| 3 | **Smart outline** | LLM understands content, refreshes every ~30s, auto-hierarchized | ✅ |
+| 4 | **Courseware upload** | `.pptx` / `.pdf` provides context for more accurate outlines; image PDFs auto-OCR | ✅ |
+| 5 | **15 exam questions** | Picks the most exam-worthy points; instructor hints ("this will be on the exam") prioritized | ✅ |
+| 6 | **Pause / Resume** | For breaks and Q&A | ✅ |
+| 7 | **Rich-text editing** | 4 highlight colors + H1/H2/H3 + bold/italic/underline | ✅ |
+| 8 | **Edit protection** | User-edited nodes are never overwritten by AI; AI/manual source tags | ✅ |
+| 9 | **Word export** | `.doc` download with formatting | ✅ |
+| 10 | **PDF export** | Print-to-PDF | ✅ |
+| 11 | **Session history & replay** | Auto-saved (max 20), replay outline/subtitles/questions | ✅ |
+| 12 | **Resume from history** | Continue an interrupted lecture; outline regenerates over the full transcript | ✅ |
+| 13 | **Non-English filtering** | Skips Chinese/pinyin input to avoid noise | ✅ |
+| 14 | **Filler-word filtering** | Drops hesitation words (yeah/OK/um…) | ✅ |
+| 15 | **Smart auto-scroll** | Follows new subtitles; pauses when user scrolls up to read history | ✅ |
+| 16 | **Auto wake-up** | Pings the Render backend to wake the free tier | ✅ |
+| 17 | **MCP server** | Self-hosted Model Context Protocol server (Streamable HTTP): translate / outline / questions / health | ✅ |
+| 18 | **Bilingual UI** | English/Chinese toggle, persisted | ✅ |
 
 ---
 
-## 🏗️ 技术架构
+## 🏗️ Architecture
 
 ```
-浏览器 (React + Vite + TailwindCSS)
-    │  WebSocket（音频 + JSON）
-    │  HTTP POST（课件上传）
+Browser (React + Vite + TailwindCSS)
+    │  WebSocket (audio binary + JSON)
+    │  HTTP POST (courseware upload)
     ▼
-Node.js 后端 (Render 免费托管)
-    ├── Azure Speech Services（语音识别，en-IN，16kHz PCM）
-    ├── DeepSeek API（翻译 + 大纲 + 练习题）
-    ├── adm-zip（PPTX 文字提取）
-    ├── pdfjs-dist + canvas（PDF 文字提取 + 页面渲染）
-    └── Tesseract.js（图片型 PDF OCR 降级）
+Node.js Backend (Render)
+    ├── Azure Speech Services (ASR, en-IN, 16kHz PCM)
+    ├── LLM API (translation + outline + questions)
+    │     default: DeepSeek; any OpenAI-compatible provider via env vars
+    ├── adm-zip (PPTX text extraction)
+    ├── pdfjs-dist + canvas (PDF text + render)
+    └── Tesseract.js (image-PDF OCR fallback)
 
-前端托管：Vercel（免费）
-后端托管：Render（免费）
-MCP 服务：Render（免费，独立部署）
+MCP Server (Render, standalone deployment)
+    ├── @modelcontextprotocol/server v2
+    ├── LLM API (same provider switch)
+    └── Streamable HTTP transport
+
+Frontend: Vercel (free) · Backend: Render (free) · MCP: Render (free)
 ```
 
-### MCP Server（自建）
+**Input → Output**: microphone audio → Azure ASR → transcript buffer → LLM (per-sentence translation; rolling outline regeneration; end-of-class question generation) → bilingual subtitles + outline + practice questions in the browser. Session state, outline merging and user edits are orchestrated by the backend and React state; user-edited outline nodes are never overwritten (merge logic in `src/utils/outlineMerge.js`).
 
-自建 MCP (Model Context Protocol) Server，提供 Streamable HTTP 端点，可获得黑客松 +5 加分：
+### MCP Server
 
-| 工具 | 功能 |
-|------|------|
-| `translate` | 英中同传翻译，课堂场景优化 |
-| `generate_outline` | 生成结构化双语大纲 |
-| `generate_questions` | 生成15道核心练习题 |
-| `health` | 服务健康检查 |
+Self-hosted MCP (Model Context Protocol) server with a Streamable HTTP endpoint:
 
-**端点**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
+| Tool | Function |
+|------|----------|
+| `translate` | EN→ZH simultaneous translation, tuned for lectures |
+| `generate_outline` | Bilingual structured outline |
+| `generate_questions` | 15 core practice questions |
+| `health` | Health check |
+
+**Endpoint**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
 
 ---
 
-## 📏 评估指标（目标 vs 达成）
+## 📏 Metrics: Targeted vs Reached
 
-评估数据与方法见 [data/README.md](data/README.md) 与 [evals/README.md](evals/README.md)；
-详细批判见 [docs/REPORT.md](docs/REPORT.md)，成本见 [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md)。
+Method and data: [data/README.md](data/README.md) and [evals/README.md](evals/README.md);
+critique: [docs/REPORT.md](docs/REPORT.md); cost: [docs/COST_ANALYSIS.md](docs/COST_ANALYSIS.md).
 
-**目标（Milestone 1）**：大纲对老师强调关键点的覆盖率 ≥ 80%。
+**Targeted (Milestone 1)**: ≥ 80% coverage of instructor-emphasized key points.
 
-**指标修正（中期反馈后）**：单一覆盖率存在「平凡赢家」漏洞（全文复制≈100%），改为三指标 + 基线对比。评估运行于 Kimi（OpenAI 兼容切换，见 [docs/REPORT.md](docs/REPORT.md) 第 2 节）：
+**Metric fix (after interim feedback)**: single-metric coverage is gameable (paste the whole transcript ≈ 100%) — the "trivial winner" problem. We now report three metrics against a raw-transcript baseline. The evaluation ran on Kimi via the OpenAI-compatible provider switch (Section above and [docs/REPORT.md](docs/REPORT.md)):
 
-| 方案 | Coverage（关键点覆盖） | Precision（条目纯度） | 长度比（大纲/转写） |
+| Candidate | Coverage | Precision | Length ratio |
 |---|---|---|---|
-| 纯转写（基线） | 99.1% | — | 100% |
-| 产品大纲（不限长） | 100% | 75.9% | 74% |
-| 限长大纲（≤15%） | **91.3%** | **93.6%** | **15%** |
+| Raw transcript (baseline) | 99.1% | — | 100% |
+| Product outline (uncapped) | 100% | 75.9% | 74% |
+| Length-capped outline (≤15%) | **91.3%** | **93.6%** | **15%** |
 
-**结论**：限长大纲以 15% 的篇幅（约 7 倍压缩）保留 91.3% 的老师强调关键点，精确率 93.6%，达成并超越原定 ≥80% 目标。逐段数据见 [evals/results/RESULTS.md](evals/results/RESULTS.md)。
+**Takeaway**: the capped outline keeps 91.3% of instructor-emphasized key points in 15% of the words (~7× compression) at 93.6% precision — meeting and beating the original ≥80% target on a metric that can't be gamed by copying. Per-segment data: [evals/results/RESULTS.md](evals/results/RESULTS.md).
 
-**评估规模**：10 段 MIT 公开课讲座（3 门课、3 位讲师、数学/CS/经济学），103 个原子级关键点。
+**Evaluation scale**: 10 segments from 3 MIT OCW lectures (3 lecturers, math / CS / economics), 103 atomic labeled key points.
 
-**成本**：一堂 50 分钟课端到端 ≈ US$1（语音识别占 ~80%，LLM 占 ~20%）。
+**Cost**: ≈ US$1 per 50-minute lecture end-to-end (~80% ASR, ~20% LLM).
 
 ---
-## 🔗 相关链接
 
-- **公开访问**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)
-- **后端**: `lecture-note-2we1.onrender.com`
-- **MCP 服务**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
+## 🔗 Links
+
+- **App**: [https://lecture-note-tau.vercel.app](https://lecture-note-tau.vercel.app)
+- **Backend**: `lecture-note-2we1.onrender.com`
+- **MCP**: [https://mcp-server-9mz7.onrender.com/mcp](https://mcp-server-9mz7.onrender.com/mcp)
 - **GitHub**: [https://github.com/Stevenchen213/lecture-note](https://github.com/Stevenchen213/lecture-note)
 
 ---
 
-## 👥 参赛信息
+## 👤 Author
 
-- **赛事**：Eazo · Global Youth AI Agent Hackathon
-- **赛道**：命题二 — Personal Agent 挑战
-- **赛区**：新加坡
-- **提交截止**：2026 年 8 月 10 日 22:00
-- **复赛路演**：2026 年 8 月 17 日下午（新加坡赛区）
+**Chen Mingsong (Steven Chen)** — [GitHub](https://github.com/Stevenchen213)

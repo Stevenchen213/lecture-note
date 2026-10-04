@@ -236,17 +236,17 @@ const summary = {
 };
 
 // Markdown 报告
-let md = `# LectureNote 评估结果（${rows.length} 段）\n\n`;
-md += `| 段落 | 转写词数 | 关键点 | 基线覆盖 | 不限长 覆盖/精确 (长度比) | 限长≤15% 覆盖/精确 (长度比) |\n`;
+let md = `# LectureNote Evaluation Results (${rows.length} segments)\n\n`;
+md += `| Segment | Transcript words | Key points | Baseline coverage | Uncapped cov/prec (len) | Capped ≤15% cov/prec (len) |\n`;
 md += `|---|---|---|---|---|---|\n`;
 for (const r of rows) {
   md += `| ${r.segment} | ${r.transcript_words} | ${r.keypoints} | ${r.baseline_coverage}% | ${r.uncapped_coverage}% / ${r.uncapped_precision}% (${(r.uncapped_ratio * 100).toFixed(0)}%) | ${r.capped_coverage}% / ${r.capped_precision}% (${(r.capped_ratio * 100).toFixed(0)}%) |\n`;
 }
-md += `\n## 平均\n\n`;
-md += `| 方案 | Coverage | Precision | 长度比 |\n|---|---|---|---|\n`;
-md += `| 纯转写（基线） | ${summary.baseline_coverage}% | — | 100% |\n`;
-md += `| 不限长大纲 | ${summary.uncapped_coverage}% | ${summary.uncapped_precision}% | ${(summary.uncapped_ratio * 100).toFixed(0)}% |\n`;
-md += `| 限长大纲（≤15%） | ${summary.capped_coverage}% | ${summary.capped_precision}% | ${(summary.capped_ratio * 100).toFixed(0)}% |\n`;
+md += `\n## Averages\n\n`;
+md += `| Candidate | Coverage | Precision | Length ratio |\n|---|---|---|---|\n`;
+md += `| Raw transcript (baseline) | ${summary.baseline_coverage}% | — | 100% |\n`;
+md += `| Uncapped outline | ${summary.uncapped_coverage}% | ${summary.uncapped_precision}% | ${(summary.uncapped_ratio * 100).toFixed(0)}% |\n`;
+md += `| Capped outline (≤15%) | ${summary.capped_coverage}% | ${summary.capped_precision}% | ${(summary.capped_ratio * 100).toFixed(0)}% |\n`;
 fs.writeFileSync(path.join(RES_DIR, 'RESULTS.md'), md);
 
 console.log('\n===== 平均 =====');
